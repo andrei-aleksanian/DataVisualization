@@ -1,7 +1,4 @@
 # Data Visualisation Tool with COVA and ANGEl
-<<<<<<< Updated upstream
-Documentation will be coming soon...
-=======
 
 A tool to visualise COVA and ANGEL algorithms on the web.
 
@@ -26,7 +23,4 @@ After you are done, make sure to run:
 ```docker-compose -f docker-compose.prod.yml stop```
 
 
-
-
 More ocumentation will be coming soon...
->>>>>>> Stashed changes
