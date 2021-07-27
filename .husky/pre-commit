@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Backend pre-commit hook
+echo "\n-- BACKEND HOOK -----------\n"
+cd backend && pre-commit run --files *
+
+# Frontend precommit hook
+echo "\n-- FRONTEND HOOK -----------\n"
+cd ../frontend
+npm run test:CI
