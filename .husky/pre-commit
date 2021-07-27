@@ -8,4 +8,6 @@ cd backend && pre-commit run --files *
 # Frontend precommit hook
 echo "\n-- FRONTEND HOOK -----------\n"
 cd ../frontend
+npm run lint
+npm run lint:style
 npm run test:CI
