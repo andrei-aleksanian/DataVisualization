@@ -9,9 +9,8 @@ services:
       - ./backend:/backend
 
   frontend-nginx:
-    build: 
+    build:
       context: ./frontend
       dockerfile: Dockerfile.prod
     ports:
       - '80:80'
-      

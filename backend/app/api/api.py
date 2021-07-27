@@ -1,6 +1,9 @@
+"""
+My docstring.
+"""
+from typing import List, Union, NewType
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List, Union, NewType
 from pydantic import BaseModel, conlist
 
 from data import EXAMPLE_DATA
@@ -10,8 +13,9 @@ app = FastAPI()
 origins = [
     'http://localhost',
     'localhost',
-    'http://localhost:3000', # needed for development proxy (React runs at 3000)
-    'localhost:3000' 
+    # needed for development proxy (React runs at 3000)
+    'http://localhost:3000',
+    'localhost:3000'
 ]
 
 app.add_middleware(
@@ -24,18 +28,34 @@ app.add_middleware(
 
 # My code
 
-data2D = NewType('data2D', List[List[conlist(item_type=float, min_items=2, max_items=2)]])
-data3D = NewType('data3D', List[List[conlist(item_type=float, min_items=3, max_items=3)]])
+Data2D = NewType(
+    'Data2D', List[List[conlist(item_type=float, min_items=2, max_items=2)]])
+Data3D = NewType(
+    'Data3D', List[List[conlist(item_type=float, min_items=3, max_items=3)]])
+
 
 class DataIn(BaseModel):
-  data: List[List[float]] # M x N matrix of floats e.g. features of your ML data
+  """
+  DataIn model that we will recieve from the browser
+  """
+  # M x N matrix of floats e.g. features of your ML data
+  data: List[List[float]]
   dimension3D: bool = False
 
+
 class Data(BaseModel):
-  data: Union[data2D, data3D]
+  """
+  Data model to be used to process ANGEL and COVA on the server
+  """
+  data: Union[Data2D, Data3D]
 
 # COVA endpoints
-@app.post("/cova", tags=["COVA"], summary="COVA 2D or 3D dimension shrinking", response_model=Data)
+
+
+@app.post("/cova",
+          tags=["COVA"],
+          summary="COVA 2D or 3D dimension shrinking",
+          response_model=Data)
 async def index(data: DataIn):
   """
   COVA endpoint accepting data of any number of dimensions and returning 2 or 3.
@@ -46,14 +66,17 @@ async def index(data: DataIn):
   """
 
   # run my COVA algorithm
+  print(f"Request data - {data.dict()}")
 
-  return {"data": [EXAMPLE_DATA]} 
-
+  return {"data": [EXAMPLE_DATA]}
 
 
 # ANGEL endoints
 
 # TEST endpoints
 @app.get("/test")
-async def hi():
+async def hello_world():
+  """
+  Hello world test function
+  """
   return {"Hello": "world"}

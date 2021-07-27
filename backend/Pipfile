@@ -9,6 +9,8 @@ uvicorn = {extras = ["standard"], version = "*"}
 pydantic = "*"
 
 [dev-packages]
+pre-commit = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.8"
