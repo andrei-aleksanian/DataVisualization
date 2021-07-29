@@ -16,7 +16,7 @@ After you are done, make sure to run:
 
 To run the code in a production environment, run:
 
-`docker-compose up -f docker-compose.prod.yml -d --build`
+`docker-compose -f docker-compose.prod.yml up -d --build`
 
 After you are done, make sure to run:
 
