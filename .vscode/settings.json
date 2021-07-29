@@ -3,5 +3,5 @@
     "source.fixAll.eslint": true
   },
   "eslint.validate": ["javascript"],
-  "python.formatting.autopep8Args": ["--indent-size=2"]
+  "python.formatting.autopep8Args": ["--indent-size=2"] // My personal preference
  }
