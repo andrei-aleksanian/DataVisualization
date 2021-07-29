@@ -7,10 +7,13 @@ name = "pypi"
 fastapi = "*"
 uvicorn = {extras = ["standard"], version = "*"}
 pydantic = "*"
+numpy = "*"
+numba = "*"
 
 [dev-packages]
 pre-commit = "*"
 pylint = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.8"
