@@ -4,7 +4,9 @@ A tool to visualise COVA and ANGEL algorithms on the web.
 
 ## Getting Started
 
-To run the code, make sure you have [Docker](https://www.docker.com/) installed on your machine and you are in the root directory and run:
+### Docker
+
+To run the code in Docker, make sure you have [it](https://www.docker.com/) installed on your machine and you are in the root directory and run:
 
 `docker-compose up -d --build`
 
@@ -12,11 +14,34 @@ After you are done, make sure to run:
 
 `docker-compose stop`
 
+### Running Manually
+
+Follow these steps to install all the dependencies on the backend:
+
+1. `cd backend`
+
+2. `pipenv install --dev`
+
+3. `pipenv shell`
+
+4. `pip install -r requirements.txt`
+
+For some mysterious reason, pipenv doesnt install some crucial packages used in COVA and ANGEL.
+These packages are listed in `requirements.txt`.
+
+Now, it's time to install dependencies on frontend:
+
+1. `cd ..` (back to root folder)
+2. `cd frontend`
+3. `npm i`
+
+You are done!
+
 ## Production environment
 
-To run the code in a production environment, run:
+To run the code in a production environment, install Docker and run:
 
-`docker-compose up -f docker-compose.prod.yml -d --build`
+`docker-compose -f docker-compose.prod.yml up -d --build`
 
 After you are done, make sure to run:
 
@@ -30,7 +55,15 @@ The backend is done with [fastAPI](https://fastapi.tiangolo.com/). A lightweight
 
 The frontend is in React. Some auto generated docs are [here](frontend/README.md).
 
-## Git Hooks
+## Contributing to the project
+
+To contribute to the project, you will need to pass git commit hooks:
+
+`git commit` will trigger a sequence of linters checking
+the quality of your code as well as tests being run.
+
+Only after everything passes and there
+is no problems can you make a commit.
 
 ## Pipenv
 
