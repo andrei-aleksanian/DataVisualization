@@ -3,7 +3,7 @@
 
 # Backend pre-commit hook
 echo "\n-- BACKEND HOOK -----------\n"
-cd backend && pre-commit run --files *
+cd backend && pre-commit
 
 # Frontend precommit hook
 echo "\n-- FRONTEND HOOK -----------\n"

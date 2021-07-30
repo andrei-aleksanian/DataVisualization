@@ -1,31 +1,25 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
-    -   id: check-added-large-files
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
 
--   repo: https://github.com/pre-commit/mirrors-autopep8
+  - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v1.5.7
     hooks:
-    -   id: autopep8
-        args:
-        - --in-place
-        - --aggressive
-        - --aggressive
-        - --indent-size=2
+      - id: autopep8
 
--   repo: https://github.com/pycqa/pylint
+  - repo: https://github.com/pycqa/pylint
     rev: v2.9.5
     hooks:
-    -   id: pylint
-        entry: python -m pylint.__main__
+      - id: pylint
         language: system
         files: \.py$
         args:
-        - --disable=E0401 # imports errors becasue of pipenv
-        - --disable=E0611 # imports errors becasue of pipenv
-        - --disable=W0311 # 2 spaces instead of 4 (personal preference)
-        - --disable=R0903 # Too few public methods - for fastAPI it's normal
+          - --disable=E0401 # imports errors becasue of pipenv
+          - --disable=E0611 # imports errors becasue of pipenv
+          - --disable=W0311 # 2 spaces instead of 4 (personal preference)
+          - --disable=R0903 # Too few public methods - for fastAPI it's normal
