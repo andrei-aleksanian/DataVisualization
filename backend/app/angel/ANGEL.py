@@ -1,7 +1,7 @@
 import numpy as np
 import math
 from scipy.io import loadmat
-from localanchorembedding import AnchorGraph
+from .localanchorembedding import AnchorGraph
 from sklearn.metrics import pairwise_distances
 from sklearn.neighbors import KNeighborsClassifier
 from scipy.spatial.distance import directed_hausdorff
@@ -13,14 +13,16 @@ from sklearn import preprocessing
 
 from numba import jit
 
-from FunctionFile import CohortDistance, Ad_cohort_order_chg
-from SOEmbedding import SOE, disForOE, Rtheta, Sscal
+from .FunctionFile import CohortDistance, Ad_cohort_order_chg
+from .SOEmbedding import SOE, disForOE, Rtheta, Sscal
 
 from scipy.io import savemat
 from scipy.sparse import csr_matrix
 import os
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
+
+from ..types.data import DataOut
 
 
 def AnchorPointGeneration(Data, DataLabel, sparsity=0.1, t=3, metric='euclidean', cn=10):
@@ -267,13 +269,22 @@ def ANGEL_embedding(Data, anchor, Z, W, optType='constrained', dim=2, init=0, ep
   return x
 
 
-if __name__ == '__main__':
-  fullData = loadmat('../Data/OneFlower.mat')
+# Main function
+
+
+def angel() -> DataOut:
+
+  fullData = loadmat('./app/angel/Data/OneFlower.mat')
   scaler = preprocessing.MinMaxScaler()
   # x = csr_matrix(fullData.get('newsdata')).toarray()
-  scaler.fit(np.array(fullData.get('g')))
-  g = scaler.transform(np.array(fullData.get('g')))
-  label = np.array(fullData.get('label')).transpose()
+
+  # MY CODE For sampling
+  SAMPLE_SIZE = 200
+  sample = np.array(fullData.get('g'))[:SAMPLE_SIZE, :]
+  scaler.fit(sample)
+  g = scaler.transform(sample)
+  label = np.array(fullData.get('label'))[:SAMPLE_SIZE].transpose()
+  # ---- My code finished ----
 
   [AnchorPoint, AnchorLabel, Z] = AnchorPointGeneration(g, label)
   anchorpoint, anchor0, C = AnchorEmbedding(
@@ -282,6 +293,8 @@ if __name__ == '__main__':
   anchorpoint = scaler.transform(anchorpoint)
   W = AdjacencyMatrix(g, neighbor=10, weight=0, metric='euclidean')
   result = ANGEL_embedding(g, anchorpoint, Z, W)
+
+  return {"points": result.tolist(), "labels": label.ravel().tolist()}
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 
