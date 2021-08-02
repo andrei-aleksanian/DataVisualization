@@ -2,6 +2,9 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "eslint.validate": ["javascript"],
-  "python.formatting.autopep8Args": ["--indent-size=2"] // My personal preference
- }
+  "python.formatting.autopep8Args": ["--indent-size=2"], // My personal preference
+  "eslint.validate": [
+    "javascript"
+  ],
+  "typescript.tsdk": "./frontend/node_modules/typescript/lib"
+}
