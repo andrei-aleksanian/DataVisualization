@@ -6,7 +6,7 @@ import Controls from './Controls';
 import Scene from './Scene';
 import axios from '../utils/axios';
 
-import classes from './Visualization2D.module.css';
+import classes from './Visualization2D.module.scss';
 import getColors from '../utils/getColors';
 
 const Visualization2D: React.FC = () => {
