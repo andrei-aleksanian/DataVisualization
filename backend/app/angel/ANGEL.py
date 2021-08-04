@@ -338,7 +338,7 @@ def angel() -> DataOut:
 
     [AnchorPoint, AnchorLabel, Z] = AnchorPointGeneration(g, label)
     anchorpoint, anchor0, C = AnchorEmbedding(
-        AnchorPoint, AnchorLabel, flagMove=1, lamb=0.1)
+        AnchorPoint, AnchorLabel, flagMove=0, lamb=0)
     scaler.fit(anchorpoint)
     anchorpoint = scaler.transform(anchorpoint)
     W = AdjacencyMatrix(g, neighbor=10, weight=0, metric='euclidean')
