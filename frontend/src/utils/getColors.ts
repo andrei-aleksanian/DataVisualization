@@ -1,5 +1,10 @@
 const getRandomColor = (): string => {
-  return Math.floor(Math.random() * 16777215).toString(16);
+  const letters = '0123456789ABCDEF';
+  let color = '';
+  for (let i = 0; i < 6; i += 1) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 };
 
 const findUniqueColors = (labels: number[]) => {
@@ -30,5 +35,6 @@ export default (labels: number[]): string[] => {
   for (let i = 0; i < labels.length; i += 1) {
     colors.push(colorMap[labels[i]]);
   }
+
   return colors;
 };
