@@ -1,5 +1,5 @@
-import axios from './utils/axios';
-import { Data2D } from './types/Data';
+import axios from './axios';
+import { Data2D } from '../types/Data';
 
 export const getAngelDemo = async () => {
   const { data }: { data: Data2D } = await axios.get('/angel-demo');

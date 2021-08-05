@@ -1,10 +1,11 @@
 import { useState } from 'react';
+
 import Visualization2D from './Visualization2D';
 import Settings from './Settings';
 
-import { defaultSettings } from './types/Settings';
+import { Algorithm, defaultSettings } from './types/Settings';
 import { Data2DColored, Points2D } from './types/Data';
-import { getAngelDemo } from './services';
+import { getAngelDemo, getCovaDemo } from './utils/services';
 import getColors from './utils/getColors';
 
 import classes from './App.module.scss';
@@ -15,7 +16,13 @@ const App = () => {
 
   const runAlgorithm = async (event: React.MouseEvent) => {
     event.preventDefault();
-    let newData = await getAngelDemo();
+
+    let newData;
+    if (settings.algorithm === Algorithm.ANGEL) {
+      newData = await getAngelDemo();
+    } else {
+      newData = await getCovaDemo();
+    }
 
     newData = {
       labels: newData.labels,
