@@ -10,19 +10,11 @@
   cursor: pointer;
 }
 
-.Button:hover {
+.active {
   border: var(--color-text) solid 3px;
 }
 
-.Button:focus {
-  border: var(--color-text) solid 3px;
-}
-
-.Long:hover {
-  border: var(--color-button) solid 3px;
-}
-
-.Long:focus {
+.Long {
   border: var(--color-button) solid 3px;
 }
 

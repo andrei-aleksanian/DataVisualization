@@ -7,28 +7,36 @@ interface ButtonProps {
   text: string;
   customClass?: string;
   long?: boolean;
+  active: boolean;
 }
 
 interface ButtonEnhancedProps extends ButtonProps {
   center?: boolean;
 }
-
-export const defaultProps = {
-  customClass: '',
-  long: false,
-  center: false,
-};
-
+/**
+ * Action Button. Bright red with white text.
+ *
+ * Button - the actual button component that always renders.
+ *
+ * WrapperCenter - wrapper that wraps the button and centers it in any div.
+ * Only rendered if center prop is true. (Future reference - might move somewhere else)
+ */
 const ButtonEnhanced = (props: ButtonEnhancedProps) => {
-  const WrapperCenter = ({ children }: { children: JSX.Element }) => {
-    return <div className={classes.WrapperCenter}>{children}</div>;
-  };
-
-  const Button = ({ onClick, text, customClass, long }: ButtonProps) => (
-    <button type="button" onClick={onClick} className={cx(classes.Button, customClass, { [classes.Long]: long })}>
-      {text}
-    </button>
+  const WrapperCenter = ({ children }: { children: JSX.Element }) => (
+    <div className={classes.WrapperCenter}>{children}</div>
   );
+
+  const Button = ({ onClick, text, customClass, long, active }: ButtonProps) => {
+    return (
+      <button
+        type="button"
+        onClick={(e) => onClick(e)}
+        className={cx(classes.Button, customClass, { [classes.Long]: long }, { [classes.active]: active })}
+      >
+        {text}
+      </button>
+    );
+  };
 
   Button.defaultProps = {
     customClass: '',
@@ -48,6 +56,12 @@ const ButtonEnhanced = (props: ButtonEnhancedProps) => {
   }
 
   return output;
+};
+
+export const defaultProps = {
+  customClass: '',
+  long: false,
+  center: false,
 };
 
 ButtonEnhanced.defaultProps = defaultProps;
