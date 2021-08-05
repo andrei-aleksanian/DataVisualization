@@ -1,0 +1,36 @@
+.Button {
+  font-size: 1rem;
+  padding: 0.5em 3em;
+  height: 3em;
+  border: var(--color-button) solid 3px;
+  border-radius: 2rem;
+  background-color: #f20574;
+  color: var(--color-text);
+  transition: 0.3s all ease-in-out;
+  cursor: pointer;
+}
+
+.Button:hover {
+  border: var(--color-text) solid 3px;
+}
+
+.Button:focus {
+  border: var(--color-text) solid 3px;
+}
+
+.Long:hover {
+  border: var(--color-button) solid 3px;
+}
+
+.Long:focus {
+  border: var(--color-button) solid 3px;
+}
+
+.WrapperCenter {
+  display: flex;
+  justify-content: center;
+}
+
+:root {
+  --color-button: #f20574;
+}
