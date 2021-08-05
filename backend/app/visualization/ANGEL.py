@@ -324,7 +324,7 @@ def ANGEL_embedding(
 
 def angel() -> DataOut:
 
-    fullData = loadmat('./app/angel/Data/OneFlower.mat')
+    fullData = loadmat('./app/visualization/Data/OneFlower.mat')
     scaler = preprocessing.MinMaxScaler()
     # x = csr_matrix(fullData.get('newsdata')).toarray()
 

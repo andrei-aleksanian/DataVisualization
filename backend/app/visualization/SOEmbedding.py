@@ -1,3 +1,5 @@
+# pylint: disable-all
+
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from scipy.optimize import minimize
@@ -58,20 +60,23 @@ def PreForRelocationOE(Param, anchor0, anchorC, label):
         delx[templ, :] = anchor0[templ, :] - np.mean(anchor0[templ, :], axis=0)
         Theta = Rtheta(theta[i])
         Scal = Sscal(scal[i])
-        x[templ, :] = (Theta @ Scal @ delx[templ, :].transpose()).transpose() + anchorC[i, :]
+        x[templ, :] = (Theta @ Scal @ delx[templ, :].transpose()
+                       ).transpose() + anchorC[i, :]
     disgraph = squareform(pdist(x, 'euclidean'))
     return n, x, delx, disgraph, theta, scal, diffLabel, Del
 
 
 def Rtheta(theta):
-    k = np.array([[np.cos(theta), - np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+    k = np.array([[np.cos(theta), - np.sin(theta)],
+                 [np.sin(theta), np.cos(theta)]])
     if len(k.shape) > 2:
         k = np.squeeze(k, axis=2)
     return k
 
 
 def gradRtheta(theta):
-    k = np.array([[- np.sin(theta), -np.cos(theta)], [np.cos(theta), - np.sin(theta)]])
+    k = np.array([[- np.sin(theta), -np.cos(theta)],
+                 [np.cos(theta), - np.sin(theta)]])
     if len(k.shape) > 2:
         k = np.squeeze(k, axis=2)
     return k
@@ -83,7 +88,8 @@ def Sscal(scal):
 
 def ErrSOE_Relocate(Param, *args):
     A_order, anchor0, anchorC, labels = args[0], args[1], args[2], args[3]
-    n, x, delx, disgraph, theta, scal, diffLabel, Del = PreForRelocationOE(Param, anchor0, anchorC, labels)
+    n, x, delx, disgraph, theta, scal, diffLabel, Del = PreForRelocationOE(
+        Param, anchor0, anchorC, labels)
     E = ErrSOE_Relocate_loop(n, Del, A_order, disgraph, labels)
     return E
 
@@ -96,7 +102,8 @@ def ErrSOE_Relocate_loop(n, Del, A_order, disgraph, labels):
             for k in range(j + 1, n):
                 if labels[A_order[i, 0]] == labels[A_order[i, j]]:
                     if labels[A_order[i, 0]] == labels[A_order[i, k]]:
-                        temp = disgraph[A_order[i, 0], A_order[i, j]] + Del - disgraph[A_order[i, 0], A_order[i, k]]
+                        temp = disgraph[A_order[i, 0], A_order[i, j]] + \
+                            Del - disgraph[A_order[i, 0], A_order[i, k]]
                         if temp > 0:
                             E = E + temp * temp
     return E
@@ -104,8 +111,10 @@ def ErrSOE_Relocate_loop(n, Del, A_order, disgraph, labels):
 
 def GradSOE_Relocate(Param, *args):
     A_order, anchor0, anchorC, labels = args[0], args[1], args[2], args[3]
-    n, x, delx, disgraph, theta, scal, diffLabel, Del = PreForRelocationOE(Param, anchor0, anchorC, labels)
-    gradX = GradSOE_Relocate_loop(delx, n, Del, A_order, disgraph, theta, scal, anchorC, diffLabel, labels)
+    n, x, delx, disgraph, theta, scal, diffLabel, Del = PreForRelocationOE(
+        Param, anchor0, anchorC, labels)
+    gradX = GradSOE_Relocate_loop(
+        delx, n, Del, A_order, disgraph, theta, scal, anchorC, diffLabel, labels)
     gradX0 = np.squeeze(np.reshape(gradX, (Param.shape[0], 1)))
     return gradX0
 
@@ -144,9 +153,12 @@ def GradSOE_Relocate_loop(delx, n, Del, A_order, disgraph, theta, scal, C, diffL
                             d_ik = disgraph[A_order[i, 0], A_order[i, k]]
 
                         if len((diffLabel == labels[A_order[i, 0]]).shape) > 1:
-                            li = np.squeeze(diffLabel == labels[A_order[i, 0]], axis=1)
-                            lj = np.squeeze(diffLabel == labels[A_order[i, j]], axis=1)
-                            lk = np.squeeze(diffLabel == labels[A_order[i, k]], axis=1)
+                            li = np.squeeze(
+                                diffLabel == labels[A_order[i, 0]], axis=1)
+                            lj = np.squeeze(
+                                diffLabel == labels[A_order[i, j]], axis=1)
+                            lk = np.squeeze(
+                                diffLabel == labels[A_order[i, k]], axis=1)
                         else:
                             li = diffLabel == labels[A_order[i, 0]]
                             lj = diffLabel == labels[A_order[i, j]]
@@ -167,9 +179,12 @@ def GradSOE_Relocate_loop(delx, n, Del, A_order, disgraph, theta, scal, C, diffL
                             scal_lj = scal[lj]
                             scal_lk = scal[lk]
 
-                        x_i = (RS(theta_li, scal_li) @ delx[A_order[i, 0], :].transpose()).transpose() + C[li, :]
-                        x_j = (RS(theta_lj, scal_lj) @ delx[A_order[i, j], :].transpose()).transpose() + C[lj, :]
-                        x_k = (RS(theta_lk, scal_lk) @ delx[A_order[i, k], :].transpose()).transpose() + C[lk, :]
+                        x_i = (RS(theta_li, scal_li) @
+                               delx[A_order[i, 0], :].transpose()).transpose() + C[li, :]
+                        x_j = (RS(theta_lj, scal_lj) @
+                               delx[A_order[i, j], :].transpose()).transpose() + C[lj, :]
+                        x_k = (RS(theta_lk, scal_lk) @
+                               delx[A_order[i, k], :].transpose()).transpose() + C[lk, :]
 
                         gradXi = 2 * (disgraph[A_order[i, 0], A_order[i, j]] - disgraph[
                             A_order[i, 0], A_order[i, k]] + Del) * ((x_i - x_j) / d_ij - (x_i - x_k) / d_ik)
@@ -179,18 +194,18 @@ def GradSOE_Relocate_loop(delx, n, Del, A_order, disgraph, theta, scal, C, diffL
                             A_order[i, 0], A_order[i, k]] + Del) * ((x_i - x_k) / d_ik)
 
                         gradT[li, 0] = gradT[li, 0] + gradXi @ gradRS(theta_li, scal_li) @ delx[A_order[i, 0],
-                                                                                           :].transpose()
+                                                                                                :].transpose()
                         gradT[lj, 0] = gradT[lj, 0] + gradXj @ gradRS(theta_li, scal_lj) @ delx[A_order[i, j],
-                                                                                           :].transpose()
+                                                                                                :].transpose()
                         gradT[lk, 0] = gradT[lk, 0] + gradXk @ gradRS(theta_lk, scal_lk) @ delx[A_order[i, k],
-                                                                                           :].transpose()
+                                                                                                :].transpose()
 
                         gradT[li, 1] = gradT[li, 1] + gradXi @ Rtheta(theta_li) @ delx[A_order[i, 0],
-                                                                                  :].transpose()
+                                                                                       :].transpose()
                         gradT[lj, 1] = gradT[lj, 1] + gradXj @ Rtheta(theta_lj) @ delx[A_order[i, j],
-                                                                                  :].transpose()
+                                                                                       :].transpose()
                         gradT[lk, 1] = gradT[lk, 1] + gradXk @ Rtheta(theta_lk) @ delx[A_order[i, k],
-                                                                                  :].transpose()
+                                                                                       :].transpose()
     return gradT
 
 
@@ -214,7 +229,8 @@ def ErrSOE_loop(n, Del, A_order, disgraph):
     for i in range(0, n):
         for j in range(1, n - 1):
             for k in range(j + 1, n):
-                temp = disgraph[A_order[i, 0], A_order[i, j]] + Del - disgraph[A_order[i, 0], A_order[i, k]]
+                temp = disgraph[A_order[i, 0], A_order[i, j]] + \
+                    Del - disgraph[A_order[i, 0], A_order[i, k]]
                 if temp > 0:
                     E = E + temp * temp
     return E
@@ -247,14 +263,14 @@ def GradSOE_loop(x0, n, Del, A_order, disgraph):
                     x_j = x0[A_order[i, j], :]
                     x_k = x0[A_order[i, k], :]
                     gradX[A_order[i, 0], :] = gradX[A_order[i, 0], :] + 2 * (
-                            disgraph[A_order[i, 0], A_order[i, j]] -
-                            disgraph[A_order[i, 0], A_order[i, k]] + Del) * ((x_i - x_j) / d_ij - (x_i - x_k) / d_ik)
+                        disgraph[A_order[i, 0], A_order[i, j]] -
+                        disgraph[A_order[i, 0], A_order[i, k]] + Del) * ((x_i - x_j) / d_ij - (x_i - x_k) / d_ik)
                     gradX[A_order[i, j], :] = gradX[A_order[i, j], :] - 2 * (
-                            disgraph[A_order[i, 0], A_order[i, j]] -
-                            disgraph[A_order[i, 0], A_order[i, k]] + Del) * ((x_i - x_j) / d_ij)
+                        disgraph[A_order[i, 0], A_order[i, j]] -
+                        disgraph[A_order[i, 0], A_order[i, k]] + Del) * ((x_i - x_j) / d_ij)
                     gradX[A_order[i, k], :] = gradX[A_order[i, k], :] + 2 * (
-                            disgraph[A_order[i, 0], A_order[i, j]] -
-                            disgraph[A_order[i, 0], A_order[i, k]] + Del) * ((x_i - x_k) / d_ik)
+                        disgraph[A_order[i, 0], A_order[i, j]] -
+                        disgraph[A_order[i, 0], A_order[i, k]] + Del) * ((x_i - x_k) / d_ik)
     return gradX
 
 
@@ -269,7 +285,8 @@ def ErrSOE_triplet_loop(n, Del, A_order, disgraph):
     E = 0
     for i in range(0, n):
         temp_order = A_order[i, :]
-        temp = disgraph[temp_order[i, 0], temp_order[i, 1]] + Del - disgraph[temp_order[i, 0], temp_order[i, 2]]
+        temp = disgraph[temp_order[i, 0], temp_order[i, 1]] + \
+            Del - disgraph[temp_order[i, 0], temp_order[i, 2]]
         if temp > 0:
             E = E + temp * temp
     return E
@@ -301,14 +318,12 @@ def GradSOE_triplet_loop(x0, n, Del, A_order, disgraph):
             x_j = x0[temp_order[i, 1], :]
             x_k = x0[temp_order[i, 2], :]
             gradX[temp_order[i, 0], :] = gradX[temp_order[i, 0], :] + 2 * (
-                    disgraph[temp_order[i, 0], temp_order[i, 1]] -
-                    disgraph[temp_order[i, 0], temp_order[i, 2]] + Del) * ((x_i - x_j) / d_ij - (x_i - x_k) / d_ik)
+                disgraph[temp_order[i, 0], temp_order[i, 1]] -
+                disgraph[temp_order[i, 0], temp_order[i, 2]] + Del) * ((x_i - x_j) / d_ij - (x_i - x_k) / d_ik)
             gradX[temp_order[i, 1], :] = gradX[temp_order[i, 1], :] - 2 * (
-                    disgraph[temp_order[i, 0], temp_order[i, 1]] -
-                    disgraph[temp_order[i, 0], temp_order[i, 2]] + Del) * ((x_i - x_j) / d_ij)
+                disgraph[temp_order[i, 0], temp_order[i, 1]] -
+                disgraph[temp_order[i, 0], temp_order[i, 2]] + Del) * ((x_i - x_j) / d_ij)
             gradX[temp_order[i, 2], :] = gradX[temp_order[i, 2], :] + 2 * (
-                    disgraph[temp_order[i, 0], temp_order[i, 1]] -
-                    disgraph[temp_order[i, 0], temp_order[i, 2]] + Del) * ((x_i - x_k) / d_ik)
+                disgraph[temp_order[i, 0], temp_order[i, 1]] -
+                disgraph[temp_order[i, 0], temp_order[i, 2]] + Del) * ((x_i - x_k) / d_ik)
     return gradX
-
-

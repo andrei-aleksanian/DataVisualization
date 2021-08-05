@@ -1,3 +1,5 @@
+# pylint: disable-all
+
 import numpy as np
 from sklearn.metrics import pairwise_distances
 
@@ -57,7 +59,8 @@ def LAE(Data, Anchor, cn):
         dif = Data - np.dot(Anchor, v)
         gv = np.dot(dif.transpose(), dif) / 2
         gv = np.squeeze(gv, axis=0)
-        dgv = np.dot(np.dot(Anchor.transpose(), Anchor), v) - np.dot(Anchor.transpose(), Data)
+        dgv = np.dot(np.dot(Anchor.transpose(), Anchor), v) - \
+            np.dot(Anchor.transpose(), Data)
         for j in range(100):
             b = pow(2, j) * beta[:, t]
             z = SimplexPr(v - dgv / b)
@@ -65,7 +68,8 @@ def LAE(Data, Anchor, cn):
             gz = np.dot(dif.transpose(), dif) / 2
             gz = np.squeeze(gz, axis=0)
             dif = z - v
-            gvz = gv + np.dot(dgv.transpose(), dif) + np.dot(np.dot(b, dif.transpose()), dif) / 2
+            gvz = gv + np.dot(dgv.transpose(), dif) + \
+                np.dot(np.dot(b, dif.transpose()), dif) / 2
             if gz <= gvz:
                 beta[:, t + 1] = b
                 z0 = z1

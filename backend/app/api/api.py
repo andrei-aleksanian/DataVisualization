@@ -4,7 +4,8 @@ My API file used for early development.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ..angel.ANGEL import angel
+from ..visualization.ANGEL import angel
+from ..visualization.COVA import cova
 
 from ..types.data import DataOut
 
@@ -29,6 +30,20 @@ app.add_middleware(
 
 # COVA endpoints
 
+
+@app.get("/cova-demo",
+         tags=["COVA"],
+         summary="COVA Demo",
+         response_model=DataOut)
+async def cova_demo():
+    """
+    Demo endpoint with static output that runs the COVA algorithm.
+    Used for early development
+    """
+    # future note:
+    # check if result has 0s as the last column if user asked for 2d output
+
+    return cova()
 
 # ANGEL endoints
 
