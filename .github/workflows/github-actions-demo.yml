@@ -51,4 +51,4 @@ jobs:
           find . -type f -name "*.py" | xargs pipenv run pylint
 
       - name: Test backend
-        run: pipenv run pylint
+        run: pipenv run pytest
