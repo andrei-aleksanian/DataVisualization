@@ -2,11 +2,14 @@
 . "$(dirname "$0")/_/husky.sh"
 
 # Backend pre-commit hook
-echo "\n-- BACKEND HOOK -----------\n"
+echo "\n-- ⏳ BACKEND HOOK -----------\n"
 cd backend && pre-commit
+echo "\n-- 🎊 BACKEND PASSED"
 
 # Frontend precommit hook
-echo "\n-- FRONTEND HOOK -----------\n"
+echo "\n-- ⏳ FRONTEND HOOK ----------\n"
 cd ../frontend
 npm run lint
 npm run lint:style
+echo "\n-- 🎊 FRONTEND PASSED"
+echo "\n-- 🚀🚀🚀 COMMITING..."
