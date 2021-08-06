@@ -4,11 +4,9 @@
 # Backend pre-commit hook
 echo "\n-- BACKEND HOOK -----------\n"
 cd backend && pre-commit
-pipenv run pytest
 
 # Frontend precommit hook
 echo "\n-- FRONTEND HOOK -----------\n"
 cd ../frontend
 npm run lint
 npm run lint:style
-npm run test:CI
