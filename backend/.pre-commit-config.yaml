@@ -18,8 +18,3 @@ repos:
       - id: pylint
         language: system
         files: \.py$
-        args:
-          - --disable=E0401 # imports errors becasue of pipenv
-          - --disable=E0611 # imports errors becasue of pipenv
-          - --disable=W0311 # 2 spaces instead of 4 (personal preference)
-          - --disable=R0903 # Too few public methods - for fastAPI it's normal

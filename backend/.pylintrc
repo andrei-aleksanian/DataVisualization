@@ -1,0 +1,6 @@
+[MASTER]
+disable=E0401, E0611, W0311, R0903
+# E0401 imports errors becasue of pipenv
+# E0611 imports errors becasue of pipenv
+# W0311 2 spaces instead of 4 (personal preference)
+# R0903 Too few public methods - for fastAPI it's normal
