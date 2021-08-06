@@ -4,6 +4,7 @@
 # Backend pre-commit hook
 echo "\n-- BACKEND HOOK -----------\n"
 cd backend && pre-commit
+pipenv run pytest
 
 # Frontend precommit hook
 echo "\n-- FRONTEND HOOK -----------\n"
