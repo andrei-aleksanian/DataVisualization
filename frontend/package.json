@@ -51,17 +51,17 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:CI": "CI=true react-scripts test --passWithNoTests",
-    "lint": "npx eslint './src/**/*.{ts,tsx}' --fix",
+    "lint": "npx eslint '**/*.{ts,tsx}' --fix",
     "lint:style": "npx stylelint '**/*.scss' --fix",
     "lint:prettier": "npx prettier --write .",
     "eject": "react-scripts eject",
-    "prepare": "cd .. && husky install"
+    "prepare": "cd .. && husky install",
+    "lint:staged": "npx lint-staged"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "lint-staged": {
+    "**/*.{ts,tsx}": "npm run lint",
+    "**/*.scss": "npm run lint:style",
+    "*": "npm run lint:prettier"
   },
   "browserslist": {
     "production": [

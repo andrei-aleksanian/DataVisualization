@@ -22,6 +22,7 @@ jobs:
         run: |
           npm run lint
           npm run lint:style
+          npm run lint:prettier
 
       - name: Test frontend
         run: npm run test:CI

@@ -8,8 +8,7 @@ echo "\n-- 🎊 BACKEND PASSED"
 
 # Frontend precommit hook
 echo "\n-- ⏳ FRONTEND HOOK ----------\n"
-cd ../frontend
-npm run lint
-npm run lint:style
+cd ../frontend && npm run lint:staged
 echo "\n-- 🎊 FRONTEND PASSED"
+
 echo "\n-- 🚀🚀🚀 COMMITING..."

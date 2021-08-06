@@ -59,11 +59,16 @@ The frontend is in React. Some auto generated docs are [here](frontend/README.md
 
 To contribute to the project, you will need to pass git commit hooks:
 
-`git commit` will trigger a sequence of linters checking
-the quality of your code as well as tests being run.
+`git commit` will trigger a sequence of linters checking the quality of your code.
 
 Only after everything passes and there
 is no problems can you make a commit.
+
+_Warning: make sure you have lint-staged installed._
+_To install, run: `npx mrm@2` and `npx lint-staged`_
+
+_Warning: make sure you have husky installed._
+_To install, run: `npx run prepare`_
 
 ## Pipenv
 
