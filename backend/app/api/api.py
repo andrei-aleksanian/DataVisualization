@@ -17,7 +17,10 @@ origins = [
     # needed for development proxy (React runs at
     # 3000)
     'http://localhost:3000',
-    'localhost:3000'
+    'localhost:3000',
+    # temporary development ip
+    '142.93.37.232',
+    'http://142.93.37.232'
 ]
 
 app.add_middleware(

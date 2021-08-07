@@ -1,16 +1,16 @@
-version: '3.9'
+version: "3.9"
 
 services:
   backend:
     build: ./backend
     ports:
-      - '8080:8080'
+      - "8080:8080"
     volumes:
       - ./backend:/backend
 
-  frontend-nginx:
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
     ports:
-      - '80:80'
+      - "80:80"
