@@ -39,13 +39,23 @@ You are done!
 
 ## Production environment
 
-To run the code in a production environment, install Docker and run:
+Running the code in a production environment:
 
-`docker-compose -f docker-compose.prod.yml up -d --build`
+1. SSH into your VM. Install docker and copy the `docker-compose.prod.yml`
+2. Run `docker-compose -f docker-compose.prod.yml up -d`
+3. You are done! That simple.
 
-After you are done, make sure to run:
+The images get built in GitHub Actions and pushed to Docker Hub.
+So, there is no need to build them on your VM, just pull them from docker hub!
 
-`docker-compose -f docker-compose.prod.yml stop`
+### Cleaning up jobs
+
+Sometimes your VM won't have much memory. To release unused containers run:
+
+1. `docker system prune`
+2. Type "yes" into the console.
+
+If this didn't fix it and your containers keep crushing, try a bigger VM.
 
 ## Backend
 
@@ -56,6 +66,9 @@ The backend is done with [fastAPI](https://fastapi.tiangolo.com/). A lightweight
 The frontend is in React. Some auto generated docs are [here](frontend/README.md).
 
 ## Contributing to the project
+
+We follow [Trunk based development](https://trunkbaseddevelopment.com/).
+This means all merge requests need to be merged with `trunk` branch first and then into master.
 
 To contribute to the project, you will need to pass git commit hooks:
 
