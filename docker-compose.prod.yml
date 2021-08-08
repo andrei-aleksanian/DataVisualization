@@ -1,16 +1,21 @@
 version: "3.9"
 
 services:
+  watchtower:
+    restart: unless-stopped
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30
+
   backend:
-    build: ./backend
+    restart: unless-stopped
+    image: andreialeksanian/data-visualization-tool-backend
     ports:
       - "8080:8080"
-    volumes:
-      - ./backend:/backend
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
+    restart: unless-stopped
+    image: andreialeksanian/data-visualization-tool-frontend
     ports:
       - "80:80"

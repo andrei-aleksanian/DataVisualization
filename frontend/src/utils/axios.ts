@@ -1,7 +1,16 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 
-const instance = axios.create({
-  baseURL: 'http://localhost:8080',
-});
+const getInstance = (): AxiosInstance => {
+  let baseURL = window.location.origin;
+  // localhost:3000 is for development only
+  // potential todo: change this to an env variable
+  if (window.location.origin === 'http://localhost:3000') {
+    baseURL = 'http://localhost:8080';
+  }
 
-export default instance;
+  return axios.create({
+    baseURL: `${baseURL}/api`,
+  });
+};
+
+export default getInstance();

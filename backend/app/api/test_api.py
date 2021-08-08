@@ -7,5 +7,5 @@ client = TestClient(app)
 
 
 def test_read_main():
-    response = client.get("/cova-demo")
+    response = client.get("/api/cova-demo")
     assert response.status_code == 200

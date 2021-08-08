@@ -6,21 +6,17 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ..visualization.ANGEL import angel
 from ..visualization.COVA import cova
+# from ..visualization.COVAPoints import covaPoint
 
 from ..types.data import DataOut
 
 app = FastAPI()
 # CORS from medium
 origins = [
-    'http://localhost',
-    'localhost',
-    # needed for development proxy (React runs at
-    # 3000)
-    'http://localhost:3000',
+    '0.0.0.0',
+    # Dev environment - todo: introduce env variables to take these out in production
     'localhost:3000',
-    # temporary development ip
-    '142.93.37.232',
-    'http://142.93.37.232'
+    'http://localhost:3000'
 ]
 
 app.add_middleware(
@@ -34,7 +30,7 @@ app.add_middleware(
 # COVA endpoints
 
 
-@app.get("/cova-demo",
+@app.get("/api/cova-demo",
          tags=["COVA"],
          summary="COVA Demo",
          response_model=DataOut)
@@ -48,10 +44,29 @@ async def cova_demo():
 
     return cova()
 
-# ANGEL endoints
+
+# @app.get("/api/cova-demo-points",
+#          tags=["COVA"],
+#          summary="COVA Demo Points",
+#          )
+# async def cova_demo_points():
+#     """
+#     Demo endpoint with static output that runs the COVA algorithm.
+#     Used for early development
+#     """
+#     # future note:
+#     # check if result has 0s as the last column if user asked for 2d output
+
+#     a, b = covaPoint()
+#     print(b)
+#     print("--------")
+#     print(a)
+#     return {"data": b}
+
+# # ANGEL endoints
 
 
-@app.get("/angel-demo",
+@app.get("/api/angel-demo",
          tags=["ANGEL"],
          summary="ANGEL Demo",
          response_model=DataOut)
