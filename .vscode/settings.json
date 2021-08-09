@@ -2,9 +2,18 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "[python]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
+  },
   "python.formatting.autopep8Args": ["--indent-size=2"], // My personal preference
   "eslint.validate": [
     "javascript"
   ],
-  "typescript.tsdk": "./frontend/node_modules/typescript/lib"
+  "typescript.tsdk": "./frontend/node_modules/typescript/lib",
+  "files.exclude": {
+    "**/__init__.py": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true
+  }
 }

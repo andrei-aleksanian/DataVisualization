@@ -6,10 +6,8 @@ from scipy.spatial.distance import pdist, cdist, squareform
 from scipy.optimize import minimize
 # from sklearn.neighbors import NearestNeighbors
 from sklearn import preprocessing
-from sklearn.cluster import KMeans
 
-# from FunctionFile import CohortDistance
-from .SOEmbedding import SOE
+# from FunctionFile import AdjacencyMatrix
 from sklearn.metrics import pairwise_distances
 from scipy.spatial.distance import directed_hausdorff
 from pymanopt.manifolds import FixedRankEmbedded
@@ -18,8 +16,9 @@ from pymanopt import Problem
 from pymanopt.solvers import ConjugateGradient
 import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
-
-from ..types.data import DataOut
+from .SOEmbeddingPoints import SOE
+from .ANGEL import AnchorPointGeneration, AnchorEmbedding
+from sklearn.cluster import KMeans
 
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
@@ -71,10 +70,10 @@ def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
     return dCluster
 
 
-def PrototypeEmbedding(Dc, DataLabel, Embedding='SOE'):
+def PrototypeEmbedding(Dc, DataLabel, dim=2, Embedding='SOE'):
     linkage_order = np.argsort(Dc, axis=-1)
     if Embedding == 'SOE':
-        V = SOE(linkage_order.astype(int), DataLabel)
+        V = SOE(linkage_order.astype(int), DataLabel, dim=dim)
     elif Embedding == 'MDS':
         embedding = MDS(n_components=2, dissimilarity='precomputed')
         V = embedding.fit_transform(Dc)
@@ -102,10 +101,10 @@ def k_nearest_neighbor(disgraph, k=10, weight=1, direction=0):
         dis_sort = disgraph[i, :]
         dis_ascend = np.argsort(dis_sort)
         if weight == 1:
-            simgraph[i, dis_ascend[2: k + 1]
-                     ] = abs(dis_sort[dis_ascend[2: k + 1]])
+            simgraph[i, dis_ascend[1: k + 1]
+                     ] = abs(dis_sort[dis_ascend[1: k + 1]])
         else:
-            simgraph[i, dis_ascend[2: k + 1]] = 1
+            simgraph[i, dis_ascend[1: k + 1]] = 1
     if direction == 0:
         for i in range(l):
             for j in range(l):
@@ -269,15 +268,15 @@ def GradGlobalSE(x, Ad, opttype='GD_Euclidean'):
     return gd
 
 
-def reformX(x):
-    n = int(x.shape[0] / 2)
-    x0 = np.reshape(x, (n, 2))
+def reformX(x, dim):
+    n = int(x.shape[0] / dim)
+    x0 = np.reshape(x, (n, dim))
     return x0
 
 
-def cost1(x, R, Ad, V, alpha, COVAtype='cova1', opttype='GD_Euclidean'):
+def cost1(x, R, Ad, V, alpha, dim, COVAtype='cova1', opttype='GD_Euclidean'):
     if opttype == 'GD_Euclidean':
-        x = reformX(x)
+        x = reformX(x, dim)
     if COVAtype == 'cova1':
         o1 = OjLocalDist(x, R, V, opttype)
         o3 = OjGlobalDist(x, Ad, opttype)
@@ -297,10 +296,10 @@ def cost1(x, R, Ad, V, alpha, COVAtype='cova1', opttype='GD_Euclidean'):
     return o
 
 
-def grad1(x, R, Ad, V, alpha, COVAtype='cova1', opttype='GD_Euclidean'):
+def grad1(x, R, Ad, V, alpha, dim, COVAtype='cova1', opttype='GD_Euclidean'):
     l = len(x)
     if opttype == 'GD_Euclidean':
-        x = reformX(x)
+        x = reformX(x, dim)
     if COVAtype == 'cova1':
         g1 = GradLocalDist(x, R, V, opttype)
         g3 = GradGlobalDist(x, Ad, opttype)
@@ -342,14 +341,15 @@ def COVAembedding(Data, R, Ad, V, Init=0, dim=2, alpha=0.5, COVAType='cova1', op
             l = Data.shape[0]
             if Init == 0:
                 Init = np.random.random_sample((l, dim))
-            additional = (R, Ad, V, alpha, COVAType, opttype)
+            additional = (R, Ad, V, alpha, dim, COVAType, opttype)
             x = minimize(cost1, Init, method='BFGS', args=additional, jac=grad1,
                          options={'disp': True, 'maxiter': 50})
             x = np.reshape(x.x, (l, dim))
         elif opttype == 'GD_Riemannian':
             l = Data.shape[0]
             manifold = FixedRankEmbedded(l, dim, dim)
-            cost, egrad = CreateCostGrad(R, Ad, V, alpha, COVAType, opttype)
+            cost, egrad = CreateCostGrad(
+                R, Ad, V, alpha, dim, COVAType, opttype)
             prob = Problem(manifold, cost=cost, egrad=egrad)
             solver = ConjugateGradient()
             x0 = solver.solve(prob)
@@ -360,45 +360,90 @@ def COVAembedding(Data, R, Ad, V, Init=0, dim=2, alpha=0.5, COVAType='cova1', op
     return x
 
 
-def CreateCostGrad(R, Ad, V, alpha, COVAType, opttype='GD_Riemannian'):
+def CreateCostGrad(R, Ad, V, alpha, dim, COVAType, opttype='GD_Riemannian'):
     def cost(x):
-        return cost1(x, R, Ad, V, alpha, COVAType, opttype)
+        return cost1(x, R, Ad, V, alpha, dim, COVAType, opttype)
 
     def egrad(x):
-        return grad1(x, R, Ad, V, alpha, COVAType, opttype)
+        return grad1(x, R, Ad, V, alpha, dim, COVAType, opttype)
 
     return cost, egrad
 
 
-def cova() -> DataOut:
-    fullData = loadmat('./app/visualization/Data/OneFlower.mat')
-    # scaler = preprocessing.MinMaxScaler()
-    # x = csr_matrix(fullData.get('newsdata')).toarray()
-    # scaler.fit(np.array(fullData.get('g')))
-    # g = scaler.transform(np.array(fullData.get('g')))
-    # label = np.array(fullData.get('label'))
+def SeparateCohort(data, label, sparsity=0.1):
+    [l, D] = data.shape
+    diffLabel = np.unique(label)
+    num_label = len(diffLabel)
+    prototype = np.empty([0, D])
+    protolabel = np.empty([0, 1])
+    clabel = np.zeros([l, 1])
+    count = 0
+    for i in range(num_label):
+        num_point = len(np.where(label == diffLabel[i])[0])
+        numOfAnchor_temp = np.floor(num_point * sparsity)
+        while numOfAnchor_temp <= 3:
+            numOfAnchor_temp = numOfAnchor_temp * 2
+        numOfAnchor_temp = int(numOfAnchor_temp)
+        gtemp = data[np.squeeze(label == diffLabel[i]), :]
+        temp_Index = KMeans(n_clusters=numOfAnchor_temp, n_init=5).fit(gtemp)
+        Anchortemp = temp_Index.cluster_centers_
+        AnchorLabeltemp = diffLabel[i] * np.ones([numOfAnchor_temp, 1])
+        prototype = np.concatenate((prototype, Anchortemp), axis=0)
+        protolabel = np.concatenate((protolabel, AnchorLabeltemp), axis=0)
+        clabel[np.squeeze(label == diffLabel[i]),
+               0] = temp_Index.labels_ + count
+        count = count + numOfAnchor_temp
 
-    # My code for sampling
+    return prototype, protolabel, clabel
+
+
+def covaPoint():
+    fullData = loadmat('./app/visualization/Data/cylinder_top.mat')
     SAMPLE_SIZE = 200
-    g = np.array(fullData.get('g'))[:SAMPLE_SIZE, :]
-    label = np.array(fullData.get('label'))[:SAMPLE_SIZE, :]
-    # My code finished
 
-    Dc = CohortDistance(g, label)
-    V = PrototypeEmbedding(Dc, label, Embedding='MDS')
-    # plt.scatter(V[:, 0], V[:, 1])
+    scaler = preprocessing.MinMaxScaler()
+    scaler.fit(np.array(fullData.get('x')[:SAMPLE_SIZE, :]))
+    g = scaler.transform(np.array(fullData.get('x'))[:SAMPLE_SIZE, :])
+    label = np.array(fullData.get('label'))[:SAMPLE_SIZE, :].transpose()
+    # fig = plt.figure()
+    # ax = fig.add_subplot(projection='3d')
+    # ax.scatter(g[:, 0], g[:, 1], g[:, 2], c=label)
+    # plt.show()
+
+    prototypes, protolabel, clabel = SeparateCohort(g, label, sparsity=0.1)
+    A = squareform(pdist(prototypes, 'euclidean'))
+    A_order = np.argsort(A, axis=1).astype(int)
+    V = SOE(A_order.astype(int), protolabel, dim=3)
+    scaler.fit(V)
+    V = scaler.transform(V)
+    # # Dc = CohortDistance(g, r_label)
+    # V = PrototypeEmbedding(A_order, protolabel, dim=3, Embedding='SOE')
+
+    # fig = plt.figure()
+    # ax = fig.add_subplot(projection='3d')
+    # ax.scatter(V[:, 1], V[:, 2], V[:, 0], c=protolabel)
     # plt.show()
 
     Ad = AdjacencyMatrix(g, 10)
-    temp_order = np.squeeze(np.argsort(label, axis=0))
-    W1 = Ad[temp_order, :]
-    W2 = W1[:, temp_order]
+    # temp_order = np.squeeze(np.argsort(label, axis=0))
+    # W_show = Ad[temp_order, :]
+    # W_show = W_show[:, temp_order]
+    # imagesc.plot(W_show, extent=[0, 1000, 0, 1000])
 
-    Relation = CohortConfidence(g, label, 0)
-    R_show = Relation[temp_order, :]
+    # temp_order = np.squeeze(np.argsort(label, axis=0))
+
+    Relation = CohortConfidence(g, clabel, 0)
+    # R_show = Relation[temp_order,:]
+    # imagesc.plot(R_show, extent=[0, 1000, 0, 1000])
 
     # Cost, Result = analyticalCOVA(Relation, Ad, V, 0.9)
-    result = COVAembedding(g, Relation, Ad, V, Init=0, dim=2,
-                           alpha=0.1, COVAType='cova1', opttype='GD_Riemannian')
+    Result = COVAembedding(g, Relation, Ad, V, Init=0, dim=3,
+                           alpha=0.5, COVAType='cova1', opttype='GD_Euclidean')
+    # x = Result
+    # plt.scatter(x[:, 0], x[:, 1])
+    # plt.show()
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label)
 
-    return result, label
+    return Result, label

@@ -6,7 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ..visualization.ANGEL import angel
 from ..visualization.COVA import cova
-# from ..visualization.COVAPoints import covaPoint
+from ..visualization.COVAPoints import covaPoint
+from .utils.data import to_json
 
 from ..types.data import DataOut
 
@@ -42,29 +43,27 @@ async def cova_demo():
     # future note:
     # check if result has 0s as the last column if user asked for 2d output
 
-    return cova()
+    result, label = cova()
+    return to_json(result, label)
 
 
-# @app.get("/api/cova-demo-points",
-#          tags=["COVA"],
-#          summary="COVA Demo Points",
-#          )
-# async def cova_demo_points():
-#     """
-#     Demo endpoint with static output that runs the COVA algorithm.
-#     Used for early development
-#     """
-#     # future note:
-#     # check if result has 0s as the last column if user asked for 2d output
+@app.get("/api/cova-demo-points",
+         tags=["COVA"],
+         summary="COVA Demo Points",
+         )
+async def cova_demo_points():
+    """
+    Demo endpoint with static output that runs the COVA algorithm.
+    Used for early development
+    """
+    # future note:
+    # check if result has 0s as the last column if user asked for 2d output
 
-#     a, b = covaPoint()
-#     print(b)
-#     print("--------")
-#     print(a)
-#     return {"data": b}
+    result, label = covaPoint()
+    return to_json(result, label)
 
-# # ANGEL endoints
 
+# ANGEL endoints
 
 @app.get("/api/angel-demo",
          tags=["ANGEL"],
@@ -78,4 +77,5 @@ async def angel_demo():
     # future note:
     # check if result has 0s as the last column if user asked for 2d output
 
-    return angel()
+    result, label = angel()
+    return to_json(result, label)

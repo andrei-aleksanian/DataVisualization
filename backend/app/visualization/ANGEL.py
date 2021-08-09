@@ -322,8 +322,7 @@ def ANGEL_embedding(
 # Main function
 
 
-def angel() -> DataOut:
-
+def angel():
     fullData = loadmat('./app/visualization/Data/OneFlower.mat')
     scaler = preprocessing.MinMaxScaler()
     # x = csr_matrix(fullData.get('newsdata')).toarray()
@@ -347,7 +346,7 @@ def angel() -> DataOut:
         zeros = b = np.zeros((result.shape[0], 1))
         result = np.hstack((result, zeros))
 
-    return {"points": result.tolist(), "labels": label.ravel().tolist()}
+    return result, label
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 
