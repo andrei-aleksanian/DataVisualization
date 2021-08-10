@@ -19,8 +19,6 @@ from pymanopt.solvers import ConjugateGradient
 import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
 
-from ..types.data import DataOut
-
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
     """
@@ -370,7 +368,7 @@ def CreateCostGrad(R, Ad, V, alpha, COVAType, opttype='GD_Riemannian'):
     return cost, egrad
 
 
-def cova() -> DataOut:
+def cova():
     fullData = loadmat('./app/visualization/Data/OneFlower.mat')
     # scaler = preprocessing.MinMaxScaler()
     # x = csr_matrix(fullData.get('newsdata')).toarray()

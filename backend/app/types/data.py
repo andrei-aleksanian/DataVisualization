@@ -19,7 +19,7 @@ class DataIn(BaseModel):
     # M x N matrix of floats e.g. features of your
     # ML data
     data: List[List[float]]
-    dimension3D: bool = False
+    dimension2D: bool = False
 
 
 class DataOut(BaseModel):
@@ -28,3 +28,13 @@ class DataOut(BaseModel):
     """
     points: Points
     labels: List[int]
+    dimension2D: bool
+
+
+class DataOutPerseverance(DataOut):
+    """
+    Data model to be used in demo 2 perseverance
+    """
+    prevPartsave: List[int]
+    prevWrongInLow: List[List[int]]
+    prevWrongInHigh: List[List[int]]

@@ -4,12 +4,12 @@ My API file used for early development.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ..visualization.ANGEL import angel
-from ..visualization.COVA import cova
-from ..visualization.COVAPoints import covaPoint
-from .utils.data import to_json
+from ..visualization.demo1.ANGEL import angel
+from ..visualization.demo1.COVA import cova
+from ..visualization.demo2.COVA import covaPoint
+from .utils.data import toJSON, childrenToList
 
-from ..types.data import DataOut
+from ..types.data import DataOut, DataOutPerseverance
 
 app = FastAPI()
 # CORS from medium
@@ -35,7 +35,7 @@ app.add_middleware(
          tags=["COVA"],
          summary="COVA Demo",
          response_model=DataOut)
-async def cova_demo():
+async def covaDemo():
     """
     Demo endpoint with static output that runs the COVA algorithm.
     Used for early development
@@ -44,14 +44,15 @@ async def cova_demo():
     # check if result has 0s as the last column if user asked for 2d output
 
     result, label = cova()
-    return to_json(result, label)
+    return toJSON(result, label)
 
 
 @app.get("/api/cova-demo-points",
          tags=["COVA"],
          summary="COVA Demo Points",
+         response_model=DataOutPerseverance
          )
-async def cova_demo_points():
+async def covaDemoPerseverance():
     """
     Demo endpoint with static output that runs the COVA algorithm.
     Used for early development
@@ -59,17 +60,26 @@ async def cova_demo_points():
     # future note:
     # check if result has 0s as the last column if user asked for 2d output
 
-    result, label = covaPoint()
-    return to_json(result, label)
+    result, label, prevWrongInHigh, prevWrongInLow, prevPartsave = covaPoint()
+    data = toJSON(result, label)
 
+    return {
+        "points": data["points"],
+        "labels": data["labels"],
+        "dimension2D": data["dimension2D"],
+        "prevPartsave": prevPartsave,
+        "prevWrongInLow": childrenToList(prevWrongInLow),
+        "prevWrongInHigh": childrenToList(prevWrongInHigh)
+    }
 
 # ANGEL endoints
 
-@app.get("/api/angel-demo",
-         tags=["ANGEL"],
-         summary="ANGEL Demo",
-         response_model=DataOut)
-async def angel_demo():
+
+@ app.get("/api/angel-demo",
+          tags=["ANGEL"],
+          summary="ANGEL Demo",
+          response_model=DataOut)
+async def angelDemo():
     """
     Demo endpoint with static output that runs the ANGEL algorithm.
     Used for early development
@@ -78,4 +88,4 @@ async def angel_demo():
     # check if result has 0s as the last column if user asked for 2d output
 
     result, label = angel()
-    return to_json(result, label)
+    return toJSON(result, label)

@@ -16,9 +16,10 @@ from pymanopt import Problem
 from pymanopt.solvers import ConjugateGradient
 import matplotlib.pyplot as plt
 from sklearn.manifold import MDS
-from .SOEmbeddingPoints import SOE
+from .SOEmbedding import SOE
 from .ANGEL import AnchorPointGeneration, AnchorEmbedding
 from sklearn.cluster import KMeans
+from .evaluation import neighbor_prev_disturb
 
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
@@ -399,12 +400,11 @@ def SeparateCohort(data, label, sparsity=0.1):
 
 def covaPoint():
     fullData = loadmat('./app/visualization/Data/cylinder_top.mat')
-    SAMPLE_SIZE = 200
 
     scaler = preprocessing.MinMaxScaler()
-    scaler.fit(np.array(fullData.get('x')[:SAMPLE_SIZE, :]))
-    g = scaler.transform(np.array(fullData.get('x'))[:SAMPLE_SIZE, :])
-    label = np.array(fullData.get('label'))[:SAMPLE_SIZE, :].transpose()
+    scaler.fit(np.array(fullData.get('x')))
+    g = scaler.transform(np.array(fullData.get('x')))
+    label = np.array(fullData.get('label')).transpose()
     # fig = plt.figure()
     # ax = fig.add_subplot(projection='3d')
     # ax.scatter(g[:, 0], g[:, 1], g[:, 2], c=label)
@@ -446,4 +446,7 @@ def covaPoint():
     ax = fig.add_subplot(projection='3d')
     ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label)
 
-    return Result, label
+    prev_score, neighbor_low, neighbor_high, prev_keep_high, prev_wrong_in_high, prev_wrong_in_low, prev_partsave = neighbor_prev_disturb(
+        g, Result, label, 10)
+
+    return Result, label, prev_wrong_in_high, prev_wrong_in_low, prev_partsave
