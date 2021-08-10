@@ -1,4 +1,4 @@
-import { Data2DColored, Data3DColored } from '../../types/Data';
+import { DataColored } from '../../types/Data/Data';
 import { Point2D, Point3D } from './points';
 
 export interface PointProps {
@@ -9,7 +9,7 @@ export interface PointProps {
 }
 
 export interface SceneProps {
-  data: Data2DColored | Data3DColored;
+  data: DataColored;
   dimension2D: boolean;
 }
 

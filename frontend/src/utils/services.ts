@@ -1,9 +1,10 @@
 import axios from './axios';
-import { DATA, Data2D } from '../types/Data';
+import { DATA, DataLabelled } from '../types/Data';
+import { DataPerseverance, DATA_PERSEVERANCE } from '../types/Data/DataPerseverance';
 
 export const getAngelDemo = async () => {
   try {
-    const { data }: { data: Data2D } = await axios.get('/angel-demo');
+    const { data }: { data: DataLabelled } = await axios.get('/angel-demo');
     return data;
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -15,7 +16,7 @@ export const getAngelDemo = async () => {
 
 export const getCovaDemo = async () => {
   try {
-    const { data }: { data: Data2D } = await axios.get('/cova-demo');
+    const { data }: { data: DataLabelled } = await axios.get('/cova-demo');
     return data;
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -27,12 +28,12 @@ export const getCovaDemo = async () => {
 
 export const getCovaDemo2 = async () => {
   try {
-    const { data }: { data: Data2D } = await axios.get('/cova-demo-perseverance');
+    const { data }: { data: DataPerseverance } = await axios.get('/cova-demo-perseverance');
     return data;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
     // todo: return error and handle it
-    return DATA;
+    return DATA_PERSEVERANCE;
   }
 };

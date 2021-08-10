@@ -16,5 +16,6 @@
     "**/__pycache__": true,
     "**/.pytest_cache": true
   },
-  "python.linting.pylintEnabled": true
+  "python.linting.pylintEnabled": true,
+  "editor.tabSize": 2
 }
