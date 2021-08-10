@@ -15,5 +15,6 @@
     "**/__init__.py": true,
     "**/__pycache__": true,
     "**/.pytest_cache": true
-  }
+  },
+  "python.linting.pylintEnabled": true
 }

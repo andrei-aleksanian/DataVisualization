@@ -5,7 +5,7 @@ import Settings from './Settings';
 
 import { Algorithm, defaultSettings } from './types/Settings';
 import { Data2DColored, Points2D } from './types/Data';
-import { getAngelDemo, getCovaDemo } from './utils/services';
+import { getAngelDemo, getCovaDemo, getCovaDemo2 } from './utils/services';
 import getColors from './utils/getColors';
 
 import classes from './App.module.scss';
@@ -20,18 +20,16 @@ const App = () => {
     let newData;
     if (settings.algorithm === Algorithm.ANGEL) {
       newData = await getAngelDemo();
-    } else {
+    } else if (settings.algorithm === Algorithm.COVA) {
       newData = await getCovaDemo();
+    } else {
+      newData = await getCovaDemo2();
     }
-
-    newData = {
-      labels: newData.labels,
-      points: newData.points.map((p) => p.map((p2) => p2 * 50) as Points2D),
-    };
 
     const dataColored: Data2DColored = {
       colors: getColors(newData.labels),
-      points: newData.points,
+      points: newData.points.map((p) => p.map((p2) => p2 * 50) as Points2D),
+      dimension2D: newData.dimension2D,
     };
     setData(dataColored);
   };

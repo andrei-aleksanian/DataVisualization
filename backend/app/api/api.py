@@ -47,9 +47,9 @@ async def covaDemo():
     return toJSON(result, label)
 
 
-@app.get("/api/cova-demo-points",
+@app.get("/api/cova-demo-perseverance",
          tags=["COVA"],
-         summary="COVA Demo Points",
+         summary="COVA Demo Perseverance",
          response_model=DataOutPerseverance
          )
 async def covaDemoPerseverance():

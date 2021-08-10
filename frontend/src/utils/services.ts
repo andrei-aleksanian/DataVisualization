@@ -24,3 +24,15 @@ export const getCovaDemo = async () => {
     return DATA;
   }
 };
+
+export const getCovaDemo2 = async () => {
+  try {
+    const { data }: { data: Data2D } = await axios.get('/cova-demo-perseverance');
+    return data;
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+    // todo: return error and handle it
+    return DATA;
+  }
+};

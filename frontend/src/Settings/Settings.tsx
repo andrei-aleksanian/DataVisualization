@@ -40,6 +40,14 @@ const Settings = ({ setSettigns, runAlgorithm, currentAlgorithm }: SettingsProps
         />
       </div>
       <Button
+        text="COVA3D"
+        onClick={(e) => {
+          onClick(e, Algorithm.COVA_PESEVERANCE);
+        }}
+        active={currentAlgorithm === Algorithm.COVA_PESEVERANCE}
+        center
+      />
+      <Button
         text="Run the demo!"
         onClick={(e) => runAlgorithm(e)}
         customClass={classes.LongButton}

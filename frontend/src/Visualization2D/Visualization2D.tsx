@@ -10,7 +10,7 @@ const Visualization2D = ({ data }: { data: Data2DColored }) => {
   return (
     <Canvas camera={{ position: [0, 0, 100] }}>
       <Controls />
-      <Scene data={data} />
+      <Scene data={data} dimension2D={data.dimension2D} />
     </Canvas>
   );
 };
