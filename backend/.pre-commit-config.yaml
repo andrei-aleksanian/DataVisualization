@@ -11,12 +11,17 @@ repos:
     rev: v1.5.7
     hooks:
       - id: autopep8
-        max_line_length: 100
-        in-place: true
-        recursive: true
-        indent-size: 2
-        aggressive: 3
-        exclude: "Pipfile*"
+        args:
+          [
+            "--max-line-length=100",
+            "-i",
+            "-r",
+            "--indent-size=2",
+            "--aggressive",
+            "--aggressive",
+            "--aggressive",
+            "--exclude=Pipfile*",
+          ]
 
   - repo: https://github.com/pycqa/pylint
     rev: v2.9.5

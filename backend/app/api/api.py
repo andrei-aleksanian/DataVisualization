@@ -29,6 +29,7 @@ app.add_middleware(
 )
 
 MAX_ITERATIONS = 40
+ITERATIONS_PER_REQUEST = 2
 
 # COVA endpoints
 
@@ -38,15 +39,15 @@ MAX_ITERATIONS = 40
          summary="COVA Demo",
          response_model=DataCore)
 async def covaDemo():
-    """
-    Demo endpoint with static output that runs the COVA algorithm.
-    Used for early development
-    """
-    # future note:
-    # check if result has 0s as the last column if user asked for 2d output
+  """
+  Demo endpoint with static output that runs the COVA algorithm.
+  Used for early development
+  """
+  # future note:
+  # check if result has 0s as the last column if user asked for 2d output
 
-    result, label = cova()
-    return toJSON(result, label)
+  result, label = cova()
+  return toJSON(result, label)
 
 
 @app.get("/api/cova-demo-dynamic",
@@ -55,25 +56,25 @@ async def covaDemo():
          response_model=DataDynamic
          )
 async def covaDemoDynamicInit():
-    """
-    Demo endpoint with static output that runs the COVA algorithm.
-    Used for early development
-    """
+  """
+  Demo endpoint with static output that runs the COVA algorithm.
+  Used for early development
+  """
 
-    initData = initCOVA()
+  initData = initCOVA()
 
-    # init empty perseverance data
-    initData["prevPartsave"] = []
-    initData["prevWrongInHigh"] = [[]]
-    initData["prevWrongInLow"] = [[]]
+  dataDynamic = DataDynamic(**{
+      **initData.dict(),
+      # init empty perseverance data
+      "prevPartsave": [],
+      "prevWrongInHigh": [[]],
+      "prevWrongInLow": [[]],
+      # init maxiterations and iteration = 0 by default
+      "maxIteration": MAX_ITERATIONS,
+      "iteration": 0
+  })
 
-    # init maxiterations and iteration = 0 by default
-    initData["maxIteration"] = MAX_ITERATIONS
-
-    dataDynamic = DataDynamic(**initData)
-    dataDynamic.iteration += 1
-
-    return dataDynamic
+  return dataDynamic
 
 
 @app.post("/api/cova-demo-dynamic",
@@ -82,17 +83,17 @@ async def covaDemoDynamicInit():
           response_model=DataDynamic
           )
 async def covaDemoDynamic(data: DataDynamic):
-    """
-    Demo endpoint with static output that runs the COVA algorithm.
-    Used for early development
-    """
-    # future note:
-    # check if result has 0s as the last column if user asked for 2d output
+  """
+  Demo endpoint with static output that runs the COVA algorithm.
+  Used for early development
+  """
+  # future note:
+  # check if result has 0s as the last column if user asked for 2d output
 
-    dataNew = dynamicCOVA(data)
-    dataNew.iteration += 1
+  dataNew = dynamicCOVA(data, ITERATIONS_PER_REQUEST)
+  dataNew.iteration += 1
 
-    return dataNew
+  return dataNew
 
 # ANGEL endoints
 
@@ -102,12 +103,12 @@ async def covaDemoDynamic(data: DataDynamic):
          summary="ANGEL Demo",
          response_model=DataCore)
 async def angelDemo():
-    """
-    Demo endpoint with static output that runs the ANGEL algorithm.
-    Used for early development
-    """
-    # future note:
-    # check if result has 0s as the last column if user asked for 2d output
+  """
+  Demo endpoint with static output that runs the ANGEL algorithm.
+  Used for early development
+  """
+  # future note:
+  # check if result has 0s as the last column if user asked for 2d output
 
-    result, label = angel()
-    return toJSON(result, label)
+  result, label = angel()
+  return toJSON(result, label)
