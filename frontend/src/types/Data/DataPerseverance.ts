@@ -12,14 +12,21 @@ export interface DataPerseveranceCore extends DataCore {
   Data with labels.
   Used for getting colors and transforming into Colored data later.
 */
-export interface DataPerseverance extends DataLabelled, DataPerseveranceCore {}
+export interface DataPerseveranceLabelled extends DataLabelled, DataPerseveranceCore {}
 
-export interface DataPerseveranceColored extends DataPerseveranceCore {
+export interface DataPerseveranceColored extends DataPerseveranceLabelled {
   colors: string[];
 }
 
 // dummy example data
-export const DATA_PERSEVERANCE: DataPerseverance = {
+export const DATA_PERSEVERANCE: DataPerseveranceLabelled = {
+  dimension2D: true,
+  prevPartsave: [],
+  prevWrongInHigh: [[]],
+  prevWrongInLow: [[]],
+  iteration: 0,
+  maxIteration: 0,
+  // todo: double check
   points: [
     [0, 0, 0],
     [0, 1, 0],
@@ -30,9 +37,9 @@ export const DATA_PERSEVERANCE: DataPerseverance = {
     [-3, 4, 0],
     [-3, 1, 0],
   ],
+  g: [[]],
   labels: [1, 1, 1, 0, 0, 0, 3, 3],
-  dimension2D: true,
-  prevPartsave: [],
-  prevWrongInHigh: [[]],
-  prevWrongInLow: [[]],
+  Relation: [[]],
+  Ad: [[]],
+  V: [[]],
 };

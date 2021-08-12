@@ -2,12 +2,10 @@
 Data modification functions to convert data from
 COVA and ANGEL into an API-friendly format. (e.g. JSON)
 """
-from typing import List, NewType
 import numpy as np
-from ...types.data import DataOut
 
 
-def toJSON(result, labels) -> DataOut:
+def toJSON(result, labels):
     """
     Convert result and label data to JSON friendly.
 
@@ -19,32 +17,14 @@ def toJSON(result, labels) -> DataOut:
         result = np.hstack((result, zeros))
         dimension2D = True
 
+    if labels is None:
+        return {
+            "points": result.tolist(),
+            "dimension2D": dimension2D
+        }
+
     return {
         "points": result.tolist(),
         "labels": labels.ravel().tolist(),
         "dimension2D": dimension2D
     }
-
-
-def toList(numpyArray) -> List:
-    """
-    Converting np.ndarray to list.
-    If np.int64 is passed, [np.int64] is returned.
-    """
-    if isinstance(numpyArray, np.int64):
-        return [numpyArray]
-
-    return numpyArray.tolist()
-
-
-ListPerservance = NewType('ListPerservance', List[np.ndarray or np.int64])
-
-
-def childrenToList(listOfLists: ListPerservance) -> List[List]:
-    """
-    Converting list[np.ndarray] to list[list].
-    """
-    for i, innerList in enumerate(listOfLists):
-        listOfLists[i] = toList(innerList)
-
-    return listOfLists

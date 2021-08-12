@@ -17,5 +17,8 @@
     "**/.pytest_cache": true
   },
   "python.linting.pylintEnabled": true,
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "python.linting.pylintArgs": [
+    "--rcfile=./backend/.pylintrc"
+]
 }

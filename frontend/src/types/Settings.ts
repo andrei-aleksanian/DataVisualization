@@ -1,7 +1,7 @@
 export enum Algorithm {
   COVA,
   ANGEL,
-  COVA_PESEVERANCE,
+  COVA_PERSEVERANCE,
 }
 
 export interface SettingsInterface {

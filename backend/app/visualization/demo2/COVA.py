@@ -21,6 +21,9 @@ from .ANGEL import AnchorPointGeneration, AnchorEmbedding
 from sklearn.cluster import KMeans
 from .evaluation import neighbor_prev_disturb
 
+from ...types.data import DataDynamic, DataFormatted, DataNumpy
+from .utils import formatDataIn, formatDataOut, childrenToList
+
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
     """
@@ -332,7 +335,7 @@ def grad1(x, R, Ad, V, alpha, dim, COVAtype='cova1', opttype='GD_Euclidean'):
     return gd
 
 
-def COVAembedding(Data, R, Ad, V, Init=0, dim=2, alpha=0.5, COVAType='cova1', opttype='GD_Euclidean'):
+def COVAembedding(Data, R, Ad, V, iterations, Init=0, dim=2, alpha=0.5, COVAType='cova1', opttype='GD_Euclidean'):
     if COVAType == 'AnalyticalCOVA1':
         o, x = analyticalCOVA(R, Ad, V, alpha)
     else:
@@ -340,11 +343,14 @@ def COVAembedding(Data, R, Ad, V, Init=0, dim=2, alpha=0.5, COVAType='cova1', op
             o, x = analyticalCOVA(R, Ad, V, alpha)
         elif opttype == 'GD_Euclidean':
             l = Data.shape[0]
-            if Init == 0:
+            if type(Init) == int:
                 Init = np.random.random_sample((l, dim))
+            elif type(Init) != np.ndarray and type(Init) != int:
+                print("init error")
+                return 0
             additional = (R, Ad, V, alpha, dim, COVAType, opttype)
             x = minimize(cost1, Init, method='BFGS', args=additional, jac=grad1,
-                         options={'disp': True, 'maxiter': 50})
+                         options={'disp': True, 'maxiter': iterations})
             x = np.reshape(x.x, (l, dim))
         elif opttype == 'GD_Riemannian':
             l = Data.shape[0]
@@ -398,17 +404,20 @@ def SeparateCohort(data, label, sparsity=0.1):
     return prototype, protolabel, clabel
 
 
-def covaPoint():
+def getPerseverance(g, Result, label):
+    prev_score, neighbor_low, neighbor_high, prev_keep_high, prev_wrong_in_high, prev_wrong_in_low, prev_partsave = neighbor_prev_disturb(
+        g, Result, label, 10)
+
+    return prev_wrong_in_high, prev_wrong_in_low, prev_partsave
+
+
+def initCOVA() -> DataFormatted:
     fullData = loadmat('./app/visualization/Data/cylinder_top.mat')
 
     scaler = preprocessing.MinMaxScaler()
     scaler.fit(np.array(fullData.get('x')))
     g = scaler.transform(np.array(fullData.get('x')))
     label = np.array(fullData.get('label')).transpose()
-    # fig = plt.figure()
-    # ax = fig.add_subplot(projection='3d')
-    # ax.scatter(g[:, 0], g[:, 1], g[:, 2], c=label)
-    # plt.show()
 
     prototypes, protolabel, clabel = SeparateCohort(g, label, sparsity=0.1)
     A = squareform(pdist(prototypes, 'euclidean'))
@@ -416,37 +425,39 @@ def covaPoint():
     V = SOE(A_order.astype(int), protolabel, dim=3)
     scaler.fit(V)
     V = scaler.transform(V)
-    # # Dc = CohortDistance(g, r_label)
-    # V = PrototypeEmbedding(A_order, protolabel, dim=3, Embedding='SOE')
-
-    # fig = plt.figure()
-    # ax = fig.add_subplot(projection='3d')
-    # ax.scatter(V[:, 1], V[:, 2], V[:, 0], c=protolabel)
-    # plt.show()
 
     Ad = AdjacencyMatrix(g, 10)
-    # temp_order = np.squeeze(np.argsort(label, axis=0))
-    # W_show = Ad[temp_order, :]
-    # W_show = W_show[:, temp_order]
-    # imagesc.plot(W_show, extent=[0, 1000, 0, 1000])
-
-    # temp_order = np.squeeze(np.argsort(label, axis=0))
 
     Relation = CohortConfidence(g, clabel, 0)
-    # R_show = Relation[temp_order,:]
-    # imagesc.plot(R_show, extent=[0, 1000, 0, 1000])
 
-    # Cost, Result = analyticalCOVA(Relation, Ad, V, 0.9)
-    Result = COVAembedding(g, Relation, Ad, V, Init=0, dim=3,
+    Result = COVAembedding(g, Relation, Ad, V, 0, Init=0, dim=3,
                            alpha=0.5, COVAType='cova1', opttype='GD_Euclidean')
-    # x = Result
-    # plt.scatter(x[:, 0], x[:, 1])
-    # plt.show()
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label)
 
-    prev_score, neighbor_low, neighbor_high, prev_keep_high, prev_wrong_in_high, prev_wrong_in_low, prev_partsave = neighbor_prev_disturb(
-        g, Result, label, 10)
+    # formatting the data to be api friendly
+    initData = DataNumpy(**{
+        "g": g,
+        "Relation": Relation,
+        "Ad": Ad,
+        "V": V,
+        "labels": label,
+        "points": Result})
+    return formatDataOut(initData)
 
-    return Result, label, prev_wrong_in_high, prev_wrong_in_low, prev_partsave
+
+def dynamicCOVA(previousData: DataDynamic):
+    Init, g, label, Relation, Ad, V = formatDataIn(previousData)
+
+    Result = COVAembedding(g, Relation, Ad, V, 2, Init=Init, dim=3,
+                           alpha=0.5, COVAType='cova1', opttype='GD_Euclidean')
+
+    previousData.points = Result.tolist()
+
+    # only run on the last iteration
+    if previousData.iteration + 1 == previousData.maxIteration:
+        prev_wrong_in_high, prev_wrong_in_low, prev_partsave = getPerseverance(
+            g, Result, label)
+        previousData.prevWrongInHigh = childrenToList(prev_wrong_in_high)
+        previousData.prevWrongInLow = childrenToList(prev_wrong_in_low)
+        previousData.prevPartsave = prev_partsave
+
+    return previousData

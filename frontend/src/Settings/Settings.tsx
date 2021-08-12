@@ -42,9 +42,9 @@ const Settings = ({ setSettigns, runAlgorithm, currentAlgorithm }: SettingsProps
       <Button
         text="COVA3D"
         onClick={(e) => {
-          onClick(e, Algorithm.COVA_PESEVERANCE);
+          onClick(e, Algorithm.COVA_PERSEVERANCE);
         }}
-        active={currentAlgorithm === Algorithm.COVA_PESEVERANCE}
+        active={currentAlgorithm === Algorithm.COVA_PERSEVERANCE}
         center
       />
       <Button

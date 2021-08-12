@@ -6,10 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from ..visualization.demo1.ANGEL import angel
 from ..visualization.demo1.COVA import cova
-from ..visualization.demo2.COVA import covaPoint
-from .utils.data import toJSON, childrenToList
+from ..visualization.demo2.COVA import dynamicCOVA, initCOVA
+from .utils.data import toJSON
 
-from ..types.data import DataOut, DataOutPerseverance
+from ..types.data import DataCore, DataDynamic
 
 app = FastAPI()
 # CORS from medium
@@ -28,13 +28,15 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+MAX_ITERATIONS = 40
+
 # COVA endpoints
 
 
 @app.get("/api/cova-demo",
          tags=["COVA"],
          summary="COVA Demo",
-         response_model=DataOut)
+         response_model=DataCore)
 async def covaDemo():
     """
     Demo endpoint with static output that runs the COVA algorithm.
@@ -47,12 +49,39 @@ async def covaDemo():
     return toJSON(result, label)
 
 
-@app.get("/api/cova-demo-perseverance",
+@app.get("/api/cova-demo-dynamic",
          tags=["COVA"],
-         summary="COVA Demo Perseverance",
-         response_model=DataOutPerseverance
+         summary="COVA Demo Dynamic Init",
+         response_model=DataDynamic
          )
-async def covaDemoPerseverance():
+async def covaDemoDynamicInit():
+    """
+    Demo endpoint with static output that runs the COVA algorithm.
+    Used for early development
+    """
+
+    initData = initCOVA()
+
+    # init empty perseverance data
+    initData["prevPartsave"] = []
+    initData["prevWrongInHigh"] = [[]]
+    initData["prevWrongInLow"] = [[]]
+
+    # init maxiterations and iteration = 0 by default
+    initData["maxIteration"] = MAX_ITERATIONS
+
+    dataDynamic = DataDynamic(**initData)
+    dataDynamic.iteration += 1
+
+    return dataDynamic
+
+
+@app.post("/api/cova-demo-dynamic",
+          tags=["COVA"],
+          summary="COVA Demo Perseverance",
+          response_model=DataDynamic
+          )
+async def covaDemoDynamic(data: DataDynamic):
     """
     Demo endpoint with static output that runs the COVA algorithm.
     Used for early development
@@ -60,25 +89,18 @@ async def covaDemoPerseverance():
     # future note:
     # check if result has 0s as the last column if user asked for 2d output
 
-    result, label, prevWrongInHigh, prevWrongInLow, prevPartsave = covaPoint()
-    data = toJSON(result, label)
+    dataNew = dynamicCOVA(data)
+    dataNew.iteration += 1
 
-    return {
-        "points": data["points"],
-        "labels": data["labels"],
-        "dimension2D": data["dimension2D"],
-        "prevPartsave": prevPartsave,
-        "prevWrongInLow": childrenToList(prevWrongInLow),
-        "prevWrongInHigh": childrenToList(prevWrongInHigh)
-    }
+    return dataNew
 
 # ANGEL endoints
 
 
-@ app.get("/api/angel-demo",
-          tags=["ANGEL"],
-          summary="ANGEL Demo",
-          response_model=DataOut)
+@app.get("/api/angel-demo",
+         tags=["ANGEL"],
+         summary="ANGEL Demo",
+         response_model=DataCore)
 async def angelDemo():
     """
     Demo endpoint with static output that runs the ANGEL algorithm.
