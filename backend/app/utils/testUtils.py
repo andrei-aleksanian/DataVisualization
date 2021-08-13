@@ -5,7 +5,7 @@ formatDataIn is ignored as typing makes it unnecessary to check type conversions
 """
 from typing import List
 import numpy as np
-from utils import childrenToList, toList, formatDataOut, ListPerseverance, NumpyInput
+from data import childrenToList, toList, formatDataOut, ListPerseverance, NumpyInput
 from app.types.data import DataNumpy
 
 
