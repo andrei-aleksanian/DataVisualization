@@ -3,6 +3,9 @@ export type Point3D = [number, number, number];
 export type Points = Point2D[] | Point3D[];
 
 // Data common properties
+
+export interface HyperParameters {}
+
 export interface DataCore {
   dimension2D: boolean;
   iteration: number;
@@ -13,6 +16,7 @@ export interface DataCore {
   Ad: number[][];
   V: number[][];
   points: Points;
+  alpha: number;
 }
 
 // Data IN, with labels and without colors:
@@ -37,6 +41,7 @@ export const DATA: DataLabelled = {
   Relation: [[]],
   Ad: [[]],
   V: [[]],
+  alpha: 0.5,
   iteration: 0,
   maxIteration: 0,
 };

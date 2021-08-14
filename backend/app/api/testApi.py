@@ -53,3 +53,5 @@ def testCovaDemoDynamic422Full():
   """
   response = client.post("/api/cova-demo-dynamic", json={})
   assert response.status_code == 422
+
+# Test returns perseverance data on last iteration

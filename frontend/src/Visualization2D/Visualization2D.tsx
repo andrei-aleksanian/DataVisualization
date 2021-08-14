@@ -4,9 +4,9 @@ import Controls from './Controls';
 import Scene from './Scene';
 
 import classes from './Visualization2D.module.scss';
-import { DataColored } from '../types/Data/Data';
+import { DataPerseveranceColored } from '../types/Data/DataPerseverance';
 
-const Visualization2D = ({ data }: { data: DataColored }) => {
+const Visualization2D = ({ data }: { data: DataPerseveranceColored }) => {
   return (
     <Canvas camera={{ position: [0, 0, 100] }}>
       <Controls />
@@ -15,7 +15,7 @@ const Visualization2D = ({ data }: { data: DataColored }) => {
   );
 };
 
-const Wrapper = ({ data }: { data: DataColored }) => (
+const Wrapper = ({ data }: { data: DataPerseveranceColored }) => (
   <div className={classes.Canvas}>
     <Visualization2D data={data} />
   </div>

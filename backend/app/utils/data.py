@@ -14,6 +14,7 @@ def formatDataIn(previousData: DataDynamic) -> DataNumpy:
   """
 
   return DataNumpy(**{
+      "alpha": previousData.alpha,
       "points": np.array(previousData.points),
       "g": np.array(previousData.g),
       "labels": np.array([previousData.labels]),
@@ -36,13 +37,14 @@ def formatDataOut(initData: DataNumpy) -> DataFormatted:
     dimension2D = True
 
   return DataFormatted(**{
+      **initData,
       "g": initData["g"].tolist(),
       "Relation": initData["Relation"].tolist(),
       "Ad": initData["Ad"].tolist(),
       "V": initData["V"].tolist(),
       "labels": initData["labels"].ravel().tolist(),
       "points": initData["points"].tolist(),
-      "dimension2D": dimension2D
+      "dimension2D": dimension2D,
   })
 
 

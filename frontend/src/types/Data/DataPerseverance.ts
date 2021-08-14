@@ -42,4 +42,5 @@ export const DATA_PERSEVERANCE: DataPerseveranceLabelled = {
   Relation: [[]],
   Ad: [[]],
   V: [[]],
+  alpha: 0.5,
 };

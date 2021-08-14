@@ -28,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-MAX_ITERATIONS = 40
+MAX_ITERATIONS = 8
 ITERATIONS_PER_REQUEST = 2
 
 # COVA endpoints

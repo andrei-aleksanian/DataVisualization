@@ -20,6 +20,7 @@ class DataNumpy(TypedDict):
   g: ndarray
   Relation: ndarray
   Ad: ndarray
+  alpha: int
   V: ndarray
   labels: ndarray
   points: ndarray
@@ -43,6 +44,7 @@ class DataFormatted(DataCore):
   Relation: List
   Ad: List
   V: List
+  alpha: float
 
 
 class DataDynamic(DataFormatted):

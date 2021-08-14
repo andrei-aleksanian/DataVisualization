@@ -23,24 +23,8 @@ const Settings = ({ setSettigns, runAlgorithm, currentAlgorithm }: SettingsProps
   return (
     <div className={classes.Settings}>
       <h1 className={classes.Heading}>{H1_TEXT}</h1>
-      <div className={classes.ButtonsBox}>
-        <Button
-          text="COVA"
-          onClick={(e) => {
-            onClick(e, Algorithm.COVA);
-          }}
-          active={currentAlgorithm === Algorithm.COVA}
-        />
-        <Button
-          text="ANGEL"
-          onClick={(e) => {
-            onClick(e, Algorithm.ANGEL);
-          }}
-          active={currentAlgorithm === Algorithm.ANGEL}
-        />
-      </div>
       <Button
-        text="COVA3D"
+        text="COVA Dynamic"
         onClick={(e) => {
           onClick(e, Algorithm.COVA_PERSEVERANCE);
         }}

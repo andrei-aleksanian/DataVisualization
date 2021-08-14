@@ -449,13 +449,16 @@ def initCOVA() -> DataFormatted:
                          alpha=0.5, COVAType='cova1', opttype='GD_Euclidean')
 
   # formatting the data to be api friendly
-  initData = DataNumpy(**{
+  initData = DataNumpy({
       "g": g,
       "Relation": Relation,
       "Ad": Ad,
       "V": V,
       "labels": label,
-      "points": Result})
+      "points": Result,
+      "alpha": 0.5
+  })
+
   return formatDataOut(initData)
 
 
@@ -479,16 +482,16 @@ def dynamicCOVA(previousData: DataDynamic, iterationsPerRequest: int):
       iterationsPerRequest,
       Init=data["points"],
       dim=3,
-      alpha=0.5,
+      alpha=data["alpha"],
       COVAType='cova1',
       opttype='GD_Euclidean')
 
   previousData.points = Result.tolist()
 
-  # only run on the last iteration
+  # only run after the last iteration
   if previousData.iteration + 1 == previousData.maxIteration:
     prev_wrong_in_high, prev_wrong_in_low, prev_partsave = getPerseverance(
-        data.g, Result, data.labels)
+        data["g"], Result, data["labels"])
     previousData.prevWrongInHigh = childrenToList(prev_wrong_in_high)
     previousData.prevWrongInLow = childrenToList(prev_wrong_in_low)
     previousData.prevPartsave = prev_partsave

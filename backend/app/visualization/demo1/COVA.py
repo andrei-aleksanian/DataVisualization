@@ -412,9 +412,9 @@ def cova():
 
 
 """
-Relation: 395 | range: 0to1 float  DISPLAY
-alpha: 399 | range 0to1 float DISPLAY
-Ad: 390 | range > 1 int DISPLAY
+Relation: 395 | range: 0to1 float  DISPLAY tick
+alpha: 399 | range 0to1 float DISPLAY tick
+Ad: 390 | range > 1 int DISPLAY tick
 Embedding 386 | 3-4 choices
 COVAType 400 | 5 choices
 opttype 400 | 3 choices
