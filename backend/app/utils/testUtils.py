@@ -9,22 +9,31 @@ from data import childrenToList, toList, formatDataOut, ListPerseverance, NumpyI
 from app.types.data import DataNumpy
 
 
-def testFormatDataOut3D():
+def getInputData(points):
   """
-  Check the function counts the 3D dimensions correctly,
+  Auxilary function that produces dummy data
   """
   npArray = np.array([0])
   labels = np.array([[0]])
-  points = np.array([[0, 0, 0]])
 
-  inputData = DataNumpy(**{
+  return DataNumpy(**{
       "points": points,
       "g": npArray,
       "labels": labels,
       "Relation": npArray,
       "Ad": npArray,
-      "V": npArray
+      "V": npArray,
+      "alpha": 0
   })
+
+
+def testFormatDataOut3D():
+  """
+  Check the function counts the 3D dimensions correctly,
+  """
+
+  points = np.array([[0, 0, 0]])
+  inputData = getInputData(points)
 
   data = formatDataOut(inputData)
 
@@ -36,18 +45,9 @@ def testFormatDataOut2D():
   Check the function counts the 2D dimensions correctly,
   adds 0 column
   """
-  npArray = np.array([0])
-  labels = np.array([[0]])
-  points = np.array([[0, 0]])
 
-  inputData = DataNumpy(**{
-      "points": points,
-      "g": npArray,
-      "labels": labels,
-      "Relation": npArray,
-      "Ad": npArray,
-      "V": npArray
-  })
+  points = np.array([[0, 0]])
+  inputData = getInputData(points)
 
   data = formatDataOut(inputData)
 
