@@ -18,12 +18,11 @@ const App = () => {
   const runAlgorithm = async (event: React.MouseEvent) => {
     const updateData = (newData: DataPerseveranceLabelled) => {
       setData((prev) => {
-        if (prev === null) console.log(newData);
         let colors = prev === null ? getColors(newData.labels) : prev.colors;
         colors = colorPartsave(newData.prevPartsave, colors);
         return {
           ...newData,
-          points: newData.points.map((p) => p.map((p2) => p2 * 50) as Point2D | Point3D),
+          points: newData.points.map((p) => p.map((p2) => p2 * 100) as Point2D | Point3D),
           colors,
         };
       });

@@ -45,6 +45,7 @@ export const getCovaDemo2 = async (iteration: number, body: DataPerseveranceLabe
   } catch (e) {
     // eslint-disable-next-line no-console
     if (e.response !== undefined) console.log(e.response.data);
+    // eslint-disable-next-line no-console
     else console.log(e);
     // todo: return error and handle it
     return DATA_PERSEVERANCE;

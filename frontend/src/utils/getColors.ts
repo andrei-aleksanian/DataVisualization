@@ -1,7 +1,7 @@
 export const colorPartsave = (prevPartsave: number[], colors: string[]) => {
   const colorsPartsave = colors;
   for (let i = 0; i < prevPartsave.length; i += 1) {
-    colorsPartsave[i] = 'AE0700';
+    colorsPartsave[prevPartsave[i]] = 'AE0700';
   }
   return colorsPartsave;
 };
