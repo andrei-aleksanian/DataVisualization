@@ -1,0 +1,31 @@
+.index {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(12, 1fr);
+  width: 100vw;
+  height: 100vh;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(135deg, rgba(2, 0, 36, 1) 0%, rgba(80, 20, 52, 1) 85%);
+  color: var(--color-text);
+}
+
+.Container {
+  grid-column-start: 2;
+  grid-column-end: 9;
+  grid-row-start: 3;
+  grid-row-end: 8;
+}
+
+.Container * {
+  margin: 1.5rem;
+}
+
+.Container h1 {
+  font-size: 3.7rem;
+}
+
+.Container p {
+  font-size: 1.2rem;
+  line-height: 1.2em;
+  margin-bottom: 3rem;
+}

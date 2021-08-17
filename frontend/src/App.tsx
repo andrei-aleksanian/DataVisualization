@@ -1,53 +1,22 @@
-import { useState } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Home from './Home';
+import Examples from './Home/Examples';
+import Custom from './Home/Custom';
 
-import Visualization2D from './Visualization2D';
-import Settings from './Settings';
-
-import { Algorithm, defaultSettings } from './types/Settings';
-import { Point2D, Point3D } from './types/Data';
-import { DataPerseveranceLabelled, DataPerseveranceColored } from './types/Data/DataPerseverance';
-import { getCovaDemo2, getCovaDemo2Init } from './utils/services';
-import getColors, { colorPartsave } from './utils/getColors';
-
-import classes from './App.module.scss';
-
-const App = () => {
-  const [settings, setSettings] = useState(defaultSettings);
-  const [data, setData] = useState<DataPerseveranceColored | null>(null);
-
-  const runAlgorithm = async (event: React.MouseEvent) => {
-    const updateData = (newData: DataPerseveranceLabelled) => {
-      setData((prev) => {
-        let colors = prev === null ? getColors(newData.labels) : prev.colors;
-        colors = colorPartsave(newData.prevPartsave, colors);
-        return {
-          ...newData,
-          points: newData.points.map((p) => p.map((p2) => p2 * 100) as Point2D | Point3D),
-          colors,
-        };
-      });
-    };
-
-    event.preventDefault();
-
-    let newData;
-    if (settings.algorithm === Algorithm.COVA_PERSEVERANCE) {
-      newData = await getCovaDemo2Init();
-      updateData(newData);
-      while (newData.iteration < newData.maxIteration) {
-        /* eslint-disable no-await-in-loop */
-        newData = await getCovaDemo2(newData.iteration, newData);
-        await updateData(newData);
-      }
-    }
-  };
-
+export default function App() {
   return (
-    <div className={classes.App}>
-      <Settings setSettigns={setSettings} runAlgorithm={runAlgorithm} currentAlgorithm={settings.algorithm} />
-      {data && <Visualization2D data={data} />}
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/examples">
+          <Examples />
+        </Route>
+        <Route path="/your-data">
+          <Custom />
+        </Route>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Switch>
+    </Router>
   );
-};
-
-export default App;
+}

@@ -1,6 +1,6 @@
-import Button from '../Components/Forms/Button';
-
-import { Algorithm, SettingsInterface } from '../types/Settings';
+import Button from 'Components/Forms/Button';
+import { LinkBack } from 'Components/Link';
+import { Algorithm, SettingsInterface } from 'types/Settings';
 
 import classes from './Settings.module.scss';
 
@@ -22,6 +22,7 @@ const Settings = ({ setSettigns, runAlgorithm, currentAlgorithm }: SettingsProps
 
   return (
     <div className={classes.Settings}>
+      <LinkBack link="/" />
       <h1 className={classes.Heading}>{H1_TEXT}</h1>
       <Button
         text="COVA Dynamic"

@@ -1,0 +1,31 @@
+.index {
+  border: var(--color-button) solid 3px;
+  border-radius: 0.5rem;
+  background-color: var(--color-button);
+  color: var(--color-text);
+  transition: 0.3s all ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.Action {
+  font-size: 1.8rem;
+  padding: 0.5em 1em;
+  height: 2.2em;
+}
+
+.Back {
+  border-radius: 0 0 0.5rem 0;
+  padding: 0.5em 1em;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.Back img {
+  height: 15px;
+}
+
+:root {
+  --color-button: #f20574;
+}

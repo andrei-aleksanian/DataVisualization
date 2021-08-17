@@ -1,5 +1,5 @@
 import { Line } from '@react-three/drei';
-import { DataPerseveranceColored } from '../../types/Data/DataPerseverance';
+import { DataPerseveranceColored } from 'types/Data/DataPerseverance';
 import Point from './Point';
 import { getRadius, getId } from './utils';
 

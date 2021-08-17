@@ -1,10 +1,10 @@
 import { Canvas } from '@react-three/fiber';
 
+import { DataPerseveranceColored } from 'types/Data/DataPerseverance';
 import Controls from './Controls';
 import Scene from './Scene';
 
 import classes from './Visualization2D.module.scss';
-import { DataPerseveranceColored } from '../types/Data/DataPerseverance';
 
 const Visualization2D = ({ data }: { data: DataPerseveranceColored }) => {
   return (
