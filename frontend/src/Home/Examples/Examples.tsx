@@ -10,7 +10,7 @@ import Visualization2D from '../Visualization2D';
 
 import classes from './Examples.module.scss';
 
-const App = () => {
+const Examples = () => {
   const [settings, setSettings] = useState(defaultSettings);
   const [data, setData] = useState<DataPerseveranceColored | null>(null);
 
@@ -42,11 +42,11 @@ const App = () => {
   };
 
   return (
-    <div className={classes.App}>
+    <div className={classes.index}>
       <Settings setSettigns={setSettings} runAlgorithm={runAlgorithm} currentAlgorithm={settings.algorithm} />
       {data && <Visualization2D data={data} />}
     </div>
   );
 };
 
-export default App;
+export default Examples;

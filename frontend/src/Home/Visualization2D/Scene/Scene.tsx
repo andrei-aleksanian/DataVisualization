@@ -21,7 +21,7 @@ export default function Scene({
           x={p[0]}
           y={p[1]}
           z={p[2]}
-          color={`#${colors[i]}`}
+          color={colors[i]}
           // eslint-disable-next-line react/no-array-index-key
           key={getId()}
           radius={getRadius(prevPartsave.includes(i))}

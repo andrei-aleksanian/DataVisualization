@@ -1,18 +1,13 @@
 export const colorPartsave = (prevPartsave: number[], colors: string[]) => {
   const colorsPartsave = colors;
   for (let i = 0; i < prevPartsave.length; i += 1) {
-    colorsPartsave[prevPartsave[i]] = 'AE0700';
+    colorsPartsave[prevPartsave[i]] = '#AE0700';
   }
   return colorsPartsave;
 };
 
-const getRandomColor = (): string => {
-  const letters = '0123456789ABCDEF';
-  let color = '';
-  for (let i = 0; i < 6; i += 1) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+const getRandomColor = (colorNum: number, colorsTotal = 1): string => {
+  return `hsl(${(colorNum * (360 / colorsTotal)) % 360},100%,50%)`;
 };
 
 const findUniqueColors = (labels: number[]) => {
@@ -26,7 +21,7 @@ const findUniqueColors = (labels: number[]) => {
   const reducedLabels = Array.from(colorArr);
 
   for (let i = 0; i < reducedLabels.length; i += 1) {
-    const color = getRandomColor();
+    const color = getRandomColor(i, reducedLabels.length);
     colors.push(color);
   }
 
