@@ -8,7 +8,7 @@ export interface CheckBoxesProps {
 
 const CheckBoxes = ({ currentAlgorithm, onClickAlgorithm }: CheckBoxesProps) => (
   <div className={classes.index}>
-    <h3>Algorithm:</h3>
+    <p>Algorithm:</p>
     <div className={classes.CheckBoxes}>
       <label>
         <input

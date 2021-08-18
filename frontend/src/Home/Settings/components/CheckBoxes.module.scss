@@ -2,13 +2,18 @@
   margin: 1rem 0;
 }
 
+.index p {
+  font-size: 1.1rem;
+}
+
 .CheckBoxes {
   width: 100%;
-  margin: 1rem 0;
+  margin: 1rem 0 var(--margin-between-elements) 0;
 }
 
 .CheckBoxes label {
   position: relative;
+  cursor: pointer;
 }
 
 .CheckBoxes label:nth-child(2) {
@@ -25,7 +30,6 @@
 
 // Custom checkbox
 .checkmark {
-  cursor: pointer;
   position: absolute;
   top: 0;
   left: 0;
