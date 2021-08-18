@@ -1,20 +1,21 @@
 import { useState } from 'react';
 
-import { Algorithm, defaultSettings } from 'types/Settings';
+import { Algorithm } from 'types/Settings';
 import { Point2D, Point3D } from 'types/Data';
 import { DataPerseveranceLabelled, DataPerseveranceColored } from 'types/Data/DataPerseverance';
-import { getCovaDemo2, getCovaDemo2Init } from 'utils/services';
 import getColors, { colorPartsave } from 'utils/getColors';
+
+import { getCovaDemo2, getCovaDemo2Init } from './services';
+
 import Settings from '../Settings';
 import Visualization2D from '../Visualization2D';
 
 import classes from './Examples.module.scss';
 
 const Examples = () => {
-  const [settings, setSettings] = useState(defaultSettings);
   const [data, setData] = useState<DataPerseveranceColored | null>(null);
 
-  const runAlgorithm = async (event: React.MouseEvent) => {
+  const runAlgorithm = async (event: React.MouseEvent, algorithm: Algorithm) => {
     const updateData = (newData: DataPerseveranceLabelled) => {
       setData((prev) => {
         let colors = prev === null ? getColors(newData.labels) : prev.colors;
@@ -30,7 +31,7 @@ const Examples = () => {
     event.preventDefault();
 
     let newData;
-    if (settings.algorithm === Algorithm.COVA_PERSEVERANCE) {
+    if (algorithm === Algorithm.COVA) {
       newData = await getCovaDemo2Init();
       updateData(newData);
       while (newData.iteration < newData.maxIteration) {
@@ -38,12 +39,16 @@ const Examples = () => {
         newData = await getCovaDemo2(newData.iteration, newData);
         await updateData(newData);
       }
+    } else if (algorithm === Algorithm.ANGEL) {
+      // call angel endpoint init
+      // while loop call angel dynamic function
     }
   };
+  console.log(runAlgorithm);
 
   return (
     <div className={classes.index}>
-      <Settings setSettigns={setSettings} runAlgorithm={runAlgorithm} currentAlgorithm={settings.algorithm} />
+      <Settings />
       {data && <Visualization2D data={data} />}
     </div>
   );

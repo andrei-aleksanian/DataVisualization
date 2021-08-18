@@ -1,20 +1,11 @@
 .Settings {
   grid-area: settings;
-  padding: 5rem 1rem;
+  padding: 5rem 2rem;
   background-color: var(--color-background);
-}
-
-.Heading {
-  width: 100%;
-  text-align: center;
   color: var(--color-text);
 }
 
 .ButtonsBox {
   display: flex;
   justify-content: space-between;
-}
-
-.LongButton {
-  margin: 1rem 0 0 0;
 }

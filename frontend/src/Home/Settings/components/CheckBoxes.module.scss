@@ -1,0 +1,45 @@
+.index {
+  margin: 1rem 0;
+}
+
+.CheckBoxes {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.CheckBoxes label {
+  position: relative;
+}
+
+.CheckBoxes label:nth-child(2) {
+  margin: 0.5rem 2rem;
+}
+
+.CheckBoxes label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+// Custom checkbox
+.checkmark {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 15px;
+  width: 15px;
+  background-color: var(--color-text);
+  border: 1px solid var(--color-action);
+  border-radius: 3px;
+}
+
+.CheckBoxes label input:checked ~ .checkmark {
+  background-color: var(--color-action);
+}
+
+.text {
+  margin: 0 0 0 2rem;
+}

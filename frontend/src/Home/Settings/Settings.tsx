@@ -1,45 +1,26 @@
-import Button from 'Components/Forms/Button';
+// import { Formik, Form, useField } from 'formik';
+import { useState } from 'react';
 import { LinkBack } from 'Components/Link';
-import { Algorithm, SettingsInterface } from 'types/Settings';
+
+import { Algorithm, defaultSettings } from 'types/Settings';
+import CheckBoxes from './components/CheckBoxes';
 
 import classes from './Settings.module.scss';
 
-export const H1_TEXT = 'Demo Version';
+export const H1_TEXT = 'Example: Cylinder';
 
-export interface SettingsProps {
-  setSettigns: React.Dispatch<React.SetStateAction<SettingsInterface>>;
-  runAlgorithm: (e: React.MouseEvent) => Promise<void>;
-  currentAlgorithm: Algorithm;
-}
-
-const Settings = ({ setSettigns, runAlgorithm, currentAlgorithm }: SettingsProps) => {
-  const onClick = (event: React.MouseEvent, algorithm: Algorithm) => {
+const Settings = () => {
+  const [settings, setSettings] = useState(defaultSettings);
+  const onClickAlgorithm = (event: React.ChangeEvent, algorithm: Algorithm) => {
     event.preventDefault();
-    setSettigns(() => ({
-      algorithm,
-    }));
+    setSettings(() => ({ algorithm }));
   };
 
   return (
     <div className={classes.Settings}>
       <LinkBack link="/" />
-      <h1 className={classes.Heading}>{H1_TEXT}</h1>
-      <Button
-        text="COVA Dynamic"
-        onClick={(e) => {
-          onClick(e, Algorithm.COVA_PERSEVERANCE);
-        }}
-        active={currentAlgorithm === Algorithm.COVA_PERSEVERANCE}
-        center
-      />
-      <Button
-        text="Run the demo!"
-        onClick={(e) => runAlgorithm(e)}
-        customClass={classes.LongButton}
-        long
-        center
-        active={false}
-      />
+      <h1>{H1_TEXT}</h1>
+      <CheckBoxes key={settings.algorithm} currentAlgorithm={settings.algorithm} onClickAlgorithm={onClickAlgorithm} />
     </div>
   );
 };
