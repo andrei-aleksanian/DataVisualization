@@ -1,3 +1,10 @@
+/*
+Slider Component.
+
+All intended uses imply marks on the slider, but the slider is highly customizable.
+See rc-slider https://www.npmjs.com/package/rc-slider for more details.
+*/
+
 import SliderRC from 'rc-slider';
 import classes from './Slider.module.scss';
 import 'rc-slider/assets/index.css';

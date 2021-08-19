@@ -4,7 +4,7 @@ import { LinkBack } from 'Components/Link';
 import Slider from 'Components/Forms/Slider';
 
 import { Algorithm } from 'types/Settings';
-import CheckBoxes from './components/CheckBoxes';
+import CheckBoxes from 'Components/Forms/CheckBoxes';
 
 import classes from './Settings.module.scss';
 
@@ -13,6 +13,11 @@ export const H1_TEXT = 'Example: Cylinder';
 export enum C {
   ORIGINAL,
   PERCENTAGE,
+}
+
+export enum DataPreservation {
+  ON,
+  OFF,
 }
 
 interface SettingsCOVA {
@@ -31,11 +36,20 @@ export const defaultSettingsCOVA: SettingsCOVA = {
 
 const Settings = () => {
   const [algorithm, setAlgorithm] = useState(Algorithm.COVA);
-  // const [dataPreservation, setDataPreservation] = useState(false);
+  const [dataPreservation, setDataPreservation] = useState(DataPreservation.OFF);
   const [settingsCOVA, setSettingsCOVA] = useState(defaultSettingsCOVA);
-  const onClickAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
+
+  const onChangeAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
     event.preventDefault();
     setAlgorithm(() => newAlgorithm);
+  };
+  const onChangeC = (event: React.ChangeEvent, value: C) => {
+    event.preventDefault();
+    setSettingsCOVA((prev) => ({ ...prev, c: value }));
+  };
+  const onChangeDataPreservation = (event: React.ChangeEvent, value: DataPreservation) => {
+    event.preventDefault();
+    setDataPreservation(() => value);
   };
 
   const onChangeNeighbour = (value: number) => setSettingsCOVA((prev) => ({ ...prev, neighbour: value }));
@@ -46,7 +60,15 @@ const Settings = () => {
     <div className={classes.Settings}>
       <LinkBack link="/" />
       <h1>{H1_TEXT}</h1>
-      <CheckBoxes key={algorithm} currentAlgorithm={algorithm} onClickAlgorithm={onClickAlgorithm} />
+      <CheckBoxes
+        heading="Algorithm:"
+        currentValue={algorithm}
+        onChange={onChangeAlgorithm}
+        entries={[
+          { value: Algorithm.COVA, text: 'COVA' },
+          { value: Algorithm.ANGEL, text: 'ANGEL' },
+        ]}
+      />
       <Slider
         min={10}
         max={100}
@@ -74,6 +96,25 @@ const Settings = () => {
         text="Alpha"
         value={settingsCOVA.alpha}
       />
+      <CheckBoxes
+        heading="C parameter:"
+        currentValue={settingsCOVA.c}
+        onChange={onChangeC}
+        entries={[
+          { value: C.ORIGINAL, text: 'Original label' },
+          { value: C.PERCENTAGE, text: '10% of the number of points' },
+        ]}
+      />
+      <CheckBoxes
+        heading="Show Data Preservation"
+        currentValue={dataPreservation}
+        onChange={onChangeDataPreservation}
+        entries={[
+          { value: DataPreservation.ON, text: 'Yes' },
+          { value: DataPreservation.OFF, text: 'No' },
+        ]}
+      />
+      {/* To do: fix row wrap on checkboxes */}
     </div>
   );
 };

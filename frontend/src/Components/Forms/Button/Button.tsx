@@ -1,3 +1,8 @@
+/**
+ * Button - highly customizable button.
+ * Automatically centres or stretches to 100% width of the parent container.
+ */
+
 import cx from 'classnames';
 
 import classes from './Button.module.scss';

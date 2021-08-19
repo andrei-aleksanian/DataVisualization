@@ -1,7 +1,8 @@
 import { Line } from '@react-three/drei';
 import { DataPerseveranceColored } from 'types/Data/DataPerseverance';
+import getId from 'utils/getId';
 import Point from './Point';
-import { getRadius, getId } from './utils';
+import { getRadius } from './utils';
 
 export interface SceneProps {
   data: DataPerseveranceColored;
@@ -22,8 +23,7 @@ export default function Scene({
           y={p[1]}
           z={p[2]}
           color={colors[i]}
-          // eslint-disable-next-line react/no-array-index-key
-          key={getId()}
+          key={getId('point')}
           radius={getRadius(prevPartsave.includes(i))}
         />
       ))}
