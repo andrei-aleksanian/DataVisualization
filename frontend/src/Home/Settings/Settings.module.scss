@@ -1,11 +1,6 @@
-.Settings {
+.index {
   grid-area: settings;
   padding: 5rem 2rem;
   background-color: var(--color-background);
   color: var(--color-text);
-}
-
-.ButtonsBox {
-  display: flex;
-  justify-content: space-between;
 }
