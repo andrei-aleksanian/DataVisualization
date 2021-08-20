@@ -10,18 +10,12 @@ enum FlagMove {
 }
 
 interface SettingsANGEL {
-  neighbour: number;
-  lambda: number;
-  alpha: number;
   sparsity: number;
   epsilon: number;
   flagMove: FlagMove;
 }
 
 export const defaultSettingsANGEL: SettingsANGEL = {
-  neighbour: 10,
-  lambda: 0,
-  alpha: 0,
   sparsity: 0.05,
   epsilon: 0.1,
   flagMove: FlagMove.OFF,
@@ -32,8 +26,6 @@ export interface SettingsANGELProps {
 }
 
 const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
-  const onChangeNeighbour = (value: number) => setSettingsANGEL((prev) => ({ ...prev, neighbour: value }));
-  const onChangeLambda = (value: number) => setSettingsANGEL((prev) => ({ ...prev, lambda: value }));
   const onChangeSparsity = (value: number) => setSettingsANGEL((prev) => ({ ...prev, sparsity: value }));
   const onChangeEpsilon = (value: number) => setSettingsANGEL((prev) => ({ ...prev, epsilon: value }));
 
@@ -44,24 +36,6 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
 
   return (
     <>
-      <Slider
-        min={10}
-        max={100}
-        step={10}
-        marksArr={[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
-        onChange={onChangeNeighbour}
-        text="Neighbour"
-        value={settingsANGEL.neighbour}
-      />
-      <Slider
-        min={0}
-        max={1}
-        step={0.2}
-        marksArr={[0, 0.2, 0.4, 0.6, 0.8, 1]}
-        onChange={onChangeLambda}
-        text="Lambda"
-        value={settingsANGEL.lambda}
-      />
       <Slider
         min={0.05}
         max={0.2}

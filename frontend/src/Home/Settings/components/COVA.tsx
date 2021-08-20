@@ -10,15 +10,11 @@ export enum C {
 }
 
 interface SettingsCOVA {
-  neighbour: number;
-  lambda: number;
   alpha: number;
   c: C;
 }
 
 export const defaultSettingsCOVA: SettingsCOVA = {
-  neighbour: 10,
-  lambda: 0,
   alpha: 0,
   c: C.ORIGINAL,
 };
@@ -29,8 +25,6 @@ export interface SettingsCOVAProps {
 }
 
 const COVA = ({ settingsCOVA, setSettingsCOVA }: SettingsCOVAProps) => {
-  const onChangeNeighbour = (value: number) => setSettingsCOVA((prev) => ({ ...prev, neighbour: value }));
-  const onChangeLambda = (value: number) => setSettingsCOVA((prev) => ({ ...prev, lambda: value }));
   const onChangeAlpha = (value: number) => setSettingsCOVA((prev) => ({ ...prev, alpha: value }));
   const onChangeC = (event: React.ChangeEvent, value: C) => {
     event.preventDefault();
@@ -39,24 +33,6 @@ const COVA = ({ settingsCOVA, setSettingsCOVA }: SettingsCOVAProps) => {
 
   return (
     <>
-      <Slider
-        min={10}
-        max={100}
-        step={10}
-        marksArr={[10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
-        onChange={onChangeNeighbour}
-        text="Neighbour"
-        value={settingsCOVA.neighbour}
-      />
-      <Slider
-        min={0}
-        max={1}
-        step={0.2}
-        marksArr={[0, 0.2, 0.4, 0.6, 0.8, 1]}
-        onChange={onChangeLambda}
-        text="Lambda"
-        value={settingsCOVA.lambda}
-      />
       <Slider
         min={0}
         max={1}
