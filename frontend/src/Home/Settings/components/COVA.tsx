@@ -2,18 +2,17 @@ import Slider from 'Components/Forms/Slider';
 
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
-export const H1_TEXT = 'Example: Cylinder';
+export const TEXT_SLIDER_ALPHA = 'Alpha:';
+export const TEXT_CHECKBOX_C = 'C parameter:';
 
 export enum C {
   ORIGINAL,
   PERCENTAGE,
 }
-
-interface SettingsCOVA {
+export interface SettingsCOVA {
   alpha: number;
   c: C;
 }
-
 export const defaultSettingsCOVA: SettingsCOVA = {
   alpha: 0,
   c: C.ORIGINAL,
@@ -39,11 +38,11 @@ const COVA = ({ settingsCOVA, setSettingsCOVA }: SettingsCOVAProps) => {
         step={0.2}
         marksArr={[0, 0.2, 0.4, 0.6, 0.8, 1]}
         onChange={onChangeAlpha}
-        text="Alpha"
+        text={TEXT_SLIDER_ALPHA}
         value={settingsCOVA.alpha}
       />
       <CheckBoxes
-        heading="C parameter:"
+        heading={TEXT_CHECKBOX_C}
         currentValue={settingsCOVA.c}
         onChange={onChangeC}
         entries={[

@@ -9,7 +9,13 @@ import classes from './Settings.module.scss';
 import COVA, { defaultSettingsCOVA } from './components/COVA';
 import ANGEL, { defaultSettingsANGEL } from './components/ANGEL';
 
-export const H1_TEXT = 'Example: Cylinder';
+export const TEXT_CHECKBOX_COVA = 'COVA';
+export const TEXT_CHECKBOX_ANGEL = 'ANGEL';
+export const TEXT_H1 = 'Example: Cylinder';
+export const TEXT_CHECKBOX_ALGORITHM = 'Algorithm:';
+export const TEXT_SLIDER_NEIGHBOUR = 'Neighbour:';
+export const TEXT_SLIDER_LAMBDA = 'Lambda:';
+export const TEXT_CHECKBOX_PRESERVATION = 'Show Data Preservation:';
 
 export enum DataPreservation {
   ON,
@@ -47,14 +53,14 @@ const Settings = () => {
   return (
     <div className={classes.index}>
       <LinkBack link="/" />
-      <h1>{H1_TEXT}</h1>
+      <h1>{TEXT_H1}</h1>
       <CheckBoxes
-        heading="Algorithm:"
+        heading={TEXT_CHECKBOX_ALGORITHM}
         currentValue={settingsCommon.algorithm}
         onChange={onChangeAlgorithm}
         entries={[
-          { value: Algorithm.COVA, text: 'COVA' },
-          { value: Algorithm.ANGEL, text: 'ANGEL' },
+          { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
+          { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
         ]}
       />
       <Slider
@@ -63,7 +69,7 @@ const Settings = () => {
         step={1}
         marksArr={['10', '20', '30', '10%', '20%', '30%', '40%', '50%']}
         onChange={onChangeNeighbour}
-        text="Neighbour"
+        text={TEXT_SLIDER_NEIGHBOUR}
         value={settingsCommon.neighbour}
       />
       <Slider
@@ -72,7 +78,7 @@ const Settings = () => {
         step={0.2}
         marksArr={[0, 0.2, 0.4, 0.6, 0.8, 1]}
         onChange={onChangeLambda}
-        text="Lambda"
+        text={TEXT_SLIDER_LAMBDA}
         value={settingsCommon.lambda}
       />
       {settingsCommon.algorithm === Algorithm.COVA ? (
@@ -81,7 +87,7 @@ const Settings = () => {
         <ANGEL {...{ settingsANGEL, setSettingsANGEL }} />
       )}
       <CheckBoxes
-        heading="Show Data Preservation"
+        heading={TEXT_CHECKBOX_PRESERVATION}
         currentValue={settingsCommon.dataPreservation}
         onChange={onChangeDataPreservation}
         entries={[
