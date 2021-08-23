@@ -15,18 +15,22 @@ exports[`Settings matches snapshot 1`] = `
       <p>
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Delectus dolorum laudantium nisi cupiditate pariatur odio deserunt sunt beatae nostrum tempore cumque iusto, quas ducimus vitae voluptatem repudiandae animi, repellendus commodi! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Delectus dolorum laudantium nisi cupiditate pariatur odio deserunt sunt beatae nostrum tempore cumque iusto, quas ducimus vitae voluptatem repudiandae animi, repellendus commodi!
       </p>
-      <a
-        class="index Action"
-        href="/examples"
+      <div
+        class="LinkWrapper"
       >
-        See an Example
-      </a>
-      <a
-        class="index Action"
-        href="/your-data"
-      >
-        Visualize Your Data
-      </a>
+        <a
+          class="index Action"
+          href="/examples"
+        >
+          See an Example
+        </a>
+        <a
+          class="index Action"
+          href="/your-data"
+        >
+          Visualize Your Data
+        </a>
+      </div>
     </div>
   </div>
 </DocumentFragment>

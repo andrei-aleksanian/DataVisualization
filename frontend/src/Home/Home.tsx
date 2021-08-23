@@ -14,8 +14,10 @@ const Home = () => {
       <div className={classes.Container}>
         <h1>{TEXT_H1}</h1>
         <p>{TEXT_P}</p>
-        <LinkHero text={TEXT_LINK_EXAMPLES} link="/examples" />
-        <LinkHero text={TEXT_LINK_CUSTOM_DATA} link="/your-data" />
+        <div className={classes.LinkWrapper}>
+          <LinkHero text={TEXT_LINK_EXAMPLES} link="/examples" />
+          <LinkHero text={TEXT_LINK_CUSTOM_DATA} link="/your-data" />
+        </div>
       </div>
     </div>
   );
