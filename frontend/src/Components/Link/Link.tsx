@@ -30,7 +30,7 @@ LinkHero.defaultProps = defaultPropsLink;
 
 /*
 Small link back with an arrow. Used to come back to a page of your choice.
-Intended use is to go back.
+Intended use is to go back but can accept any link.
 */
 export const LinkBack = ({ link, customClass }: LinkProps) => (
   <Link to={link} className={cx(classes.index, classes.Back, customClass)}>

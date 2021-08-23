@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test UI renders Settings matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="index"
+  >
+    <p>
+      Test Checkboxes
+    </p>
+    <div
+      class="CheckBoxes"
+    >
+      <label>
+        <input
+          checked=""
+          type="radio"
+        />
+        <span
+          class="text"
+        >
+          box1
+        </span>
+        <span
+          class="checkmark"
+        />
+      </label>
+      <label>
+        <input
+          type="radio"
+        />
+        <span
+          class="text"
+        >
+          box2
+        </span>
+        <span
+          class="checkmark"
+        />
+      </label>
+    </div>
+  </div>
+</DocumentFragment>
+`;

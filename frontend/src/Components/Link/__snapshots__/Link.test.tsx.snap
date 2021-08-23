@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LinkBack matches snapshot 1`] = `
+<DocumentFragment>
+  <a
+    class="index Back"
+    href="/"
+  >
+    <img
+      alt="back"
+      src="arrow.svg"
+    />
+  </a>
+</DocumentFragment>
+`;
+
+exports[`LinkHero matches snapshot 1`] = `
+<DocumentFragment>
+  <a
+    class="index Action"
+    href="/"
+  >
+    test link
+  </a>
+</DocumentFragment>
+`;

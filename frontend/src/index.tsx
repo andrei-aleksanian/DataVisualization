@@ -1,13 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import './index.scss';
-import 'Components/Forms/indexForms.scss';
+import 'Components/Forms/indexForms.scss'; // my own ui library requires us to import this
+import 'rc-slider/assets/index.css'; // rc-slider requires us to import this
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

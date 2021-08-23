@@ -11,7 +11,6 @@ import { CSSProperties } from 'react';
 
 import SliderRC from 'rc-slider';
 import classes from './Slider.module.scss';
-import 'rc-slider/assets/index.css';
 import toMarks from './utils';
 
 export interface SliderProps {

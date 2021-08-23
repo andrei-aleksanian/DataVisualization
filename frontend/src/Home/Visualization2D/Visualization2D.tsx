@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
+import { TrackballControls } from '@react-three/drei';
 
 import { DataPerseveranceColored } from 'types/Data/DataPerseverance';
-import Controls from './Controls';
 import Scene from './Scene';
 
 import classes from './Visualization2D.module.scss';
@@ -9,7 +9,7 @@ import classes from './Visualization2D.module.scss';
 const Visualization2D = ({ data }: { data: DataPerseveranceColored }) => {
   return (
     <Canvas camera={{ position: [0, 0, 100] }}>
-      <Controls />
+      <TrackballControls />
       <Scene data={data} dimension2D={data.dimension2D} />
     </Canvas>
   );

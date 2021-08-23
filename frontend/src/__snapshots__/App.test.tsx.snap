@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="index"
+    data-testid="Home"
+  >
+    <div
+      class="Container"
+    >
+      <h1>
+        COVA/ANGEL Visualization
+      </h1>
+      <p>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Delectus dolorum laudantium nisi cupiditate pariatur odio deserunt sunt beatae nostrum tempore cumque iusto, quas ducimus vitae voluptatem repudiandae animi, repellendus commodi! Lorem ipsum dolor sit, amet consectetur adipisicing elit. Delectus dolorum laudantium nisi cupiditate pariatur odio deserunt sunt beatae nostrum tempore cumque iusto, quas ducimus vitae voluptatem repudiandae animi, repellendus commodi!
+      </p>
+      <a
+        class="index Action"
+        href="/examples"
+      >
+        See an Example
+      </a>
+      <a
+        class="index Action"
+        href="/your-data"
+      >
+        Visualize Your Data
+      </a>
+    </div>
+  </div>
+</DocumentFragment>
+`;

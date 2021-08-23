@@ -10,6 +10,8 @@ const toMarks = (data: (string | number)[], style: CSSProperties) => {
   {0:{style: CSSProperties, label: 1}, 1:{style: CSSProperties, label: '10%'}} (0 and 1 are indexes of teh input array)
   and data like [1,2] to:
   {1:{style: CSSProperties, label: 1}, 2:{style: CSSProperties, label: 2}}
+
+  Used in the Slider Component internally to allow ease of input in the parent components.
   */
 
   const marks: Marks = {};
