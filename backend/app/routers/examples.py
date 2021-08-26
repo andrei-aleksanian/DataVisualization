@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from ..database import crud, schemas
 from ..dependencies import getDB
+from ..utils.generateCOVA import generateCOVA
 
 router = APIRouter(
     prefix="/examples",
@@ -27,10 +28,17 @@ def createExample(example: schemas.ExampleCreate, database: Session = Depends(ge
     raise HTTPException(
         status_code=400, detail="An example with this name already exists")
 
-  # run the hundreds of parameter combinations, store them
-  # then store this example in the db
+  # hardcode params
+  # hardcode constraints (for now)
 
-  crud.createExample(database, example)
+  # COVA
+  example = crud.createExample(database, example)
+
+  generateCOVA(example.id)
+
+  # run the hundreds of parameter combinations, store them
+  # then store this example in the db - call runCova
+
   return Response(status_code=status.HTTP_200_OK)
 
 

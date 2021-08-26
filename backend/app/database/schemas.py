@@ -12,26 +12,11 @@ Schemas or types to be used in the application on different specific events:
 
 from typing import List, Optional, Union, Dict, Any
 from pydantic import BaseModel
+from ..types.dataGenerated import ParamsANGEL, ParamsCOVA
 
 
 JSONType = Union[str, int, float, bool,
                  None, Dict[str, Any], List[Any]]
-
-
-class Params(BaseModel):
-  neighbourNumber: int
-  lambdaParam: float
-
-
-class ParamsCOVA(Params):
-  alpha: float
-  isCohortNumberOriginal: bool
-
-
-class ParamsANGEL(Params):
-  anchorDensity: float
-  epsilon: float
-  isAnchorModification: bool
 
 
 class DataBase(BaseModel):
@@ -58,6 +43,7 @@ class DataCreateANGEL(DataBase):
 class Data(DataBase):
   id: int
   exampleId: int
+  jsonData: JSONType
 
   class Config:
     orm_mode = True

@@ -3,14 +3,11 @@ Types.
 
 Different data types to be used accross the application
 """
-from typing import List, NewType, TypedDict
+from typing import List, TypedDict
 from numpy import ndarray
-from pydantic import BaseModel, conlist
+from pydantic import BaseModel
 
-# There is a flaw here - python can't specify a
-# list ending with 0 column
-Points = NewType('Points', List[conlist(
-    item_type=float, min_items=3, max_items=3)])
+from .Points import Points
 
 
 class DataNumpy(TypedDict):

@@ -22,6 +22,8 @@ from sklearn.cluster import KMeans
 from .evaluation import neighbor_prev_disturb
 
 from app.types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
+from app.types.dataGenerated import DataGenerated
+from app.types.dataGenerated import ParamsCOVA
 from app.utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
 
 
@@ -421,6 +423,41 @@ def getPerseverance(g, Result, label):
   return prev_wrong_in_high, prev_wrong_in_low, prev_partsave
 
 
+def runCOVA(params: ParamsCOVA, iterations: int = 20) -> DataGenerated:
+  # runs algorithm on the given example
+  # returns data points and preservation data
+  fullData = loadmat('./app/visualization/Data/cylinder_top.mat')
+
+  scaler = preprocessing.MinMaxScaler()
+  scaler.fit(np.array(fullData.get('x')))
+  g = scaler.transform(np.array(fullData.get('x')))
+  label = np.array(fullData.get('label')).transpose()
+
+  prototypes, protolabel, clabel = SeparateCohort(g, label, sparsity=0.1)
+  A = squareform(pdist(prototypes, 'euclidean'))
+  A_order = np.argsort(A, axis=1).astype(int)
+  V = SOE(A_order.astype(int), protolabel, dim=3)
+  scaler.fit(V)
+  V = scaler.transform(V)
+
+  Ad = AdjacencyMatrix(g, 10)
+
+  Relation = CohortConfidence(g, clabel, 0)
+
+  Result: np.ndarray = COVAembedding(g, Relation, Ad, V, iterations, Init=0, dim=3,
+                                     alpha=0.5, COVAType='cova1', opttype='GD_Euclidean')
+
+  *_, prev_wrong_in_high, prev_wrong_in_low, prev_partsave = neighbor_prev_disturb(
+      g, Result, label, 10)
+
+  return DataGenerated(
+      points=Result.tolist(),
+      prevPartsave=prev_partsave,
+      prevWrongInLow=childrenToList(prev_wrong_in_low),
+      prevWrongInHigh=childrenToList(prev_wrong_in_high)
+  )
+
+
 def initCOVA() -> DataFormatted:
   """
   Initialise COVA run.
@@ -462,7 +499,7 @@ def initCOVA() -> DataFormatted:
   return formatDataOut(initData)
 
 
-def dynamicCOVA(previousData: DataDynamic, iterationsPerRequest: int):
+def dynamicCOVA(previousData: DataDynamic, iterationsPerRequest: int) -> DataDynamic:
   """
   Iterates through the COVA algorithm.
 
