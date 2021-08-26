@@ -3,7 +3,7 @@ import Slider from 'Components/Forms/Slider';
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
 export const TEXT_SLIDER_ALPHA = 'Alpha:';
-export const TEXT_CHECKBOX_C = 'C parameter:';
+export const TEXT_CHECKBOX_COHORT_NUMBER = 'Cohort number:';
 
 export enum C {
   ORIGINAL,
@@ -42,11 +42,11 @@ const COVA = ({ settingsCOVA, setSettingsCOVA }: SettingsCOVAProps) => {
         value={settingsCOVA.alpha}
       />
       <CheckBoxes
-        heading={TEXT_CHECKBOX_C}
+        heading={TEXT_CHECKBOX_COHORT_NUMBER}
         currentValue={settingsCOVA.c}
         onChange={onChangeC}
         entries={[
-          { value: C.ORIGINAL, text: 'Original label' },
+          { value: C.ORIGINAL, text: 'Original cohort number' },
           { value: C.PERCENTAGE, text: '10% of the number of points' },
         ]}
       />

@@ -10,8 +10,8 @@ import Settings, {
   TEXT_CHECKBOX_ANGEL,
   TEXT_CHECKBOX_COVA,
 } from './Settings';
-import { TEXT_CHECKBOX_C, TEXT_SLIDER_ALPHA } from './components/COVA';
-import { TEXT_SLIDER_SPARSITY, TEXT_CHECKBOX_FLAG_MOVE, TEXT_SLIDER_EPSILON } from './components/ANGEL';
+import { TEXT_CHECKBOX_COHORT_NUMBER, TEXT_SLIDER_ALPHA } from './components/COVA';
+import { TEXT_SLIDER_ANCHOR_DENSITY, TEXT_CHECKBOX_ANCHOR_MODIFICATION, TEXT_SLIDER_EPSILON } from './components/ANGEL';
 
 test('Settings matches snapshot', async () => {
   const { asFragment } = render(<Settings />, { wrapper: MemoryRouter });
@@ -43,13 +43,13 @@ describe('Test UI changes and events', () => {
     expect(screen.getByRole('radio', { name: TEXT_CHECKBOX_ANGEL })).toBeChecked();
 
     // ANGEL Elements should be rendered
-    expect(screen.getByText(TEXT_SLIDER_SPARSITY)).toBeInTheDocument();
+    expect(screen.getByText(TEXT_SLIDER_ANCHOR_DENSITY)).toBeInTheDocument();
     expect(screen.getByText(TEXT_SLIDER_EPSILON)).toBeInTheDocument();
-    expect(screen.getByText(TEXT_CHECKBOX_FLAG_MOVE)).toBeInTheDocument();
+    expect(screen.getByText(TEXT_CHECKBOX_ANCHOR_MODIFICATION)).toBeInTheDocument();
 
     // COVA elements shouldn't be rendered
     expect(screen.queryByText(TEXT_SLIDER_ALPHA)).not.toBeInTheDocument();
-    expect(screen.queryByText(TEXT_CHECKBOX_C)).not.toBeInTheDocument();
+    expect(screen.queryByText(TEXT_CHECKBOX_COHORT_NUMBER)).not.toBeInTheDocument();
   });
 
   test('Checkboxes ANGEL/COVA change the controls back to COVA', async () => {
@@ -59,11 +59,11 @@ describe('Test UI changes and events', () => {
 
     // COVA Elements should be rendered
     expect(screen.getByText(TEXT_SLIDER_ALPHA)).toBeInTheDocument();
-    expect(screen.getByText(TEXT_CHECKBOX_C)).toBeInTheDocument();
+    expect(screen.getByText(TEXT_CHECKBOX_COHORT_NUMBER)).toBeInTheDocument();
 
     // ANGEL elements shouldn't be rendered
-    expect(screen.queryByText(TEXT_SLIDER_SPARSITY)).not.toBeInTheDocument();
+    expect(screen.queryByText(TEXT_SLIDER_ANCHOR_DENSITY)).not.toBeInTheDocument();
     expect(screen.queryByText(TEXT_SLIDER_EPSILON)).not.toBeInTheDocument();
-    expect(screen.queryByText(TEXT_CHECKBOX_FLAG_MOVE)).not.toBeInTheDocument();
+    expect(screen.queryByText(TEXT_CHECKBOX_ANCHOR_MODIFICATION)).not.toBeInTheDocument();
   });
 });

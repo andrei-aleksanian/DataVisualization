@@ -13,7 +13,7 @@ export const TEXT_CHECKBOX_COVA = 'COVA';
 export const TEXT_CHECKBOX_ANGEL = 'ANGEL';
 export const TEXT_H1 = 'Example: Cylinder';
 export const TEXT_CHECKBOX_ALGORITHM = 'Algorithm:';
-export const TEXT_SLIDER_NEIGHBOUR = 'Neighbour:';
+export const TEXT_SLIDER_NEIGHBOUR = 'Neighbour number:';
 export const TEXT_SLIDER_LAMBDA = 'Lambda:';
 export const TEXT_CHECKBOX_PRESERVATION = 'Show Data Preservation:';
 

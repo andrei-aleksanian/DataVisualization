@@ -2,9 +2,9 @@ import Slider from 'Components/Forms/Slider';
 
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
-export const TEXT_SLIDER_SPARSITY = 'Sparsity:';
+export const TEXT_SLIDER_ANCHOR_DENSITY = 'Anchor density:';
 export const TEXT_SLIDER_EPSILON = 'Epsilon:';
-export const TEXT_CHECKBOX_FLAG_MOVE = 'Flag move:';
+export const TEXT_CHECKBOX_ANCHOR_MODIFICATION = 'Anchor modification:';
 
 enum FlagMove {
   ON,
@@ -42,7 +42,7 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
         step={null}
         marksArr={[0.05, 0.1, 0.2]}
         onChange={onChangeSparsity}
-        text={TEXT_SLIDER_SPARSITY}
+        text={TEXT_SLIDER_ANCHOR_DENSITY}
         value={settingsANGEL.sparsity}
       />
       <Slider
@@ -55,7 +55,7 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
         value={settingsANGEL.epsilon}
       />
       <CheckBoxes
-        heading={TEXT_CHECKBOX_FLAG_MOVE}
+        heading={TEXT_CHECKBOX_ANCHOR_MODIFICATION}
         currentValue={settingsANGEL.flagMove}
         onChange={onChangeFlagMove}
         entries={[
