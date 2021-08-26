@@ -5,7 +5,7 @@ utils functions for dynamic data loading
 from typing import List, NewType
 import numpy as np
 # pylint: disable=all
-from app.types.data import DataDynamic, DataNumpy, DataFormatted
+from app.types.dataDynamic import DataDynamic, DataNumpy, DataFormatted
 
 
 def formatDataIn(previousData: DataDynamic) -> DataNumpy:

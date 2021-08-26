@@ -5,8 +5,8 @@ formatDataIn is ignored as typing makes it unnecessary to check type conversions
 """
 from typing import List
 import numpy as np
-from data import childrenToList, toList, formatDataOut, ListPerseverance, NumpyInput
-from app.types.data import DataNumpy
+from dataDynamic import childrenToList, toList, formatDataOut, ListPerseverance, NumpyInput
+from app.types.dataDynamic import DataNumpy
 
 
 def getInputData(points):

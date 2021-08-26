@@ -21,8 +21,8 @@ from .ANGEL import AnchorPointGeneration, AnchorEmbedding
 from sklearn.cluster import KMeans
 from .evaluation import neighbor_prev_disturb
 
-from app.types.data import DataDynamic, DataFormatted, DataNumpy
-from app.utils.data import formatDataIn, formatDataOut, childrenToList
+from app.types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
+from app.utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
 
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):

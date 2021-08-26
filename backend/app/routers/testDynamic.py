@@ -5,18 +5,18 @@ Examples route
 Dynamic routes
 """
 from fastapi.testclient import TestClient
-from .api import app
+from ..api import app
 
 client = TestClient(app)
 
-initData = client.get("/api/cova-demo-dynamic").json()
+initData = client.get("/api/dynamic/cova").json()
 
 
 def testCovaDemoDynamicInitSuccess():
   """
   Test the function initialises a cycle for future iterations.
   """
-  response = client.get("/api/cova-demo-dynamic")
+  response = client.get("/api/dynamic/cova")
   assert response.status_code == 200
 
   data = response.json()
@@ -31,7 +31,7 @@ def testCovaDemoDynamicSuccess():
   """
   Test the function can use data from get to perform a cycle.
   """
-  response = client.post("/api/cova-demo-dynamic", json=initData)
+  response = client.post("/api/dynamic/cova", json=initData)
   responseData = response.json()
   assert response.status_code == 200
   assert initData["iteration"] + 1 == responseData["iteration"]
@@ -43,7 +43,7 @@ def testCovaDemoDynamic422Partial():
   Test partially incorrect data throws an error
   """
   initData.pop("points")
-  response = client.post("/api/cova-demo-dynamic", json=initData)
+  response = client.post("/api/dynamic/cova", json=initData)
   assert response.status_code == 422
 
 
@@ -51,7 +51,7 @@ def testCovaDemoDynamic422Full():
   """
   Test empty data throws an error
   """
-  response = client.post("/api/cova-demo-dynamic", json={})
+  response = client.post("/api/dynamic/cova", json={})
   assert response.status_code == 422
 
 # Test returns perseverance data on last iteration

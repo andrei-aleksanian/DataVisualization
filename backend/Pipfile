@@ -9,6 +9,7 @@ uvicorn = {extras = ["standard"], version = "*"}
 pydantic = "*"
 numpy = "*"
 numba = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 pytest = "*"
