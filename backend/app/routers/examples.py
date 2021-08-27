@@ -39,22 +39,22 @@ def createExample(example: schemas.ExampleCreate, database: Session = Depends(ge
     # in case something goes horribly wrong, delete all entries related to example
     crud.deleteExample(database, example.id)
     crud.deleteAllExampleDataCOVA(database, example.id)
+    raise HTTPException(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        detail=UNPROCESSABLE_DATASET
+    )
 
   def generateCOVAData():
     try:
       generateCOVA(example.id)
-    except RuntimeCOVAError as errorCOVA:
+    except RuntimeCOVAError:
       cleanSession()
-      raise HTTPException(
-          status_code=422, detail=UNPROCESSABLE_DATASET) from errorCOVA
 
   def generateANGELData():
     try:
       generateANGEL(example.id)
-    except RuntimeANGELError as errorANGEL:
+    except RuntimeANGELError:
       cleanSession()
-      raise HTTPException(
-          status_code=422, detail=UNPROCESSABLE_DATASET) from errorANGEL
 
   doesNameExist()
   example = crud.createExample(database, example)
