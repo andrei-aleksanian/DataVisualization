@@ -17,6 +17,7 @@ requests = "*"
 pre-commit = "*"
 pylint = "*"
 autopep8 = "*"
+sqlalchemy-utils = "*"
 
 [requires]
 python_version = "3.8"

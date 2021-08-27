@@ -26,105 +26,115 @@ from sklearn.cluster import KMeans
 
 
 def AnchorPointGeneration(Data, DataLabel, sparsity=0.1, t=3, metric='euclidean', cn=10):
-    """
-    Anchor point generation based on K-means method.
-    Relationship matrix Z is obtained by LAE approach using t-nearest anchor points.
+  """
+  Anchor point generation based on K-means method.
+  Relationship matrix Z is obtained by LAE approach using t-nearest anchor points.
 
-    :param Data: input data matrix in the high-dimensional space
-    :param DataLabel: input label column
-    :param sparsity: determine the number of the anchor points
-    :param t: determine the t-nearest anchor points used to reconstruct each data point
-    :param cn: # of iterations for LAE, usually set to 5-20;
-    :param metric: type of distance
-    :return:
-    AnchorPoint: generated anchor points in the high-dimensional space
-    AnchorLabel: label of AnchorPoints
-    Z: weight matrix stores the relation between anchor points and data points
-    """
-    [l, D] = Data.shape
-    diffLabel = np.unique(DataLabel)
-    num_label = len(diffLabel)
-    AnchorPoint = np.empty([0, D])
-    AnchorLabel = np.empty([0, 1])
-    Zset = {}
-    for i in range(num_label):
-        num_point = len(np.where(DataLabel == diffLabel[i])[0])
-        numOfAnchor_temp = np.floor(num_point * sparsity)
-        while numOfAnchor_temp <= 3:
-            numOfAnchor_temp = numOfAnchor_temp * 2
-        numOfAnchor_temp = int(numOfAnchor_temp)
-        gtemp = Data[np.squeeze(DataLabel == diffLabel[i]), :]
-        temp_Index = KMeans(n_clusters=numOfAnchor_temp, n_init=5).fit(gtemp)
-        Anchortemp = temp_Index.cluster_centers_
-        AnchorLabeltemp = diffLabel[i] * np.ones([numOfAnchor_temp, 1])
-        AnchorPoint = np.concatenate((AnchorPoint, Anchortemp), axis=0)
-        AnchorLabel = np.concatenate((AnchorLabel, AnchorLabeltemp), axis=0)
-        Ztemp = AnchorGraph(gtemp, Anchortemp, 3, 10, metric)
-        Zset[str(i)] = Ztemp
+  :param Data: input data matrix in the high-dimensional space
+  :param DataLabel: input label column
+  :param sparsity: determine the number of the anchor points
+  :param t: determine the t-nearest anchor points used to reconstruct each data point
+  :param cn: # of iterations for LAE, usually set to 5-20;
+  :param metric: type of distance
+  :return:
+  AnchorPoint: generated anchor points in the high-dimensional space
+  AnchorLabel: label of AnchorPoints
+  Z: weight matrix stores the relation between anchor points and data points
+  """
+  [l, D] = Data.shape
+  diffLabel = np.unique(DataLabel)
+  num_label = len(diffLabel)
+  AnchorPoint = np.empty([0, D])
+  AnchorLabel = np.empty([0, 1])
+  Zset = {}
+  for i in range(num_label):
+    num_point = len(np.where(DataLabel == diffLabel[i])[0])
+    numOfAnchor_temp = np.floor(num_point * sparsity)
+    while numOfAnchor_temp <= 3:
+      numOfAnchor_temp = numOfAnchor_temp * 2
+    numOfAnchor_temp = int(numOfAnchor_temp)
+    gtemp = Data[np.squeeze(DataLabel == diffLabel[i]), :]
+    temp_Index = KMeans(n_clusters=numOfAnchor_temp, n_init=5).fit(gtemp)
+    Anchortemp = temp_Index.cluster_centers_
+    AnchorLabeltemp = diffLabel[i] * np.ones([numOfAnchor_temp, 1])
+    AnchorPoint = np.concatenate((AnchorPoint, Anchortemp), axis=0)
+    AnchorLabel = np.concatenate((AnchorLabel, AnchorLabeltemp), axis=0)
+    Ztemp = AnchorGraph(gtemp, Anchortemp, 3, 10, metric)
+    Zset[str(i)] = Ztemp
 
-    # plt.scatter(AnchorPoint[:, 0], AnchorPoint[:, 1], c=AnchorLabel)
+  # plt.scatter(AnchorPoint[:, 0], AnchorPoint[:, 1], c=AnchorLabel)
+  # plt.show()
+  Z = np.zeros([l, len(AnchorLabel)])
+  for i in range(num_label):
+    if DataLabel.shape[1] == l:
+      DataLabel = DataLabel.transpose()
+    datalocation = np.argwhere(np.squeeze(
+        DataLabel, axis=1) == diffLabel[i])
+    anchorlocation = np.argwhere(np.squeeze(
+        AnchorLabel, axis=1) == diffLabel[i])
+    Z[np.ix_(np.squeeze(datalocation, axis=1), np.squeeze(
+        anchorlocation, axis=1))] = Zset[str(i)]
+  return AnchorPoint, AnchorLabel, Z
+
+
+def AnchorEmbedding(
+        Anchor,
+        anchorlabel,
+        flagMove=0,
+        lamb=0.0,
+        dim=2,
+        init=0,
+        flagDistanceMatrix=0,
+        T=500,
+        metric="euclidean",
+        cohortmetric="average",
+        scale=1):
+  [l, D] = Anchor.shape
+  if init == 0:
+    init = np.random.random_sample((l, dim))
+  if flagDistanceMatrix == 0:
+    A = squareform(pdist(Anchor, metric))
+  else:
+    A = Anchor
+  A_order = np.argsort(A, axis=1).astype(int)
+  k = np.unique(anchorlabel)
+  if lamb > 0:
+    d_cohort = CohortDistance(Anchor, anchorlabel)
+    linkage_order = np.argsort(d_cohort, axis=-1)
+    A_order = Ad_cohort_order_chg(
+        A_order, anchorlabel, linkage_order, k, lamb).astype(int)
+
+  anchor0 = SOE(A_order.astype(int), anchorlabel, T=T, scale=scale, dim=dim)
+  # plt.scatter(anchor0[:, 0], anchor0[:, 1], c=anchorlabel)
+  # plt.show()
+
+  if flagMove != 0:
+    d_cohort = CohortDistance(Anchor, anchorlabel)
+    C_order = np.argsort(d_cohort, axis=-1).astype(int)
+    C = SOE(C_order.astype(int), k, dim=dim)
+    # plt.scatter(C[:, 0], C[:, 1], c=k)
     # plt.show()
-    Z = np.zeros([l, len(AnchorLabel)])
-    for i in range(num_label):
-        if DataLabel.shape[1] == l:
-            DataLabel = DataLabel.transpose()
-        datalocation = np.argwhere(np.squeeze(
-            DataLabel, axis=1) == diffLabel[i])
-        anchorlocation = np.argwhere(np.squeeze(
-            AnchorLabel, axis=1) == diffLabel[i])
-        Z[np.ix_(np.squeeze(datalocation, axis=1), np.squeeze(
-            anchorlocation, axis=1))] = Zset[str(i)]
-    return AnchorPoint, AnchorLabel, Z
-
-
-def AnchorEmbedding(Anchor, anchorlabel, flagMove=0, lamb=0.0, dim=2, init=0, flagDistanceMatrix=0, T=500,
-                    metric="euclidean", cohortmetric="average", scale=1):
-    [l, D] = Anchor.shape
-    if init == 0:
-        init = np.random.random_sample((l, dim))
-    if flagDistanceMatrix == 0:
-        A = squareform(pdist(Anchor, metric))
-    else:
-        A = Anchor
-    A_order = np.argsort(A, axis=1).astype(int)
-    k = np.unique(anchorlabel)
-    if lamb > 0:
-        d_cohort = CohortDistance(Anchor, anchorlabel)
-        linkage_order = np.argsort(d_cohort, axis=-1)
-        A_order = Ad_cohort_order_chg(
-            A_order, anchorlabel, linkage_order, k, lamb).astype(int)
-
-    anchor0 = SOE(A_order.astype(int), anchorlabel, T=T, scale=scale, dim=dim)
-    # plt.scatter(anchor0[:, 0], anchor0[:, 1], c=anchorlabel)
+    C = C / (np.max(np.max(C)) / np.max(np.max(anchor0)))
+    Param = SOE(A_order, anchorlabel, C=C,
+                anchor=anchor0, flagMove=1, dim=dim)
+    # SOE(Matrix, DataLabel, C=0, anchor=0, dim=2, Init=0, metric='euclidean', flagMove=0, T=500, eps=1e-6, scale=1)
+    anchor = np.zeros((l, dim))
+    aDelta = np.zeros((l, dim))
+    for i in range(k.shape[0]):
+      tempi = np.squeeze(anchorlabel == k[i])
+      aDelta[tempi, :] = anchor0[tempi, :] - \
+          np.mean(anchor0[tempi, :], axis=0)
+      Theta = Rtheta(Param[i, 0])
+      Scal = Sscal(Param[i, 1])
+      anchor[tempi, :] = (
+          Theta @ Scal @ aDelta[tempi, :].transpose()).transpose() + C[i, :]
+    # plt.scatter(anchor[:, 0], anchor[:, 1], c=anchorlabel)
     # plt.show()
-
-    if flagMove != 0:
-        d_cohort = CohortDistance(Anchor, anchorlabel)
-        C_order = np.argsort(d_cohort, axis=-1).astype(int)
-        C = SOE(C_order.astype(int), k, dim=dim)
-        # plt.scatter(C[:, 0], C[:, 1], c=k)
-        # plt.show()
-        C = C / (np.max(np.max(C)) / np.max(np.max(anchor0)))
-        Param = SOE(A_order, anchorlabel, C=C,
-                    anchor=anchor0, flagMove=1, dim=dim)
-        # SOE(Matrix, DataLabel, C=0, anchor=0, dim=2, Init=0, metric='euclidean', flagMove=0, T=500, eps=1e-6, scale=1)
-        anchor = np.zeros((l, dim))
-        aDelta = np.zeros((l, dim))
-        for i in range(k.shape[0]):
-            tempi = np.squeeze(anchorlabel == k[i])
-            aDelta[tempi, :] = anchor0[tempi, :] - \
-                np.mean(anchor0[tempi, :], axis=0)
-            Theta = Rtheta(Param[i, 0])
-            Scal = Sscal(Param[i, 1])
-            anchor[tempi, :] = (
-                Theta @ Scal @ aDelta[tempi, :].transpose()).transpose() + C[i, :]
-        # plt.scatter(anchor[:, 0], anchor[:, 1], c=anchorlabel)
-        # plt.show()
-        # print(anchor)
-    else:
-        anchor = anchor0
-        C = 0
-    return anchor, anchor0, C
+    # print(anchor)
+  else:
+    anchor = anchor0
+    C = 0
+  return anchor, anchor0, C
 
 
 # def disForLOE(x):
@@ -138,139 +148,153 @@ def AnchorEmbedding(Anchor, anchorlabel, flagMove=0, lamb=0.0, dim=2, init=0, fl
 
 
 def ErrLOE(x, *args):
-    A_order, dim = args[0], args[1]
-    n, x0, Del, disgraph = disForOE(x, dim)
-    tempj = np.argwhere(A_order > 0)
-    lj = tempj.shape[0]
-    templ = np.argwhere(A_order == 0)
-    ll = templ.shape[0]
-    E = ErrLOE_loop(n, Del, tempj, lj, templ, ll, disgraph)
-    return E
+  A_order, dim = args[0], args[1]
+  n, x0, Del, disgraph = disForOE(x, dim)
+  tempj = np.argwhere(A_order > 0)
+  lj = tempj.shape[0]
+  templ = np.argwhere(A_order == 0)
+  ll = templ.shape[0]
+  E = ErrLOE_loop(n, Del, tempj, lj, templ, ll, disgraph)
+  return E
 
 
 @jit(nopython=True)
 def ErrLOE_loop(n, Del, tempj, lj, templ, ll, disgraph):
-    E = 0
-    for i in range(0, lj):
-        for j in range(0, ll):
-            if tempj[i, 0] == templ[j, 0] and tempj[i, 0] != tempj[i, 1]:
-                if templ[j, 0] != templ[j, 1]:
-                    temp = disgraph[tempj[i, 0], tempj[i, 1]] + \
-                        Del - disgraph[templ[j, 0], templ[j, 1]]
-                    if temp > 0:
-                        E = E + temp * temp
-    return E
+  E = 0
+  for i in range(0, lj):
+    for j in range(0, ll):
+      if tempj[i, 0] == templ[j, 0] and tempj[i, 0] != tempj[i, 1]:
+        if templ[j, 0] != templ[j, 1]:
+          temp = disgraph[tempj[i, 0], tempj[i, 1]] + \
+              Del - disgraph[templ[j, 0], templ[j, 1]]
+          if temp > 0:
+            E = E + temp * temp
+  return E
 
 
 def GradLOE(x, *args):
-    A_order, dim = args[0], args[1]
-    n, x0, Del, disgraph = disForOE(x, dim)
-    tempj = np.argwhere(A_order > 0)
-    lj = tempj.shape[0]
-    templ = np.argwhere(A_order == 0)
-    ll = templ.shape[0]
-    gradX = GradLOE_loop(x0, n, Del, dim, tempj, lj, templ, ll, disgraph)
-    gradX0 = np.squeeze(np.reshape(gradX, (x.shape[0], 1)))
-    return gradX0
+  A_order, dim = args[0], args[1]
+  n, x0, Del, disgraph = disForOE(x, dim)
+  tempj = np.argwhere(A_order > 0)
+  lj = tempj.shape[0]
+  templ = np.argwhere(A_order == 0)
+  ll = templ.shape[0]
+  gradX = GradLOE_loop(x0, n, Del, dim, tempj, lj, templ, ll, disgraph)
+  gradX0 = np.squeeze(np.reshape(gradX, (x.shape[0], 1)))
+  return gradX0
 
 
 @jit(nopython=True)
 def GradLOE_loop(x0, n, Del, dim, tempj, lj, templ, ll, disgraph):
-    gradX = np.zeros((n, dim))
-    for i in range(0, lj):
-        for j in range(0, ll):
-            if tempj[i, 0] == templ[j, 0] and tempj[i, 0] != tempj[i, 1]:
-                if templ[j, 0] != templ[j, 1]:
-                    if disgraph[tempj[i, 0], tempj[i, 1]] + Del - disgraph[templ[j, 0], templ[j, 1]] > 0:
-                        temp = 1e-5
-                        if disgraph[tempj[i, 0], tempj[i, 1]] < temp:
-                            d_ij = temp
-                        else:
-                            d_ij = disgraph[tempj[i, 0], tempj[i, 1]]
-                        if disgraph[templ[j, 0], templ[j, 1]] < temp:
-                            d_ik = temp
-                        else:
-                            d_ik = disgraph[templ[j, 0], templ[j, 1]]
-                        x_i = x0[tempj[i, 0], :]
-                        x_j = x0[tempj[i, 1], :]
-                        x_k = x0[templ[j, 1], :]
-                        gradX[tempj[i, 0], :] = gradX[tempj[i, 0], :] + 2 * (
-                            disgraph[tempj[i, 0], tempj[i, 1]] -
-                            disgraph[templ[j, 0], templ[j, 1]] + Del) * ((x_i - x_j) / d_ij - (x_i - x_k) / d_ik)
-                        gradX[tempj[i, 1], :] = gradX[tempj[i, 1], :] - 2 * (
-                            disgraph[tempj[i, 0], tempj[i, 1]] -
-                            disgraph[templ[j, 0], templ[j, 1]] + Del) * ((x_i - x_j) / d_ij)
-                        gradX[templ[j, 1], :] = gradX[templ[j, 1], :] + 2 * (
-                            disgraph[tempj[i, 0], tempj[i, 1]] -
-                            disgraph[templ[j, 0], templ[j, 1]] + Del) * ((x_i - x_k) / d_ik)
-    return gradX
+  gradX = np.zeros((n, dim))
+  for i in range(0, lj):
+    for j in range(0, ll):
+      if tempj[i, 0] == templ[j, 0] and tempj[i, 0] != tempj[i, 1]:
+        if templ[j, 0] != templ[j, 1]:
+          if disgraph[tempj[i, 0], tempj[i, 1]] + Del - disgraph[templ[j, 0], templ[j, 1]] > 0:
+            temp = 1e-5
+            if disgraph[tempj[i, 0], tempj[i, 1]] < temp:
+              d_ij = temp
+            else:
+              d_ij = disgraph[tempj[i, 0], tempj[i, 1]]
+            if disgraph[templ[j, 0], templ[j, 1]] < temp:
+              d_ik = temp
+            else:
+              d_ik = disgraph[templ[j, 0], templ[j, 1]]
+            x_i = x0[tempj[i, 0], :]
+            x_j = x0[tempj[i, 1], :]
+            x_k = x0[templ[j, 1], :]
+            gradX[tempj[i, 0], :] = gradX[tempj[i, 0], :] + 2 * (
+                disgraph[tempj[i, 0], tempj[i, 1]] -
+                disgraph[templ[j, 0], templ[j, 1]] + Del) * ((x_i - x_j) / d_ij - (x_i - x_k) / d_ik)
+            gradX[tempj[i, 1], :] = gradX[tempj[i, 1], :] - 2 * (
+                disgraph[tempj[i, 0], tempj[i, 1]] -
+                disgraph[templ[j, 0], templ[j, 1]] + Del) * ((x_i - x_j) / d_ij)
+            gradX[templ[j, 1], :] = gradX[templ[j, 1], :] + 2 * (
+                disgraph[tempj[i, 0], tempj[i, 1]] -
+                disgraph[templ[j, 0], templ[j, 1]] + Del) * ((x_i - x_k) / d_ik)
+  return gradX
 
 
-def ANGEL_embedding(Data, anchor, Z, W, optType='constrained', dim=2, init=0, eps=0.05, metric='euclidean',
-                    T=80):
-    [l, D] = Data.shape
-    if init == 0:
-        init = np.random.random_sample((l * dim, 1))
-    LAEstart = Z @ anchor
+def ANGEL_embedding(
+        Data,
+        anchor,
+        Z,
+        W,
+        optType='constrained',
+        dim=2,
+        init=0,
+        eps=0.05,
+        metric='euclidean',
+        T=80):
+  [l, D] = Data.shape
+  if init == 0:
+    init = np.random.random_sample((l * dim, 1))
+  LAEstart = Z @ anchor
 
-    additional = (W, dim)
-    initstart = np.reshape(LAEstart, (l * dim, 1))
-    if optType == 'constrained':
-        if dim == 2:
-            bnds1 = [(LAEstart[i, 0] - eps, LAEstart[i, 0] + eps)
-                     for i in range(0, l)]
-            bnds2 = [(LAEstart[i, 1] - eps, LAEstart[i, 1] + eps)
-                     for i in range(0, l)]
-            bnds = []
-            for i in range(0, l):
-                bnds.append(bnds1[i])
-                bnds.append(bnds2[i])
-        elif dim == 3:
-            bnds1 = [(LAEstart[i, 0] - eps, LAEstart[i, 0] + eps)
-                     for i in range(0, l)]
-            bnds2 = [(LAEstart[i, 1] - eps, LAEstart[i, 1] + eps)
-                     for i in range(0, l)]
-            bnds3 = [(LAEstart[i, 2] - eps, LAEstart[i, 2] + eps)
-                     for i in range(0, l)]
-            bnds = []
-            for i in range(0, l):
-                bnds.append(bnds1[i])
-                bnds.append(bnds2[i])
-                bnds.append(bnds3[i])
-        x = minimize(ErrLOE, init, method='SLSQP', args=additional, jac=GradLOE,
-                     bounds=bnds, options={'disp': True, 'maxiter': T})
-        x = np.reshape(x.x, (l, dim))
+  additional = (W, dim)
+  initstart = np.reshape(LAEstart, (l * dim, 1))
+  if optType == 'constrained':
+    if dim == 2:
+      bnds1 = [(LAEstart[i, 0] - eps, LAEstart[i, 0] + eps)
+               for i in range(0, l)]
+      bnds2 = [(LAEstart[i, 1] - eps, LAEstart[i, 1] + eps)
+               for i in range(0, l)]
+      bnds = []
+      for i in range(0, l):
+        bnds.append(bnds1[i])
+        bnds.append(bnds2[i])
+    elif dim == 3:
+      bnds1 = [(LAEstart[i, 0] - eps, LAEstart[i, 0] + eps)
+               for i in range(0, l)]
+      bnds2 = [(LAEstart[i, 1] - eps, LAEstart[i, 1] + eps)
+               for i in range(0, l)]
+      bnds3 = [(LAEstart[i, 2] - eps, LAEstart[i, 2] + eps)
+               for i in range(0, l)]
+      bnds = []
+      for i in range(0, l):
+        bnds.append(bnds1[i])
+        bnds.append(bnds2[i])
+        bnds.append(bnds3[i])
+    x = minimize(ErrLOE, init, method='SLSQP', args=additional, jac=GradLOE,
+                 bounds=bnds, options={'disp': True, 'maxiter': T})
+    x = np.reshape(x.x, (l, dim))
 
-    elif optType == 'fast':
-        T = 5
-        x = minimize(ErrLOE, initstart, method='BFGS', args=additional, jac=GradLOE,
-                     options={'disp': True, 'maxiter': T})
-        x = np.reshape(x.x, (l, dim))
-    else:
-        x = 0
-        print('error')
-    return x
+  elif optType == 'fast':
+    T = 5
+    x = minimize(ErrLOE, initstart, method='BFGS', args=additional, jac=GradLOE,
+                 options={'disp': True, 'maxiter': T})
+    x = np.reshape(x.x, (l, dim))
+  else:
+    x = 0
+    print('error')
+  return x
 
 
 if __name__ == '__main__':
-    fullData = loadmat('../Data/cylinder_top.mat')
-    scaler = preprocessing.MinMaxScaler()
-    # x = csr_matrix(fullData.get('newsdata')).toarray()
-    scaler.fit(np.array(fullData.get('x')))
-    g = scaler.transform(np.array(fullData.get('x')))
-    label = np.array(fullData.get('label')).transpose()
+  fullData = loadmat('../Data/cylinder_top.mat')
+  scaler = preprocessing.MinMaxScaler()
+  # x = csr_matrix(fullData.get('newsdata')).toarray()
+  scaler.fit(np.array(fullData.get('x')))
+  g = scaler.transform(np.array(fullData.get('x')))
+  label = np.array(fullData.get('label')).transpose()
 
-    [AnchorPoint, AnchorLabel, Z] = AnchorPointGeneration(g, label)
-    anchorpoint, anchor0, C = AnchorEmbedding(
-        AnchorPoint, AnchorLabel, flagMove=0, lamb=0, dim=3)
-    scaler.fit(anchorpoint)
-    anchorpoint = scaler.transform(anchorpoint)
-    W = AdjacencyMatrix(g, neighbor=10, weight=0, metric='euclidean')
-    result = ANGEL_embedding(g, anchorpoint, Z, W, dim=3, T=15)
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    ax.scatter(result[:, 0], result[:, 1], result[:, 2])
-    plt.show()
+  [AnchorPoint, AnchorLabel, Z] = AnchorPointGeneration(g, label)
+  anchorpoint, anchor0, C = AnchorEmbedding(
+      AnchorPoint, AnchorLabel, flagMove=0, lamb=0, dim=3)
+  scaler.fit(anchorpoint)
+  anchorpoint = scaler.transform(anchorpoint)
+  W = AdjacencyMatrix(g, neighbor=10, weight=0, metric='euclidean')
+  result = ANGEL_embedding(g, anchorpoint, Z, W, dim=3, T=15)
+  fig = plt.figure()
+  ax = fig.add_subplot(projection='3d')
+  ax.scatter(result[:, 0], result[:, 1], result[:, 2])
+  plt.show()
+
+
+def runANGEL():
+  # TODO finish this
+  pass
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 

@@ -423,6 +423,27 @@ def getPerseverance(g, Result, label):
   return prev_wrong_in_high, prev_wrong_in_low, prev_partsave
 
 
+def ProtoGeneration(data, label, scaler, dim=2, C=1, metric='euclidean', Embedding='SOE'):
+  if C == 0:
+    if len(label.shape) > 1:
+      if label.shape[1] > 1:
+        label = label.transpose()
+    Dc = CohortDistance(data, label)
+    V = PrototypeEmbedding(Dc, label, dim, Embedding)
+    clabel = label
+  elif C == 1:
+    prototypes, protolabel, clabel = SeparateCohort(data, label, sparsity=0.1)
+    A = squareform(pdist(prototypes, metric))
+    A_order = np.argsort(A, axis=1).astype(int)
+    V = SOE(A_order.astype(int), protolabel, dim=3)
+    scaler.fit(V)
+    V = scaler.transform(V)
+  else:
+    print('Error')
+    return 0
+  return V, clabel
+
+
 def runCOVA(params: ParamsCOVA, iterations: int = 20) -> DataGenerated:
   # runs algorithm on the given example
   # returns data points and preservation data
@@ -433,19 +454,15 @@ def runCOVA(params: ParamsCOVA, iterations: int = 20) -> DataGenerated:
   g = scaler.transform(np.array(fullData.get('x')))
   label = np.array(fullData.get('label')).transpose()
 
-  prototypes, protolabel, clabel = SeparateCohort(g, label, sparsity=0.1)
-  A = squareform(pdist(prototypes, 'euclidean'))
-  A_order = np.argsort(A, axis=1).astype(int)
-  V = SOE(A_order.astype(int), protolabel, dim=3)
-  scaler.fit(V)
-  V = scaler.transform(V)
+  C = 0 if params.isCohortNumberOriginal else 1
+  V, clabel = ProtoGeneration(
+      g, label, scaler, dim=3, C=C, metric='euclidean', Embedding='SOE')
 
-  Ad = AdjacencyMatrix(g, 10)
-
-  Relation = CohortConfidence(g, clabel, 0)
+  Ad = AdjacencyMatrix(g, params.neighbourNumber)
+  Relation = CohortConfidence(g, clabel, params.lambdaParam)
 
   Result: np.ndarray = COVAembedding(g, Relation, Ad, V, iterations, Init=0, dim=3,
-                                     alpha=0.5, COVAType='cova1', opttype='GD_Euclidean')
+                                     alpha=params.alpha, COVAType='cova1', opttype='GD_Euclidean')
 
   *_, prev_wrong_in_high, prev_wrong_in_low, prev_partsave = neighbor_prev_disturb(
       g, Result, label, 10)

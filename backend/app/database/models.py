@@ -36,7 +36,8 @@ class ExamplesDataCOVA(Base):
           'neighbourNumber',
           'lambdaParam',
           'alpha',
-          'isCohortNumberOriginal'
+          'isCohortNumberOriginal',
+          'exampleId'
       ),)
 
   id = Column(Integer, primary_key=True, index=True)

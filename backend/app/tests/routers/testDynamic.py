@@ -1,11 +1,8 @@
 """
-Tests for api routes:
-
-Examples route
-Dynamic routes
+Tests for dynamic.py
 """
 from fastapi.testclient import TestClient
-from ..api import app
+from app.api import app
 
 client = TestClient(app)
 

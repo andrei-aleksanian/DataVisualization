@@ -4,7 +4,7 @@ CRUD opertations on the database. To be used and reused many times in the api.
 Note: pylint should be disabled for
 documentation - all crud operations are self-explanotary.
 """
-# pylint: disable-all
+# pylint: disable=C0116, C0115
 
 from sqlalchemy.orm import Session
 
@@ -38,6 +38,11 @@ def getExamples(database: Session):
   ).all()
 
 
+def deleteExample(database: Session, exampleId: int):
+  database.query(Examples).filter(Examples.id == exampleId).delete()
+  database.commit()
+
+
 def createExampleDataCOVA(database: Session, data: schemas.DataCreateCOVA, exampleId: int):
   params: schemas.ParamsCOVA = data.params
   del data.params
@@ -47,6 +52,12 @@ def createExampleDataCOVA(database: Session, data: schemas.DataCreateCOVA, examp
   database.commit()
   database.refresh(databaseExampleData)
   return databaseExampleData
+
+
+def deleteAllExampleDataCOVA(database: Session, exampleId: int):
+  database.query(ExamplesDataCOVA).filter(
+      ExamplesDataCOVA.exampleId == exampleId).delete()
+  database.commit()
 
 
 def getExampleDataCOVA(database: Session, exampleId: int, params: schemas.ParamsCOVA):

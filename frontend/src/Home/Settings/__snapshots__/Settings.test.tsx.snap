@@ -59,7 +59,7 @@ exports[`Settings matches snapshot 1`] = `
       class="index"
     >
       <p>
-        Neighbour:
+        Neighbour number:
       </p>
       <div
         class="rc-slider rc-slider-with-marks"
@@ -370,7 +370,7 @@ exports[`Settings matches snapshot 1`] = `
       class="index"
     >
       <p>
-        C parameter:
+        Cohort number:
       </p>
       <div
         class="CheckBoxes"
@@ -383,7 +383,7 @@ exports[`Settings matches snapshot 1`] = `
           <span
             class="text"
           >
-            Original label
+            Original cohort number
           </span>
           <span
             class="checkmark"
