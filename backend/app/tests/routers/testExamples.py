@@ -1,13 +1,12 @@
 """
 Tests for examples.py
 """
-# pylint: disable=C0116, C0115
 
 import pytest
 from fastapi.testclient import TestClient
 from app.api import app
 from app.routers.examples import EXAMPLE_ALREADY_EXISTS
-from app.database.crud import getAllExampleDataCOVA, getExamples
+from app.database.crud import getAllExampleDataCOVA
 from app.database.database import SessionLocal
 from ..utilsTests import cleanupDB
 
@@ -19,7 +18,7 @@ dummyData = {
 }
 
 
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(scope='function', autouse=True)
 def afterAll():
   """
   Drop DB after all tests in class
@@ -42,10 +41,8 @@ def testCreateExampleNameExists400():
   """
   Test 400 name already exists
 
-  Note: this test expects the testCreateExampleSuccess
-  to be run before it. Such that an example with name 'example'
-  has already been created.
   """
+  response = client.post("/api/examples/", json=dummyData)
   response = client.post("/api/examples/", json=dummyData)
 
   assert response.status_code == 400
@@ -67,7 +64,6 @@ def testCreateExampleGenerateCOVAANGEL():
 
   Note: ANGEL generation is not implemented yet
   """
-  cleanupDB(start=True)
   client.post("/api/examples/", json=dummyData)
 
   database = SessionLocal()
@@ -77,17 +73,23 @@ def testCreateExampleGenerateCOVAANGEL():
 
 # should clean the DB if there is an exception in the algorithm and return 500
 # this can only happen if we are serving our own dataset
-# that functionality is not implemented yet
+# that functionality is not implemented yet, but will be at some point
+# in the future
 
 
-def testGetAllExamplesSuccess():
-  cleanupDB(start=True)
+def testGetAllExamplesSuccessEmpty():
+  """Get an empty array from empty database"""
+  response = client.get("/api/examples/")
 
+  assert response.json() == []
+
+
+def testGetAllExamplesSuccessNotEmpty():
+  """Post an example and then fetch it with get"""
   client.post("/api/examples/", json=dummyData)
+  response = client.get("/api/examples/")
 
-  database = SessionLocal()
-  examples = getExamples(database)
-  database.close()
-  print(examples)
-
-  assert examples == [(dummyData["description"], dummyData["name"], 1)]
+  assert response.json() == [{
+      **dummyData,
+      "id": 1
+  }]
