@@ -8,7 +8,7 @@ from app.api import app
 from app.routers.examples import EXAMPLE_ALREADY_EXISTS
 from app.database.crud import getAllExampleDataCOVA
 from app.database.database import SessionLocal
-from ..utilsTests import cleanupDB, mockExample
+from ..utilsTests import cleanupDB, mockExample, createMockExample
 
 client = TestClient(app)
 
@@ -35,9 +35,8 @@ def testCreateExampleSuccess():
 def testCreateExampleNameExists400():
   """
   Test 400 name already exists
-
   """
-  response = client.post("/api/examples/", json=mockExample)
+  createMockExample()
   response = client.post("/api/examples/", json=mockExample)
 
   assert response.status_code == 400
