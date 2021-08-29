@@ -44,22 +44,22 @@ def createExample(example: schemas.ExampleCreate, database: Session = Depends(ge
         detail=UNPROCESSABLE_DATASET
     )
 
-  def generateCOVAData():
+  def generateCOVAData(exampleId: int):
     try:
-      generateCOVA(example.id)
+      generateCOVA(exampleId)
     except RuntimeCOVAError:
       cleanSession()
 
-  def generateANGELData():
+  def generateANGELData(exampleId: int):
     try:
-      generateANGEL(example.id)
+      generateANGEL(exampleId)
     except RuntimeANGELError:
       cleanSession()
 
   doesNameExist()
   example = crud.createExample(database, example)
-  generateCOVAData()
-  generateANGELData()
+  generateCOVAData(example.id)
+  generateANGELData(example.id)
 
   return Response(status_code=status.HTTP_200_OK)
 

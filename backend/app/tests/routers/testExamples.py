@@ -8,14 +8,9 @@ from app.api import app
 from app.routers.examples import EXAMPLE_ALREADY_EXISTS
 from app.database.crud import getAllExampleDataCOVA
 from app.database.database import SessionLocal
-from ..utilsTests import cleanupDB
+from ..utilsTests import cleanupDB, mockExample
 
 client = TestClient(app)
-
-dummyData = {
-    "name": "example",
-    "description": "string"
-}
 
 
 @pytest.fixture(scope='function', autouse=True)
@@ -32,7 +27,7 @@ def testCreateExampleSuccess():
   """
   Test successful create example
   """
-  response = client.post("/api/examples/", json=dummyData)
+  response = client.post("/api/examples/", json=mockExample)
 
   assert response.status_code == 200
 
@@ -42,8 +37,8 @@ def testCreateExampleNameExists400():
   Test 400 name already exists
 
   """
-  response = client.post("/api/examples/", json=dummyData)
-  response = client.post("/api/examples/", json=dummyData)
+  response = client.post("/api/examples/", json=mockExample)
+  response = client.post("/api/examples/", json=mockExample)
 
   assert response.status_code == 400
   assert response.json() == {"detail": EXAMPLE_ALREADY_EXISTS}
@@ -64,7 +59,7 @@ def testCreateExampleGenerateCOVAANGEL():
 
   Note: ANGEL generation is not implemented yet
   """
-  client.post("/api/examples/", json=dummyData)
+  client.post("/api/examples/", json=mockExample)
 
   database = SessionLocal()
   exampleCOVAData = getAllExampleDataCOVA(database, 1)
@@ -86,10 +81,10 @@ def testGetAllExamplesSuccessEmpty():
 
 def testGetAllExamplesSuccessNotEmpty():
   """Post an example and then fetch it with get"""
-  client.post("/api/examples/", json=dummyData)
+  client.post("/api/examples/", json=mockExample)
   response = client.get("/api/examples/")
 
   assert response.json() == [{
-      **dummyData,
+      **mockExample,
       "id": 1
   }]

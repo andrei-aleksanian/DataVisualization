@@ -5,8 +5,23 @@ To be reused in other tests.
 """
 
 from sqlalchemy_utils.functions import drop_database as dropDatabase, database_exists
-from app.database.database import engine
+from app.database.database import engine, SessionLocal
+from app.database.schemas import ExampleCreate
+from app.database.crud import createExample
 from app.database import models
+
+
+mockExample = {
+    "name": "example",
+    "description": "string"
+}
+
+
+def createMockExample():
+  """Creating a mock example in the database"""
+  database = SessionLocal()
+  createExample(database, ExampleCreate(**mockExample))
+  database.close()
 
 
 def cleanupDB(start: bool):
