@@ -1,10 +1,10 @@
 """
 Test generate COVA data
 """
+import pytest
 from app.database.database import SessionLocal
 from app.database.crud import getAllExampleDataCOVA
 from app.utils.generateCOVA import generateCOVA
-import pytest
 from ..utilsTests import cleanupDB, createMockExample
 
 
