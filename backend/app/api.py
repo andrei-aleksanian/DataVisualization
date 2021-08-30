@@ -3,12 +3,10 @@ My API file used for early development.
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from .database.database import setUpDatabase
 from .routers import dynamic, exampleDataCOVA, exampleDataANGEL, examples
-from .database import models
-from .database.database import engine
 
-models.Base.metadata.create_all(bind=engine)
+setUpDatabase()
 
 app = FastAPI()
 

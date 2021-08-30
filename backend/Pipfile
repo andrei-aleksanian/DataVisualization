@@ -10,6 +10,8 @@ pydantic = "*"
 numpy = "*"
 numba = "*"
 sqlalchemy = "*"
+pymysql = "*"
+cryptography = "*"
 
 [dev-packages]
 pytest = "*"

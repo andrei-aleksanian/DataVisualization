@@ -8,14 +8,36 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 30
 
-  backend:
-    restart: unless-stopped
-    image: andreialeksanian/data-visualization-tool-backend
-    ports:
-      - "8080:8080"
-
   frontend:
     restart: unless-stopped
     image: andreialeksanian/data-visualization-tool-frontend
     ports:
       - "80:80"
+    env_file:
+      - frontend.env
+
+  backend:
+    restart: unless-stopped
+    image: andreialeksanian/data-visualization-tool-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - backend.env
+      - db.env
+
+  db:
+    image: mysql:8.0.26
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+      - mysql_config:/etc/mysql
+    env_file:
+      - db.env
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+
+volumes:
+  mysql:
+  mysql_config:

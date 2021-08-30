@@ -27,3 +27,6 @@
 
 # cache
 **/*.pyc
+
+# env files
+*.env
