@@ -3,10 +3,10 @@ Endpoints for ANGEL data collection.
 """
 # pylint: disable=R0801
 from typing import List
-from app.types.dataGenerated import ParamsCOVA
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
+from app.types.dataGenerated import ParamsCOVA
 from ..database import crud, schemas
 from ..dependencies import getDB
 

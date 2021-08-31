@@ -5,13 +5,9 @@ import { ParamsCOVA } from 'types/Data/Params';
 export const getDataCOVA = async (exampleId: number, params: ParamsCOVA) => {
   try {
     // TODO change this string to something else
-    const { data }: { data: string | DataPerseveranceLabelled } = await axios.post(
-      `/examples/cova/data/get/${exampleId}`,
-      params
-    );
+    const { data }: { data: string } = await axios.post(`/examples/cova/data/get/${exampleId}`, params);
 
-    if (typeof data === 'string') return JSON.parse(data) as DataPerseveranceLabelled;
-    return data;
+    return JSON.parse(data) as DataPerseveranceLabelled;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);
