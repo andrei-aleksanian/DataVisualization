@@ -30,3 +30,4 @@
 
 # env files
 *.env
+dump*.sql

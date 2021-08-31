@@ -6,18 +6,24 @@ import Scene from './Scene';
 
 import classes from './Visualization2D.module.scss';
 
-const Visualization2D = ({ data }: { data: DataPerseveranceColored }) => {
+export interface Visualization2DProps {
+  data: DataPerseveranceColored;
+  showPreservation: boolean;
+  colorPreservation: () => void;
+}
+
+const Visualization2D = ({ data, ...props }: Visualization2DProps) => {
   return (
     <Canvas camera={{ position: [0, 0, 100] }}>
       <TrackballControls />
-      <Scene data={data} dimension2D={data.dimension2D} />
+      <Scene {...props} dimension2D={data.dimension2D} data={data} />
     </Canvas>
   );
 };
 
-const Wrapper = ({ data }: { data: DataPerseveranceColored }) => (
+const Wrapper = (props: Visualization2DProps) => (
   <div className={classes.Canvas}>
-    <Visualization2D data={data} />
+    <Visualization2D {...props} />
   </div>
 );
 

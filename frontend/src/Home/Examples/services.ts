@@ -1,9 +1,16 @@
 import axios from 'utils/axios';
-import { DataPerseveranceLabelled, DATA_PERSEVERANCE } from '../../types/Data/DataPerseverance';
+import { DataPerseveranceLabelled, DATA_PERSEVERANCE } from 'types/Data/DataPerseverance';
+import { ParamsCOVA } from 'types/Data/Params';
 
-export const getCovaDemo2Init = async () => {
+export const getDataCOVA = async (exampleId: number, params: ParamsCOVA) => {
   try {
-    const { data }: { data: DataPerseveranceLabelled } = await axios.get('/cova-demo-dynamic');
+    // TODO change this string to something else
+    const { data }: { data: string | DataPerseveranceLabelled } = await axios.post(
+      `/examples/cova/data/get/${exampleId}`,
+      params
+    );
+
+    if (typeof data === 'string') return JSON.parse(data) as DataPerseveranceLabelled;
     return data;
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -13,15 +20,13 @@ export const getCovaDemo2Init = async () => {
   }
 };
 
-export const getCovaDemo2 = async (iteration: number, body: DataPerseveranceLabelled) => {
+export const getDataANGEL = async (exampleId: number) => {
   try {
-    const { data }: { data: DataPerseveranceLabelled } = await axios.post('/cova-demo-dynamic', body);
+    const { data }: { data: DataPerseveranceLabelled } = await axios.get(`/examples/angel/data/get/${exampleId}`);
     return data;
   } catch (e) {
     // eslint-disable-next-line no-console
-    if (e.response !== undefined) console.log(e.response.data);
-    // eslint-disable-next-line no-console
-    else console.log(e);
+    console.log(e);
     // todo: return error and handle it
     return DATA_PERSEVERANCE;
   }

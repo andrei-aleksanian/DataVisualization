@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import userEvent from '@testing-library/user-event';
 
+import { Algorithm } from 'types/Settings';
 import Settings, {
   TEXT_CHECKBOX_ALGORITHM,
   TEXT_CHECKBOX_PRESERVATION,
@@ -9,36 +9,63 @@ import Settings, {
   TEXT_SLIDER_NEIGHBOUR,
   TEXT_CHECKBOX_ANGEL,
   TEXT_CHECKBOX_COVA,
+  defaultSettingsCommon,
+  SettingsProps,
 } from './Settings';
-import { TEXT_CHECKBOX_COHORT_NUMBER, TEXT_SLIDER_ALPHA } from './components/COVA';
-import { TEXT_SLIDER_ANCHOR_DENSITY, TEXT_CHECKBOX_ANCHOR_MODIFICATION, TEXT_SLIDER_EPSILON } from './components/ANGEL';
+import { TEXT_CHECKBOX_COHORT_NUMBER, TEXT_SLIDER_ALPHA, defaultSettingsCOVA } from './components/COVA';
+import {
+  TEXT_SLIDER_ANCHOR_DENSITY,
+  TEXT_CHECKBOX_ANCHOR_MODIFICATION,
+  TEXT_SLIDER_EPSILON,
+  defaultSettingsANGEL,
+} from './components/ANGEL';
 
-test('Settings matches snapshot', async () => {
-  const { asFragment } = render(<Settings />, { wrapper: MemoryRouter });
+const mockSettingsProps: SettingsProps = {
+  settingsCommon: defaultSettingsCommon,
+  setSettingsCommon: () => {},
+  settingsCOVA: defaultSettingsCOVA,
+  setSettingsCOVA: () => {},
+  settingsANGEL: defaultSettingsANGEL,
+  setSettingsANGEL: () => {},
+};
+
+test('Settings matches snapshot', () => {
+  const { asFragment } = render(<Settings {...mockSettingsProps} />, { wrapper: MemoryRouter });
   expect(asFragment()).toMatchSnapshot();
 });
 
 describe('Test UI changes and events', () => {
-  beforeEach(() => {
-    render(<Settings />, { wrapper: MemoryRouter });
-  });
-
-  test("Checkboxes clikcks don't change common attributes", () => {
-    const checkCommonArttributes = () => {
-      expect(screen.getByText(TEXT_CHECKBOX_ALGORITHM)).toBeInTheDocument();
-      expect(screen.getByText(TEXT_SLIDER_NEIGHBOUR)).toBeInTheDocument();
-      expect(screen.getByText(TEXT_SLIDER_LAMBDA)).toBeInTheDocument();
-      expect(screen.getByText(TEXT_CHECKBOX_PRESERVATION)).toBeInTheDocument();
+  const init = (algorithm: Algorithm) => {
+    const mockSettingsPropsInit: SettingsProps = {
+      ...mockSettingsProps,
+      settingsCommon: {
+        ...mockSettingsProps.settingsCommon,
+        algorithm, // pretending we clicked the button in parent
+      },
     };
-    userEvent.click(screen.getByRole('radio', { name: TEXT_CHECKBOX_ANGEL }));
-    checkCommonArttributes();
+    render(<Settings {...mockSettingsPropsInit} />, { wrapper: MemoryRouter });
+  };
 
-    userEvent.click(screen.getByRole('radio', { name: TEXT_CHECKBOX_COVA }));
+  const checkCommonArttributes = () => {
+    expect(screen.getByText(TEXT_CHECKBOX_ALGORITHM)).toBeInTheDocument();
+    expect(screen.getByText(TEXT_SLIDER_NEIGHBOUR)).toBeInTheDocument();
+    expect(screen.getByText(TEXT_SLIDER_LAMBDA)).toBeInTheDocument();
+    expect(screen.getByText(TEXT_CHECKBOX_PRESERVATION)).toBeInTheDocument();
+  };
+
+  test("Checkboxes clicks don't change common attributes", () => {
+    init(Algorithm.ANGEL);
     checkCommonArttributes();
   });
 
-  test('Checkboxes ANGEL/COVA change the controls to ANGEL', async () => {
-    userEvent.click(screen.getByRole('radio', { name: TEXT_CHECKBOX_ANGEL }));
+  test("Checkboxes clicks don't change common attributes", () => {
+    init(Algorithm.COVA);
+    checkCommonArttributes();
+  });
+
+  test('Checkboxes ANGEL/COVA change the controls to ANGEL', () => {
+    init(Algorithm.ANGEL);
+
     expect(screen.getByRole('radio', { name: TEXT_CHECKBOX_COVA })).not.toBeChecked();
     expect(screen.getByRole('radio', { name: TEXT_CHECKBOX_ANGEL })).toBeChecked();
 
@@ -53,7 +80,8 @@ describe('Test UI changes and events', () => {
   });
 
   test('Checkboxes ANGEL/COVA change the controls back to COVA', async () => {
-    userEvent.click(screen.getByRole('radio', { name: TEXT_CHECKBOX_COVA }));
+    init(Algorithm.COVA);
+
     expect(screen.getByRole('radio', { name: TEXT_CHECKBOX_ANGEL })).not.toBeChecked();
     expect(screen.getByRole('radio', { name: TEXT_CHECKBOX_COVA })).toBeChecked();
 

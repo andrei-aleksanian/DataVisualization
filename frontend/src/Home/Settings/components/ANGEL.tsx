@@ -10,7 +10,7 @@ enum FlagMove {
   ON,
   OFF,
 }
-interface SettingsANGEL {
+export interface SettingsANGEL {
   sparsity: number;
   epsilon: number;
   flagMove: FlagMove;

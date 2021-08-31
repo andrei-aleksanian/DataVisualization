@@ -12,7 +12,7 @@ from .Points import Points
 
 
 class Params(BaseModel):
-  neighbourNumber: int
+  neighbourNumber: str
   lambdaParam: float
 
 
@@ -34,4 +34,6 @@ class DataGenerated(BaseModel):
   prevPartsave: List[int]
   prevWrongInLow: List[List[int]]
   prevWrongInHigh: List[List[int]]
+  dimension2D: bool = False
   points: Points
+  labels: List[int]

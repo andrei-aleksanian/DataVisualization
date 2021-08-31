@@ -81,27 +81,19 @@ exports[`Settings matches snapshot 1`] = `
           />
           <span
             class="rc-slider-dot"
-            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 14.285714285714285%;"
+            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 20%;"
           />
           <span
             class="rc-slider-dot"
-            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 28.57142857142857%;"
+            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 40%;"
           />
           <span
             class="rc-slider-dot"
-            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 42.857142857142854%;"
+            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 60%;"
           />
           <span
             class="rc-slider-dot"
-            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 57.14285714285714%;"
-          />
-          <span
-            class="rc-slider-dot"
-            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 71.42857142857143%;"
-          />
-          <span
-            class="rc-slider-dot"
-            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 85.71428571428571%;"
+            style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 80%;"
           />
           <span
             class="rc-slider-dot"
@@ -110,7 +102,7 @@ exports[`Settings matches snapshot 1`] = `
         </div>
         <div
           aria-disabled="false"
-          aria-valuemax="7"
+          aria-valuemax="5"
           aria-valuemin="0"
           aria-valuenow="0"
           class="rc-slider-handle"
@@ -129,39 +121,27 @@ exports[`Settings matches snapshot 1`] = `
           </span>
           <span
             class="rc-slider-mark-text"
-            style="transform: translateX(-50%); left: 14.285714285714285%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+            style="transform: translateX(-50%); left: 20%; font-size: 0.85rem; color: rgb(204, 204, 204);"
           >
             20
           </span>
           <span
             class="rc-slider-mark-text"
-            style="transform: translateX(-50%); left: 28.57142857142857%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+            style="transform: translateX(-50%); left: 40%; font-size: 0.85rem; color: rgb(204, 204, 204);"
           >
             30
           </span>
           <span
             class="rc-slider-mark-text"
-            style="transform: translateX(-50%); left: 42.857142857142854%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+            style="transform: translateX(-50%); left: 60%; font-size: 0.85rem; color: rgb(204, 204, 204);"
           >
             10%
           </span>
           <span
             class="rc-slider-mark-text"
-            style="transform: translateX(-50%); left: 57.14285714285714%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-          >
-            20%
-          </span>
-          <span
-            class="rc-slider-mark-text"
-            style="transform: translateX(-50%); left: 71.42857142857143%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+            style="transform: translateX(-50%); left: 80%; font-size: 0.85rem; color: rgb(204, 204, 204);"
           >
             30%
-          </span>
-          <span
-            class="rc-slider-mark-text"
-            style="transform: translateX(-50%); left: 85.71428571428571%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-          >
-            40%
           </span>
           <span
             class="rc-slider-mark-text"

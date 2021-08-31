@@ -1,5 +1,6 @@
 # pylint: disable-all
 
+import math
 import numpy as np
 from scipy.io import loadmat
 from scipy.spatial.distance import pdist, cdist, squareform
@@ -25,6 +26,7 @@ from app.types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
 from app.types.dataGenerated import DataGenerated
 from app.types.dataGenerated import ParamsCOVA
 from app.utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
+from app.types.exceptions import RuntimeCOVAError
 
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
@@ -444,6 +446,20 @@ def ProtoGeneration(data, label, scaler, dim=2, C=1, metric='euclidean', Embeddi
   return V, clabel
 
 
+def getNeighbourNumber(pointsLength: int, neighbourNumber: str) -> int:
+  if "%" not in neighbourNumber:
+    return int(neighbourNumber)
+
+  if neighbourNumber == '10%':
+    return math.floor(pointsLength / 10)
+  elif neighbourNumber == '30%':
+    return math.floor(pointsLength / 100 * 30)
+  elif neighbourNumber == '50%':
+    return math.floor(pointsLength / 2)
+  else:
+    raise RuntimeCOVAError("wrong neighbour value")
+
+
 def runCOVA(params: ParamsCOVA, iterations: int = 20) -> DataGenerated:
   # runs algorithm on the given example
   # returns data points and preservation data
@@ -458,7 +474,7 @@ def runCOVA(params: ParamsCOVA, iterations: int = 20) -> DataGenerated:
   V, clabel = ProtoGeneration(
       g, label, scaler, dim=3, C=C, metric='euclidean', Embedding='SOE')
 
-  Ad = AdjacencyMatrix(g, params.neighbourNumber)
+  Ad = AdjacencyMatrix(g, getNeighbourNumber(len(g), params.neighbourNumber))
   Relation = CohortConfidence(g, clabel, params.lambdaParam)
 
   Result: np.ndarray = COVAembedding(g, Relation, Ad, V, iterations, Init=0, dim=3,
@@ -471,7 +487,8 @@ def runCOVA(params: ParamsCOVA, iterations: int = 20) -> DataGenerated:
       points=Result.tolist(),
       prevPartsave=prev_partsave,
       prevWrongInLow=childrenToList(prev_wrong_in_low),
-      prevWrongInHigh=childrenToList(prev_wrong_in_high)
+      prevWrongInHigh=childrenToList(prev_wrong_in_high),
+      labels=label.ravel().tolist()
   )
 
 

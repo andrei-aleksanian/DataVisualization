@@ -2,8 +2,8 @@
 Endpoints for ANGEL data collection.
 """
 # pylint: disable=R0801
-
 from typing import List
+from app.types.dataGenerated import ParamsCOVA
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
@@ -36,9 +36,9 @@ def createExampleData(
   return Response(status_code=status.HTTP_200_OK)
 
 
-@router.post("/get/{exampleId}",
-             summary="Get all data samples for given example",
-             response_model=List[schemas.Data])
+@router.get("/{exampleId}",
+            summary="Get all data samples for given example",
+            response_model=List[schemas.Data])
 def getAllExampleData(exampleId: int, database: Session = Depends(getDB)):
   """
   Warning: used solely for development
@@ -46,3 +46,16 @@ def getAllExampleData(exampleId: int, database: Session = Depends(getDB)):
   Returns all COVA example data.
   """
   return crud.getAllExampleDataCOVA(database, exampleId)
+
+
+@router.post("/get/{exampleId}",
+             summary="Get a sample for given example",
+             )
+def getExampleData(exampleId: int, paramsCOVA: ParamsCOVA, database: Session = Depends(getDB)):
+  """
+  Warning: used solely for development
+
+  Returns all COVA example data.
+  """
+  data = crud.getExampleDataCOVA(database, exampleId, paramsCOVA).jsonData
+  return data

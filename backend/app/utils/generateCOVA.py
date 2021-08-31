@@ -16,12 +16,18 @@ lambdaParam = [0, 0.2, 0.4, 0.6, 0.8, 1]
 alpha = [0, 0.2, 0.4, 0.6, 0.8, 1]
 isCohortNumberOriginal = [True, False]
 
-if os.environ.get("ENVIRONMENT") == Env.DEV.value:
-  neighbourNumber = ['10']
-  lambdaParam = [0]
-  alpha = [0]
-  isCohortNumberOriginal = [True, False]
-elif os.environ.get("ENVIRONMENT") == Env.TEST.value:
+# if os.environ.get("ENVIRONMENT") == Env.DEV.value:
+#   neighbourNumber = ['10']
+#   lambdaParam = [0.2]
+#   alpha = [0]
+#   isCohortNumberOriginal = [True, False]
+# elif os.environ.get("ENVIRONMENT") == Env.TEST.value:
+#   neighbourNumber = ['10']
+#   lambdaParam = [0]
+#   alpha = [0]
+#   isCohortNumberOriginal = [True]
+
+if os.environ.get("ENVIRONMENT") == Env.TEST.value:
   neighbourNumber = ['10']
   lambdaParam = [0]
   alpha = [0]
@@ -54,7 +60,8 @@ def generateCOVA(exampleId: int):
             database.close()
           except Exception as exception:
             raise RuntimeCOVAError(f"\
+              generateCOVA: {exception}\
               parameters: neighbourNumber - {neighbour}, \
-              lambdaParam - {lambdaParam}, \
+              lambdaParam - {lamb}, \
               alpha - {alph}, \
               isCohortNumberOriginal - {isCohort}") from exception

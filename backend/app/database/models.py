@@ -1,7 +1,7 @@
 """
 Data model(table) usikng SQLAlchemy model
 """
-from sqlalchemy import Column, ForeignKey, Integer, String, JSON, UniqueConstraint, Boolean, Float
+from sqlalchemy import Column, ForeignKey, Integer, String, JSON, UniqueConstraint, Boolean, DECIMAL
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -42,9 +42,9 @@ class ExamplesDataCOVA(Base):
 
   id = Column(Integer, primary_key=True, index=True)
 
-  neighbourNumber = Column(Integer)
-  lambdaParam = Column(Float)
-  alpha = Column(Float)
+  neighbourNumber = Column(String(4))
+  lambdaParam = Column(DECIMAL(2, 1))
+  alpha = Column(DECIMAL(2, 1))
   isCohortNumberOriginal = Column(Boolean)
 
   jsonData = Column(JSON)
@@ -71,10 +71,10 @@ class ExamplesDataANGEL(Base):
 
   id = Column(Integer, primary_key=True, index=True)
 
-  neighbourNumber = Column(Integer)
-  lambdaParam = Column(Float)
-  anchorDensity = Column(Float)
-  epsilon = Column(Float)
+  neighbourNumber = Column(String(4))
+  lambdaParam = Column(DECIMAL(2, 1))
+  anchorDensity = Column(DECIMAL(2, 1))
+  epsilon = Column(DECIMAL(2, 1))
   isAnchorModification = Column(Boolean)
 
   jsonData = Column(JSON)
