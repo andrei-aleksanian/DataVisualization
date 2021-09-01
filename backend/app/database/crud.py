@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from . import schemas
 from .models import Examples, ExamplesDataCOVA, ExamplesDataANGEL
+from ..types.dataGenerated import ParamsANGEL, ParamsCOVA
 
 
 def createExample(database: Session, example: schemas.ExampleCreate):
@@ -34,7 +35,7 @@ def getExamples(database: Session):
   ).with_entities(
       Examples.description,
       Examples.name,
-      Examples.id
+      Examples.id,
   ).all()
 
 
@@ -60,7 +61,7 @@ def deleteAllExampleDataCOVA(database: Session, exampleId: int):
   database.commit()
 
 
-def getExampleDataCOVA(database: Session, exampleId: int, params: schemas.ParamsCOVA):
+def getExampleDataCOVA(database: Session, exampleId: int, params: ParamsCOVA):
   return database.query(
       ExamplesDataCOVA
   ).filter(
@@ -91,7 +92,7 @@ def createExampleDataANGEL(database: Session, data: schemas.DataCreateANGEL, exa
   return databaseExampleData
 
 
-def getExampleDataANGEL(database: Session, exampleId: int, params: schemas.ParamsANGEL):
+def getExampleDataANGEL(database: Session, exampleId: int, params: ParamsANGEL):
   return database.query(
       ExamplesDataANGEL
   ).filter(
@@ -111,3 +112,9 @@ def getExampleDataANGEL(database: Session, exampleId: int, params: schemas.Param
 
 def getAllExampleDataANGEL(database: Session, exampleId: int):
   return database.query(ExamplesDataANGEL).filter(ExamplesDataANGEL.exampleId == exampleId).all()
+
+
+def deleteAllExampleDataANGEL(database: Session, exampleId: int):
+  database.query(ExamplesDataANGEL).filter(
+      ExamplesDataANGEL.exampleId == exampleId).delete()
+  database.commit()

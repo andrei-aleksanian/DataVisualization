@@ -7,7 +7,7 @@ from typing import List, TypedDict
 from numpy import ndarray
 from pydantic import BaseModel
 
-from .Points import Points
+from .Custom import Points
 
 
 class DataNumpy(TypedDict):

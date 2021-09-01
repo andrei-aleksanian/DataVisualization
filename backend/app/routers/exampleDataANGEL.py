@@ -1,14 +1,15 @@
 """
-Endpoints for COVA data collection.
+Endpoints for ANGEL data collection.
 """
 # pylint: disable=R0801
 
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..database import crud, schemas
 from ..dependencies import getDB
+from ..types.dataGenerated import ParamsANGEL
+from .utils import PARAMS_DO_NOT_EXIST
 
 router = APIRouter(
     prefix="/examples/angel/data",
@@ -16,33 +17,19 @@ router = APIRouter(
 )
 
 
-@router.post("/{exampleId}",
-             summary="Add a new ANGEL example data sample to the database")
-def createExampleData(
-        data: schemas.DataCreateANGEL,
-        exampleId: int,
-        database: Session = Depends(getDB)):
-  """
-  Warning: used solely for development
-
-  Accepts new ANGEL data example for specific parameters.
-  """
-  exampleDb = crud.getExampleDataANGEL(database, exampleId, data.params)
-  if exampleDb:
-    raise HTTPException(
-        status_code=400, detail="A data sample with this param already exists")
-
-  crud.createExampleDataANGEL(database, data, exampleId)
-  return Response(status_code=status.HTTP_200_OK)
-
-
 @router.post("/get/{exampleId}",
-             summary="Get all data samples for given example",
-             response_model=List[schemas.Data])
-def getAllExampleData(exampleId: int, database: Session = Depends(getDB)):
+             summary="Get a sample for given example",
+             response_model=schemas.JSONType
+             )
+def getExampleData(exampleId: int, params: ParamsANGEL, database: Session = Depends(getDB)):
   """
-  Warning: used solely for development
+  Returns ANGEL example data.
 
-  Returns all ANGEL example data.
+  Warning: response_model actually returns a DataGenerated object in JSON format
   """
-  return crud.getAllExampleDataANGEL(database, exampleId)
+  data = crud.getExampleDataANGEL(database, exampleId, params)
+  if data is None:
+    raise HTTPException(
+        status_code=404, detail=PARAMS_DO_NOT_EXIST)
+
+  return data.jsonData

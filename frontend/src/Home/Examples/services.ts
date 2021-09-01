@@ -1,6 +1,6 @@
 import axios from 'utils/axios';
 import { DataPerseveranceLabelled, DATA_PERSEVERANCE } from 'types/Data/DataPerseverance';
-import { ParamsCOVA } from 'types/Data/Params';
+import { ParamsANGEL, ParamsCOVA } from 'types/Data/Params';
 
 export const getDataCOVA = async (exampleId: number, params: ParamsCOVA) => {
   try {
@@ -16,10 +16,12 @@ export const getDataCOVA = async (exampleId: number, params: ParamsCOVA) => {
   }
 };
 
-export const getDataANGEL = async (exampleId: number) => {
+export const getDataANGEL = async (exampleId: number, params: ParamsANGEL) => {
   try {
-    const { data }: { data: DataPerseveranceLabelled } = await axios.get(`/examples/angel/data/get/${exampleId}`);
-    return data;
+    // TODO change this string to something else
+    const { data }: { data: string } = await axios.post(`/examples/angel/data/get/${exampleId}`, params);
+
+    return JSON.parse(data) as DataPerseveranceLabelled;
   } catch (e) {
     // eslint-disable-next-line no-console
     console.log(e);

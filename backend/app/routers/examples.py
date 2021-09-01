@@ -35,33 +35,34 @@ def createExample(example: schemas.ExampleCreate, database: Session = Depends(ge
       raise HTTPException(
           status_code=400, detail=EXAMPLE_ALREADY_EXISTS)
 
-  def cleanSession():
+  def cleanSession(exampleId: int):
     # in case something goes horribly wrong, delete all entries related to example
-    crud.deleteAllExampleDataCOVA(database, example.id)
-    crud.deleteExample(database, example.id)
+    crud.deleteAllExampleDataCOVA(database, exampleId)
+    crud.deleteAllExampleDataANGEL(database, exampleId)
+    crud.deleteExample(database, exampleId)
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         detail=UNPROCESSABLE_DATASET
     )
 
-  def generateCOVAData(exampleId: int):
+  def generateCOVAData(exampleId: int, dimension: int):
     try:
-      generateCOVA(exampleId)
+      generateCOVA(exampleId, dimension)
     except RuntimeCOVAError as exception:
       print(exception)  # need a logger
-      cleanSession()
+      cleanSession(exampleId)
 
-  def generateANGELData(exampleId: int):
+  def generateANGELData(exampleId: int, dimension: int):
     try:
-      generateANGEL(exampleId)
+      generateANGEL(exampleId, dimension)
     except RuntimeANGELError as exception:
       print(exception)  # need a logger
-      cleanSession()
+      cleanSession(exampleId)
 
   doesNameExist()
   example = crud.createExample(database, example)
-  generateCOVAData(example.id)
-  generateANGELData(example.id)
+  generateCOVAData(example.id, example.dimension)
+  generateANGELData(example.id, example.dimension)
 
   return Response(status_code=status.HTTP_200_OK)
 

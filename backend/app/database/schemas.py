@@ -13,6 +13,7 @@ Schemas or types to be used in the application on different specific events:
 from typing import List, Optional, Union, Dict, Any
 from pydantic import BaseModel
 from ..types.dataGenerated import ParamsANGEL, ParamsCOVA
+from ..types.Custom import Dimension
 
 
 JSONType = Union[str, int, float, bool,
@@ -61,6 +62,7 @@ class ExampleCreate(ExampleBase):
   """
   Used for creating example records
   """
+  dimension: Dimension
 
 
 class Example(ExampleBase):

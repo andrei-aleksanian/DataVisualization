@@ -5,9 +5,10 @@ import os
 from ..database.database import SessionLocal
 from ..database.crud import createExampleDataCOVA
 from ..database.schemas import DataCreateCOVA
-from ..visualization.demo2.COVA import runCOVA
+from ..visualization.Cova import runCOVA
 from ..types.dataGenerated import ParamsCOVA
 from ..types.exceptions import RuntimeCOVAError
+from ..types.Custom import Dimension
 from .environment import Env
 
 # Define params and constraints
@@ -16,17 +17,6 @@ lambdaParam = [0, 0.2, 0.4, 0.6, 0.8, 1]
 alpha = [0, 0.2, 0.4, 0.6, 0.8, 1]
 isCohortNumberOriginal = [True, False]
 
-# if os.environ.get("ENVIRONMENT") == Env.DEV.value:
-#   neighbourNumber = ['10']
-#   lambdaParam = [0.2]
-#   alpha = [0]
-#   isCohortNumberOriginal = [True, False]
-# elif os.environ.get("ENVIRONMENT") == Env.TEST.value:
-#   neighbourNumber = ['10']
-#   lambdaParam = [0]
-#   alpha = [0]
-#   isCohortNumberOriginal = [True]
-
 if os.environ.get("ENVIRONMENT") == Env.TEST.value:
   neighbourNumber = ['10']
   lambdaParam = [0]
@@ -34,7 +24,7 @@ if os.environ.get("ENVIRONMENT") == Env.TEST.value:
   isCohortNumberOriginal = [True]
 
 
-def generateCOVA(exampleId: int):
+def generateCOVA(exampleId: int, dimension: Dimension):
   """
   Genersates all combinations of parameters, runs the COVA algorithm.
   """
@@ -49,7 +39,7 @@ def generateCOVA(exampleId: int):
               isCohortNumberOriginal=isCohort
           )
           try:
-            dataGenerated = runCOVA(params)
+            dataGenerated = runCOVA(params, dimension)
             data = DataCreateCOVA(
                 params=params,
                 jsonData=dataGenerated.json()

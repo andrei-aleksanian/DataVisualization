@@ -1,6 +1,5 @@
 # pylint: disable-all
 
-import math
 import numpy as np
 from scipy.io import loadmat
 from scipy.spatial.distance import pdist, cdist, squareform
@@ -20,13 +19,8 @@ from sklearn.manifold import MDS
 from .SOEmbedding import SOE
 from .ANGEL import AnchorPointGeneration, AnchorEmbedding
 from sklearn.cluster import KMeans
-from .evaluation import neighbor_prev_disturb
-
-from app.types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
-from app.types.dataGenerated import DataGenerated
-from app.types.dataGenerated import ParamsCOVA
-from app.utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
-from app.types.exceptions import RuntimeCOVAError
+# import imagesc
+from .evaluation import plot_neighbor
 
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
@@ -69,8 +63,7 @@ def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
         elif linkC == 'Hausdoff':
           tempCluster_i = Data[tempi, :]
           tempCluster_j = Data[tempj, :]
-          dCluster[i, j] = directed_hausdorff(
-              tempCluster_i, tempCluster_j)[0]
+          dCluster[i, j] = directed_hausdorff(tempCluster_i, tempCluster_j)[0]
           dCluster[j, i] = dCluster[i, j]
         else:
           print('Wrong Information')
@@ -109,8 +102,7 @@ def k_nearest_neighbor(disgraph, k=10, weight=1, direction=0):
     dis_sort = disgraph[i, :]
     dis_ascend = np.argsort(dis_sort)
     if weight == 1:
-      simgraph[i, dis_ascend[1: k + 1]
-               ] = abs(dis_sort[dis_ascend[1: k + 1]])
+      simgraph[i, dis_ascend[1: k + 1]] = abs(dis_sort[dis_ascend[1: k + 1]])
     else:
       simgraph[i, dis_ascend[1: k + 1]] = 1
   if direction == 0:
@@ -169,7 +161,7 @@ def analyticalCOVA(R, Ad, V, alpha):
   return o, x
 
 
-def OjLocalDist(x, R, V, opttype='GD_Euclidean'):
+def OjGlobalDist(x, R, V, opttype='GD_Euclidean'):
   Dr = np.diag(np.sum(R, axis=1))
   Dc = np.diag(np.sum(R, axis=0))
   if opttype == 'GD_Riemannian':
@@ -179,7 +171,7 @@ def OjLocalDist(x, R, V, opttype='GD_Euclidean'):
   return o
 
 
-def OjGlobalDist(x, Ad, opttype='GD_Euclidean'):
+def OjLocalDist(x, Ad, opttype='GD_Euclidean'):
   L3 = np.diag(np.sum(Ad, axis=0)) - Ad
   if opttype == 'GD_Riemannian':
     x = x[0] @ np.diag(x[1]) @ x[2]
@@ -187,7 +179,7 @@ def OjGlobalDist(x, Ad, opttype='GD_Euclidean'):
   return o
 
 
-def OjLocalSE(x, R, V, opttype='GD_Euclidean'):
+def OjGlobalSE(x, R, V, opttype='GD_Euclidean'):
   if opttype == 'GD_Riemannian':
     x = x[0] @ np.diag(x[1]) @ x[2]
   D = cdist(x, V, metric='euclidean')
@@ -204,7 +196,7 @@ def OjLocalSE(x, R, V, opttype='GD_Euclidean'):
   return o
 
 
-def OjGlobalSE(x, Ad, opttype='GD_Euclidean'):
+def OjLocalSE(x, Ad, opttype='GD_Euclidean'):
   if opttype == 'GD_Riemannian':
     x = x[0] @ np.diag(x[1]) @ x[2]
   n = Ad.shape[0]
@@ -220,7 +212,7 @@ def OjGlobalSE(x, Ad, opttype='GD_Euclidean'):
   return o
 
 
-def GradLocalDist(x, R, V, opttype='GD_Euclidean'):
+def GradGlobalDist(x, R, V, opttype='GD_Euclidean'):
   Dr = np.diag(np.sum(R, axis=1))
   if opttype == 'GD_Euclidean':
     gd = 2 * Dr @ x - 2 * R @ V
@@ -234,7 +226,7 @@ def GradLocalDist(x, R, V, opttype='GD_Euclidean'):
     return gdu, gds, gvt
 
 
-def GradLocalSE(x, R, V, opttype='GD_Euclidean'):
+def GradGlobalSE(x, R, V, opttype='GD_Euclidean'):
   D = cdist(x, V, metric='euclidean')
   D = D * D
   T = 1 / (1 + D)
@@ -249,7 +241,7 @@ def GradLocalSE(x, R, V, opttype='GD_Euclidean'):
   return gd
 
 
-def GradGlobalDist(x, Ad, opttype='GD_Euclidean'):
+def GradLocalDist(x, Ad, opttype='GD_Euclidean'):
   L3 = np.diag(np.sum(Ad, axis=0)) - Ad
   if opttype == 'GD_Euclidean':
     gd = 2 * L3 @ x
@@ -263,7 +255,7 @@ def GradGlobalDist(x, Ad, opttype='GD_Euclidean'):
     return gdu, gds, gvt
 
 
-def GradGlobalSE(x, Ad, opttype='GD_Euclidean'):
+def GradLocalSE(x, Ad, opttype='GD_Euclidean'):
   n = Ad.shape[0]
   P = Ad / sum(sum(Ad))
   d2 = squareform(pdist(x, 'euclidean'))
@@ -283,20 +275,21 @@ def reformX(x, dim):
 
 
 def cost1(x, R, Ad, V, alpha, dim, COVAtype='cova1', opttype='GD_Euclidean'):
+  # alpha = 1 - alpha
   if opttype == 'GD_Euclidean':
     x = reformX(x, dim)
   if COVAtype == 'cova1':
-    o1 = OjLocalDist(x, R, V, opttype)
-    o3 = OjGlobalDist(x, Ad, opttype)
+    o1 = OjGlobalDist(x, R, V, opttype)
+    o3 = OjLocalDist(x, Ad, opttype)
   elif COVAtype == 'cova2':
-    o1 = OjLocalSE(x, R, V, opttype)
-    o3 = OjGlobalSE(x, Ad)
+    o1 = OjGlobalSE(x, R, V, opttype)
+    o3 = OjLocalSE(x, Ad)
   elif COVAtype == 'cova3':
-    o1 = OjLocalDist(x, R, V, opttype)
-    o3 = OjGlobalSE(x, Ad, opttype)
+    o1 = OjGlobalDist(x, R, V, opttype)
+    o3 = OjLocalSE(x, Ad, opttype)
   elif COVAtype == 'cova4':
-    o1 = OjLocalSE(x, R, V, opttype)
-    o3 = OjGlobalDist(x, Ad, opttype)
+    o1 = OjGlobalSE(x, R, V, opttype)
+    o3 = OjLocalDist(x, Ad, opttype)
   else:
     print('error')
     return 0
@@ -305,21 +298,22 @@ def cost1(x, R, Ad, V, alpha, dim, COVAtype='cova1', opttype='GD_Euclidean'):
 
 
 def grad1(x, R, Ad, V, alpha, dim, COVAtype='cova1', opttype='GD_Euclidean'):
+  # alpha = 1 - alpha
   l = len(x)
   if opttype == 'GD_Euclidean':
     x = reformX(x, dim)
   if COVAtype == 'cova1':
-    g1 = GradLocalDist(x, R, V, opttype)
-    g3 = GradGlobalDist(x, Ad, opttype)
+    g1 = GradGlobalDist(x, R, V, opttype)
+    g3 = GradLocalDist(x, Ad, opttype)
   elif COVAtype == 'cova2':
-    g1 = GradLocalSE(x, R, V, opttype)
-    g3 = GradGlobalSE(x, Ad, opttype)
+    g1 = GradGlobalSE(x, R, V, opttype)
+    g3 = GradLocalSE(x, Ad, opttype)
   elif COVAtype == 'cova3':
-    g1 = GradLocalDist(x, R, V, opttype)
-    g3 = GradGlobalSE(x, Ad, opttype)
+    g1 = GradGlobalDist(x, R, V, opttype)
+    g3 = GradLocalSE(x, Ad, opttype)
   elif COVAtype == 'cova4':
-    g1 = GradLocalSE(x, R, V, opttype)
-    g3 = GradGlobalDist(x, Ad, opttype)
+    g1 = GradGlobalSE(x, R, V, opttype)
+    g3 = GradLocalDist(x, Ad, opttype)
   else:
     print('error')
     return 0
@@ -344,10 +338,10 @@ def COVAembedding(
         R,
         Ad,
         V,
-        iterations,
         Init=0,
         dim=2,
         alpha=0.5,
+        T=5,
         COVAType='cova1',
         opttype='GD_Euclidean'):
   if COVAType == 'AnalyticalCOVA1':
@@ -359,18 +353,17 @@ def COVAembedding(
       l = Data.shape[0]
       if isinstance(Init, int):
         Init = np.random.random_sample((l, dim))
-      elif not isinstance(Init, np.ndarray) and not isinstance(Init, int):
-        print("init error")
+      elif not isinstance(Init, int) and not isinstance(Init, np.ndarray):
+        print('init error')
         return 0
       additional = (R, Ad, V, alpha, dim, COVAType, opttype)
       x = minimize(cost1, Init, method='BFGS', args=additional, jac=grad1,
-                   options={'disp': True, 'maxiter': iterations})
+                   options={'disp': True, 'maxiter': T})
       x = np.reshape(x.x, (l, dim))
     elif opttype == 'GD_Riemannian':
       l = Data.shape[0]
       manifold = FixedRankEmbedded(l, dim, dim)
-      cost, egrad = CreateCostGrad(
-          R, Ad, V, alpha, dim, COVAType, opttype)
+      cost, egrad = CreateCostGrad(R, Ad, V, alpha, dim, COVAType, opttype)
       prob = Problem(manifold, cost=cost, egrad=egrad)
       solver = ConjugateGradient()
       x0 = solver.solve(prob)
@@ -402,6 +395,8 @@ def SeparateCohort(data, label, sparsity=0.1):
   for i in range(num_label):
     num_point = len(np.where(label == diffLabel[i])[0])
     numOfAnchor_temp = np.floor(num_point * sparsity)
+    if numOfAnchor_temp == 0:
+      numOfAnchor_temp = 1
     while numOfAnchor_temp <= 3:
       numOfAnchor_temp = numOfAnchor_temp * 2
     numOfAnchor_temp = int(numOfAnchor_temp)
@@ -411,21 +406,13 @@ def SeparateCohort(data, label, sparsity=0.1):
     AnchorLabeltemp = diffLabel[i] * np.ones([numOfAnchor_temp, 1])
     prototype = np.concatenate((prototype, Anchortemp), axis=0)
     protolabel = np.concatenate((protolabel, AnchorLabeltemp), axis=0)
-    clabel[np.squeeze(label == diffLabel[i]),
-           0] = temp_Index.labels_ + count
+    clabel[np.squeeze(label == diffLabel[i]), 0] = temp_Index.labels_ + count
     count = count + numOfAnchor_temp
 
   return prototype, protolabel, clabel
 
 
-def getPerseverance(g, Result, label):
-  prev_score, neighbor_low, neighbor_high, prev_keep_high, prev_wrong_in_high, prev_wrong_in_low, prev_partsave = neighbor_prev_disturb(
-      g, Result, label, 10)
-
-  return prev_wrong_in_high, prev_wrong_in_low, prev_partsave
-
-
-def ProtoGeneration(data, label, scaler, dim=2, C=1, metric='euclidean', Embedding='SOE'):
+def ProtoGeneration(data, label, dim=2, C=1, metric='euclidean', Embedding='SOE'):
   if C == 0:
     if len(label.shape) > 1:
       if label.shape[1] > 1:
@@ -437,7 +424,7 @@ def ProtoGeneration(data, label, scaler, dim=2, C=1, metric='euclidean', Embeddi
     prototypes, protolabel, clabel = SeparateCohort(data, label, sparsity=0.1)
     A = squareform(pdist(prototypes, metric))
     A_order = np.argsort(A, axis=1).astype(int)
-    V = SOE(A_order.astype(int), protolabel, dim=3)
+    V = SOE(A_order.astype(int), protolabel, dim=dim)
     scaler.fit(V)
     V = scaler.transform(V)
   else:
@@ -446,125 +433,74 @@ def ProtoGeneration(data, label, scaler, dim=2, C=1, metric='euclidean', Embeddi
   return V, clabel
 
 
-def getNeighbourNumber(pointsLength: int, neighbourNumber: str) -> int:
-  if "%" not in neighbourNumber:
-    return int(neighbourNumber)
+if __name__ == '__main__':
+  fullData = loadmat('bicycle_sampe.mat')
 
-  if neighbourNumber == '10%':
-    return math.floor(pointsLength / 10)
-  elif neighbourNumber == '30%':
-    return math.floor(pointsLength / 100 * 30)
-  elif neighbourNumber == '50%':
-    return math.floor(pointsLength / 2)
-  else:
-    raise RuntimeCOVAError("wrong neighbour value")
-
-
-def runCOVA(params: ParamsCOVA, iterations: int = 20) -> DataGenerated:
-  # runs algorithm on the given example
-  # returns data points and preservation data
-  fullData = loadmat('./app/visualization/Data/cylinder_top.mat')
+  # fullData = loadmat('../Data/cylinder_top.mat')
+  # x = csr_matrix(fullData.get('newsdata')).toarray()
 
   scaler = preprocessing.MinMaxScaler()
-  scaler.fit(np.array(fullData.get('x')))
-  g = scaler.transform(np.array(fullData.get('x')))
+  scaler.fit(np.array(fullData.get('result')))
+  g = scaler.transform(np.array(fullData.get('result')))
   label = np.array(fullData.get('label')).transpose()
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='3d')
+  # ax.scatter(g[:, 0], g[:, 1], g[:, 2], c=label)
+  # plt.show()
 
-  C = 0 if params.isCohortNumberOriginal else 1
+  # prototypes, protolabel, clabel = SeparateCohort(g, label, sparsity=0.1)
+  # A = squareform(pdist(prototypes, 'euclidean'))
+  # A_order = np.argsort(A, axis=1).astype(int)
+  # V = SOE(A_order.astype(int), protolabel, dim=3)
+  # scaler.fit(V)
+  # V = scaler.transform(V)
+  # # Dc = CohortDistance(g, r_label)
+  # V = PrototypeEmbedding(A_order, protolabel, dim=3, Embedding='SOE')
+
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='3d')
+  # ax.scatter(V[:, 1], V[:, 2], V[:, 0], c=protolabel)
+  # plt.show()
   V, clabel = ProtoGeneration(
-      g, label, scaler, dim=3, C=C, metric='euclidean', Embedding='SOE')
-
-  Ad = AdjacencyMatrix(g, getNeighbourNumber(len(g), params.neighbourNumber))
-  Relation = CohortConfidence(g, clabel, params.lambdaParam)
-
-  Result: np.ndarray = COVAembedding(g, Relation, Ad, V, iterations, Init=0, dim=3,
-                                     alpha=params.alpha, COVAType='cova1', opttype='GD_Euclidean')
-
-  *_, prev_wrong_in_high, prev_wrong_in_low, prev_partsave = neighbor_prev_disturb(
-      g, Result, label, 10)
-
-  return DataGenerated(
-      points=Result.tolist(),
-      prevPartsave=prev_partsave,
-      prevWrongInLow=childrenToList(prev_wrong_in_low),
-      prevWrongInHigh=childrenToList(prev_wrong_in_high),
-      labels=label.ravel().tolist()
-  )
-
-
-def initCOVA() -> DataFormatted:
-  """
-  Initialise COVA run.
-
-  Returns: original data set in 2d/3d space without optimisation
-  """
-  fullData = loadmat('./app/visualization/Data/cylinder_top.mat')
-
-  scaler = preprocessing.MinMaxScaler()
-  scaler.fit(np.array(fullData.get('x')))
-  g = scaler.transform(np.array(fullData.get('x')))
-  label = np.array(fullData.get('label')).transpose()
-
-  prototypes, protolabel, clabel = SeparateCohort(g, label, sparsity=0.1)
-  A = squareform(pdist(prototypes, 'euclidean'))
-  A_order = np.argsort(A, axis=1).astype(int)
-  V = SOE(A_order.astype(int), protolabel, dim=3)
-  scaler.fit(V)
-  V = scaler.transform(V)
-
+      g, label, dim=2, C=1, metric='euclidean', Embedding='SOE')
   Ad = AdjacencyMatrix(g, 10)
+  # temp_order = np.squeeze(np.argsort(label, axis=0))
+  # W_show = Ad[temp_order, :]
+  # W_show = W_show[:, temp_order]
+  # imagesc.plot(W_show, extent=[0, 1000, 0, 1000])
+
+  # temp_order = np.squeeze(np.argsort(label, axis=0))
 
   Relation = CohortConfidence(g, clabel, 0)
+  # R_show = Relation[temp_order,:]
+  # imagesc.plot(R_show, extent=[0, 1000, 0, 1000])
 
-  Result = COVAembedding(g, Relation, Ad, V, 0, Init=0, dim=3,
-                         alpha=0.5, COVAType='cova1', opttype='GD_Euclidean')
+  # Cost, Result = analyticalCOVA(Relation, Ad, V, 0.9)
+  # init = 0
+  # for i in range(50):
+  #     Result = COVAembedding(g, Relation, Ad, V, Init=init, dim=3, alpha=0.5, T=1, COVAType='cova1', opttype='GD_Riemannian')
+  # # x = Result
+  # # plt.scatter(x[:, 0], x[:, 1])
+  # # plt.show()
+  #     fig = plt.figure()
+  #     ax = fig.add_subplot(projection='3d')
+  #     ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label)
+  #     plt.show()
+  #     init = Result
 
-  # formatting the data to be api friendly
-  initData = DataNumpy({
-      "g": g,
-      "Relation": Relation,
-      "Ad": Ad,
-      "V": V,
-      "labels": label,
-      "points": Result,
-      "alpha": 0.5
-  })
+  # init1 = Result
+  Result = COVAembedding(g, Relation, Ad, V, Init=0, dim=2, alpha=0.4, T=100, COVAType='cova1',
+                         opttype='GD_Euclidean')
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='3d')
+  # ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label)
+  # plt.show()
 
-  return formatDataOut(initData)
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='2d')
+  # plt.scatter(Result[:, 0], Result[:, 1], c=label)
+  # plt.show()
 
+  plot_neighbor(g, Result, label, k=10, part=0.6, choice='link')
 
-def dynamicCOVA(previousData: DataDynamic, iterationsPerRequest: int) -> DataDynamic:
-  """
-  Iterates through the COVA algorithm.
-
-  Inputs: all the data needed for COVA to run at a given point in time.
-  As in, the algorithm is ready to pick up from any given point in the cycle
-  provided the previous data is preserved.
-
-  Returns: new data after a given number of iterations
-  """
-  data = formatDataIn(previousData)
-
-  Result = COVAembedding(
-      data["g"],
-      data["Relation"],
-      data["Ad"],
-      data["V"],
-      iterationsPerRequest,
-      Init=data["points"],
-      dim=3,
-      alpha=data["alpha"],
-      COVAType='cova1',
-      opttype='GD_Euclidean')
-
-  previousData.points = Result.tolist()
-
-  # only run after the last iteration
-  if previousData.iteration + 1 == previousData.maxIteration:
-    prev_wrong_in_high, prev_wrong_in_low, prev_partsave = getPerseverance(
-        data["g"], Result, data["labels"])
-    previousData.prevWrongInHigh = childrenToList(prev_wrong_in_high)
-    previousData.prevWrongInLow = childrenToList(prev_wrong_in_low)
-    previousData.prevPartsave = prev_partsave
-
-  return previousData
+  print(Ad)

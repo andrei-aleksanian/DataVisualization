@@ -6,7 +6,7 @@ import pytest
 from fastapi.testclient import TestClient
 from app.api import app
 from app.routers.examples import EXAMPLE_ALREADY_EXISTS
-from app.database.crud import getAllExampleDataCOVA
+from app.database.crud import getAllExampleDataCOVA, getAllExampleDataANGEL
 from app.database.database import SessionLocal
 from ..utilsTests import cleanupDB, mockExample, createMockExample
 
@@ -62,8 +62,10 @@ def testCreateExampleGenerateCOVAANGEL():
 
   database = SessionLocal()
   exampleCOVAData = getAllExampleDataCOVA(database, 1)
+  exampleANGELData = getAllExampleDataANGEL(database, 1)
   database.close()
   assert len(exampleCOVAData) != 0
+  assert len(exampleANGELData) != 0
 
 # should clean the DB if there is an exception in the algorithm and return 500
 # this can only happen if we are serving our own dataset
@@ -80,10 +82,11 @@ def testGetAllExamplesSuccessEmpty():
 
 def testGetAllExamplesSuccessNotEmpty():
   """Post an example and then fetch it with get"""
-  client.post("/api/examples/", json=mockExample)
+  createMockExample()
   response = client.get("/api/examples/")
 
   assert response.json() == [{
-      **mockExample,
-      "id": 1
+      "name": mockExample["name"],
+      "description": mockExample["description"],
+      "id": 1,
   }]

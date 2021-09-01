@@ -2,13 +2,14 @@
 Endpoints for ANGEL data collection.
 """
 # pylint: disable=R0801
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.types.dataGenerated import ParamsCOVA
-from ..database import crud, schemas
+from ..types.dataGenerated import ParamsCOVA
+from ..database import crud
+from ..database.schemas import JSONType
 from ..dependencies import getDB
+from .utils import PARAMS_DO_NOT_EXIST
 
 router = APIRouter(
     prefix="/examples/cova/data",
@@ -16,46 +17,18 @@ router = APIRouter(
 )
 
 
-@router.post("/{exampleId}",
-             summary="Add a new COVA example data sample to the database")
-def createExampleData(
-        data: schemas.DataCreateCOVA,
-        exampleId: int,
-        database: Session = Depends(getDB)):
-  """
-  Warning: used solely for development
-
-  Accepts new COVA data example for specific parameters.
-  """
-  exampleDb = crud.getExampleDataCOVA(database, exampleId, data.params)
-  if exampleDb:
-    raise HTTPException(
-        status_code=400, detail="A data sample with this param already exists")
-
-  crud.createExampleDataCOVA(database, data, exampleId)
-  return Response(status_code=status.HTTP_200_OK)
-
-
-@router.get("/{exampleId}",
-            summary="Get all data samples for given example",
-            response_model=List[schemas.Data])
-def getAllExampleData(exampleId: int, database: Session = Depends(getDB)):
-  """
-  Warning: used solely for development
-
-  Returns all COVA example data.
-  """
-  return crud.getAllExampleDataCOVA(database, exampleId)
-
-
 @router.post("/get/{exampleId}",
              summary="Get a sample for given example",
+             response_model=JSONType
              )
 def getExampleData(exampleId: int, paramsCOVA: ParamsCOVA, database: Session = Depends(getDB)):
   """
-  Warning: used solely for development
+  Returns COVA example data.
 
-  Returns all COVA example data.
+  Warning: response_model actually returns a DataGenerated object in JSON format
   """
-  data = crud.getExampleDataCOVA(database, exampleId, paramsCOVA).jsonData
-  return data
+  data = crud.getExampleDataCOVA(database, exampleId, paramsCOVA)
+  if data is None:
+    raise HTTPException(
+        status_code=404, detail=PARAMS_DO_NOT_EXIST)
+  return data.jsonData

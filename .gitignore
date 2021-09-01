@@ -31,3 +31,6 @@
 # env files
 *.env
 dump*.sql
+
+# env related files
+*.sh

@@ -17,6 +17,7 @@ class Examples(Base):
   id = Column(Integer, primary_key=True, index=True)
   name = Column(String(64), unique=True)
   description = Column(String(512))
+  dimension = Column(Integer, nullable=False)
 
   dataSamplesCOVA = relationship(
       "ExamplesDataCOVA", back_populates="example")
@@ -73,7 +74,7 @@ class ExamplesDataANGEL(Base):
 
   neighbourNumber = Column(String(4))
   lambdaParam = Column(DECIMAL(2, 1))
-  anchorDensity = Column(DECIMAL(2, 1))
+  anchorDensity = Column(DECIMAL(3, 2))
   epsilon = Column(DECIMAL(2, 1))
   isAnchorModification = Column(Boolean)
 

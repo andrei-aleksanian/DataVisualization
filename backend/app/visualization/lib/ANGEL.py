@@ -14,6 +14,7 @@ from scipy.linalg import norm
 from sklearn import preprocessing
 
 from numba import jit
+import random
 
 from .FunctionFile import CohortDistance, Ad_cohort_order_chg, k_nearest_neighbor, AdjacencyMatrix
 from .SOEmbedding import SOE, disForOE, Rtheta, Sscal
@@ -50,6 +51,8 @@ def AnchorPointGeneration(Data, DataLabel, sparsity=0.1, t=3, metric='euclidean'
   for i in range(num_label):
     num_point = len(np.where(DataLabel == diffLabel[i])[0])
     numOfAnchor_temp = np.floor(num_point * sparsity)
+    if numOfAnchor_temp == 0:
+      numOfAnchor_temp = 1
     while numOfAnchor_temp <= 3:
       numOfAnchor_temp = numOfAnchor_temp * 2
     numOfAnchor_temp = int(numOfAnchor_temp)
@@ -68,12 +71,11 @@ def AnchorPointGeneration(Data, DataLabel, sparsity=0.1, t=3, metric='euclidean'
   for i in range(num_label):
     if DataLabel.shape[1] == l:
       DataLabel = DataLabel.transpose()
-    datalocation = np.argwhere(np.squeeze(
-        DataLabel, axis=1) == diffLabel[i])
-    anchorlocation = np.argwhere(np.squeeze(
-        AnchorLabel, axis=1) == diffLabel[i])
+    datalocation = np.argwhere(np.squeeze(DataLabel, axis=1) == diffLabel[i])
+    anchorlocation = np.argwhere(
+        np.squeeze(AnchorLabel, axis=1) == diffLabel[i])
     Z[np.ix_(np.squeeze(datalocation, axis=1), np.squeeze(
-        anchorlocation, axis=1))] = Zset[str(i)]
+      anchorlocation, axis=1))] = Zset[str(i)]
   return AnchorPoint, AnchorLabel, Z
 
 
@@ -89,7 +91,7 @@ def AnchorEmbedding(
         metric="euclidean",
         cohortmetric="average",
         scale=1):
-  [l, D] = Anchor.shape
+  l = Anchor.shape[0]
   if init == 0:
     init = np.random.random_sample((l, dim))
   if flagDistanceMatrix == 0:
@@ -115,17 +117,15 @@ def AnchorEmbedding(
     # plt.scatter(C[:, 0], C[:, 1], c=k)
     # plt.show()
     C = C / (np.max(np.max(C)) / np.max(np.max(anchor0)))
-    Param = SOE(A_order, anchorlabel, C=C,
-                anchor=anchor0, flagMove=1, dim=dim)
+    Param = SOE(A_order, anchorlabel, C=C, anchor=anchor0, flagMove=1, dim=dim)
     # SOE(Matrix, DataLabel, C=0, anchor=0, dim=2, Init=0, metric='euclidean', flagMove=0, T=500, eps=1e-6, scale=1)
     anchor = np.zeros((l, dim))
     aDelta = np.zeros((l, dim))
     for i in range(k.shape[0]):
       tempi = np.squeeze(anchorlabel == k[i])
-      aDelta[tempi, :] = anchor0[tempi, :] - \
-          np.mean(anchor0[tempi, :], axis=0)
-      Theta = Rtheta(Param[i, 0])
-      Scal = Sscal(Param[i, 1])
+      aDelta[tempi, :] = anchor0[tempi, :] - np.mean(anchor0[tempi, :], axis=0)
+      Theta = Rtheta(Param[i, 0], dim=dim, C=C[i, :])
+      Scal = Sscal(Param[i, 1], dim=dim)
       anchor[tempi, :] = (
           Theta @ Scal @ aDelta[tempi, :].transpose()).transpose() + C[i, :]
     # plt.scatter(anchor[:, 0], anchor[:, 1], c=anchorlabel)
@@ -231,7 +231,6 @@ def ANGEL_embedding(
   if init == 0:
     init = np.random.random_sample((l * dim, 1))
   LAEstart = Z @ anchor
-
   additional = (W, dim)
   initstart = np.reshape(LAEstart, (l * dim, 1))
   if optType == 'constrained':
@@ -278,23 +277,30 @@ if __name__ == '__main__':
   scaler.fit(np.array(fullData.get('x')))
   g = scaler.transform(np.array(fullData.get('x')))
   label = np.array(fullData.get('label')).transpose()
+  np.random.seed(0)
 
-  [AnchorPoint, AnchorLabel, Z] = AnchorPointGeneration(g, label)
+  [AnchorPoint, AnchorLabel, Z] = AnchorPointGeneration(
+      g, label, sparsity=0.05)  # anchor density - sparsity
   anchorpoint, anchor0, C = AnchorEmbedding(
-      AnchorPoint, AnchorLabel, flagMove=0, lamb=0, dim=3)
+      AnchorPoint, AnchorLabel, flagMove=0, lamb=0, dim=2)
   scaler.fit(anchorpoint)
   anchorpoint = scaler.transform(anchorpoint)
-  W = AdjacencyMatrix(g, neighbor=10, weight=0, metric='euclidean')
-  result = ANGEL_embedding(g, anchorpoint, Z, W, dim=3, T=15)
-  fig = plt.figure()
-  ax = fig.add_subplot(projection='3d')
-  ax.scatter(result[:, 0], result[:, 1], result[:, 2])
+
+  plt.scatter(anchorpoint[:, 0], anchorpoint[:, 1], c=AnchorLabel)
   plt.show()
 
+  W = AdjacencyMatrix(g, neighbor=10, weight=0, metric='euclidean')
+  result = ANGEL_embedding(g, anchorpoint, Z, W, dim=2,
+                           T=15, eps=0.1)  # eps -epsilon
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='3d')
+  # ax.scatter(result[:, 0], result[:, 1], result[:, 2], c=label)
+  # plt.show()
 
-def runANGEL():
-  # TODO finish this
-  pass
+  plt.scatter(result[:, 0], result[:, 1], c=label)
+  plt.show()
+
+  print('finish')
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 

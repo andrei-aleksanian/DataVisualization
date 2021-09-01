@@ -8,7 +8,7 @@ Different data types for generated data.
 from typing import List
 from pydantic import BaseModel
 
-from .Points import Points
+from .Custom import Points
 
 
 class Params(BaseModel):

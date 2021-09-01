@@ -13,7 +13,8 @@ from app.database import models
 
 mockExample = {
     "name": "example",
-    "description": "string"
+    "description": "string",
+    "dimension": 3
 }
 
 

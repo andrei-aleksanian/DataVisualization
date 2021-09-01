@@ -6,4 +6,5 @@
     'settings   visualization   visualization visualization';
   grid-template-columns: repeat(4, 1fr);
   height: 100vh;
+  overflow: hidden;
 }

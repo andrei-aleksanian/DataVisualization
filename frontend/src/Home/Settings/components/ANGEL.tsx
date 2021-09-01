@@ -6,7 +6,7 @@ export const TEXT_SLIDER_ANCHOR_DENSITY = 'Anchor density:';
 export const TEXT_SLIDER_EPSILON = 'Epsilon:';
 export const TEXT_CHECKBOX_ANCHOR_MODIFICATION = 'Anchor modification:';
 
-enum FlagMove {
+export enum FlagMove {
   ON,
   OFF,
 }
@@ -17,7 +17,7 @@ export interface SettingsANGEL {
 }
 export const defaultSettingsANGEL: SettingsANGEL = {
   sparsity: 0.05,
-  epsilon: 0.1,
+  epsilon: 0.5,
   flagMove: FlagMove.OFF,
 };
 export interface SettingsANGELProps {
@@ -46,10 +46,10 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
         value={settingsANGEL.sparsity}
       />
       <Slider
-        min={0.1}
-        max={1}
+        min={0.5}
+        max={5}
         step={null}
-        marksArr={[0.1, 0.5, 1]}
+        marksArr={[0.5, 5]}
         onChange={onChangeEpsilon}
         text={TEXT_SLIDER_EPSILON}
         value={settingsANGEL.epsilon}

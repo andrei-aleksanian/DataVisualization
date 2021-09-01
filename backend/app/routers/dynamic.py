@@ -7,7 +7,7 @@ from any given point in the cycle.
 """
 # pylint: disable=R0801
 from fastapi import APIRouter
-from ..visualization.demo2.COVA import dynamicCOVA, initCOVA
+from ..visualization.Cova import dynamicCOVA, initCOVA
 
 from ..types.dataDynamic import DataDynamic
 
