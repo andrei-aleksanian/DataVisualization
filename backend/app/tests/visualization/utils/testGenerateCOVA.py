@@ -1,11 +1,11 @@
 """
-Test generate ANGEL data
+Test generate COVA data
 """
 import pytest
 from app.database.database import SessionLocal
-from app.database.crud import getAllExampleDataANGEL
-from app.utils.generateANGEL import generateANGEL
-from ..utilsTests import cleanupDB, createMockExample
+from app.database.crud import getAllExampleDataCOVA
+from app.visualization.utils.generateCOVA import generateCOVA
+from ...utilsTests import cleanupDB, createMockExample
 
 
 @pytest.fixture(scope='function', autouse=True)
@@ -22,12 +22,12 @@ def testGenerateDataSuccess():
   """Successful data generation"""
   createMockExample()
 
-  generateANGEL(1, 3)
+  generateCOVA(1, 3)
 
   database = SessionLocal()
-  dataANGEL = getAllExampleDataANGEL(database, 1)
+  dataCOVA = getAllExampleDataCOVA(database, 1)
   database.close()
 
-  assert len(dataANGEL) != 0
+  assert len(dataCOVA) != 0
 
 # test throw an error when the file is unreadable (to be implemented later)

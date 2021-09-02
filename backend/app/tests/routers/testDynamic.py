@@ -21,8 +21,6 @@ def testCovaDemoDynamicInitSuccess():
   assert len(data["points"][0]) == 3
   assert data["iteration"] == 0
 
-  # The rest of the fields will come after the schema is defined fully
-
 
 def testCovaDemoDynamicSuccess():
   """
@@ -39,8 +37,11 @@ def testCovaDemoDynamic422Partial():
   """
   Test partially incorrect data throws an error
   """
-  initData.pop("points")
-  response = client.post("/api/dynamic/cova", json=initData)
+  incorrectData = {
+      **initData,
+      "points": True
+  }
+  response = client.post("/api/dynamic/cova", json=incorrectData)
   assert response.status_code == 422
 
 
@@ -51,4 +52,12 @@ def testCovaDemoDynamic422Full():
   response = client.post("/api/dynamic/cova", json={})
   assert response.status_code == 422
 
-# Test returns perseverance data on last iteration
+
+def testCovaDemoDynamicPreservance():
+  """Test returns perseverance data on last iteration"""
+  initData["iteration"] = initData["maxIteration"] - 1
+  response = client.post("/api/dynamic/cova", json=initData)
+
+  assert response.json()["prevPartsave"] is not None
+  assert response.json()["prevWrongInLow"] is not None
+  assert response.json()["prevWrongInHigh"] is not None

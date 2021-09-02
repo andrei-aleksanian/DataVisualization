@@ -4,10 +4,10 @@ My angel functions
 from .lib.FunctionFile import AdjacencyMatrix
 from .lib.ANGEL import AnchorPointGeneration, AnchorEmbedding, ANGEL_embedding
 
-from ..types.dataGenerated import ParamsANGEL, DataGenerated
+from ..types.dataGenerated import ParamsANGEL, DataGenerated, DataGeneratedNumpy
 from ..types.Custom import Dimension
 
-from .utils import getNeighbourNumber, loadData, toDataGenerated
+from .utils.dataGenerated import getNeighbourNumber, loadData, toDataGenerated
 
 
 def runANGEL(params: ParamsANGEL, dimension: Dimension) -> DataGenerated:
@@ -38,8 +38,10 @@ def runANGEL(params: ParamsANGEL, dimension: Dimension) -> DataGenerated:
                                T=15, eps=params.epsilon)
 
   return toDataGenerated(
-      originalData,
-      resultData,
-      labels,
-      dimension
+      DataGeneratedNumpy({
+          "originalData": originalData,
+          "resultData": resultData,
+          "labels": labels,
+          "dimension": dimension
+      })
   )

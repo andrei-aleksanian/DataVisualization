@@ -5,10 +5,11 @@ Different data types for generated data.
 """
 # pylint: disable=C0116, C0115
 
-from typing import List
+from typing import List, TypedDict
 from pydantic import BaseModel
+from numpy import ndarray
 
-from .Custom import Points
+from .Custom import Points, Dimension
 
 
 class Params(BaseModel):
@@ -27,13 +28,23 @@ class ParamsANGEL(Params):
   isAnchorModification: bool
 
 
+class DataGeneratedNumpy(TypedDict):
+  """
+  Data that gets processed in COVA
+  """
+  originalData: ndarray
+  resultData: ndarray
+  labels: ndarray
+  dimension: Dimension
+
+
 class DataGenerated(BaseModel):
   """
   Data model to be used in demo 2 preservation
   """
+  points: Points
+  labels: List[int]
   prevPartsave: List[int]
   prevWrongInLow: List[List[int]]
   prevWrongInHigh: List[List[int]]
-  dimension2D: bool = False
-  points: Points
-  labels: List[int]
+  dimension2D: bool

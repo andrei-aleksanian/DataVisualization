@@ -8,12 +8,12 @@ from .lib.evaluation import neighbor_prev_disturb
 from .lib.COVA import ProtoGeneration, AdjacencyMatrix,\
     CohortConfidence, COVAembedding, SeparateCohort
 
-from ..utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
 from ..types.Custom import Dimension
-from ..types.dataGenerated import DataGenerated, ParamsCOVA
+from ..types.dataGenerated import DataGenerated, ParamsCOVA, DataGeneratedNumpy
 from ..types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
 
-from .utils import getNeighbourNumber, loadData, toDataGenerated
+from .utils.dataGenerated import getNeighbourNumber, loadData, toDataGenerated
+from .utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
 
 
 def runCOVA(params: ParamsCOVA, dimension: Dimension) -> DataGenerated:
@@ -47,10 +47,12 @@ def runCOVA(params: ParamsCOVA, dimension: Dimension) -> DataGenerated:
   )
 
   return toDataGenerated(
-      originalData,
-      resultData,
-      labels,
-      dimension
+      DataGeneratedNumpy({
+          "originalData": originalData,
+          "resultData": resultData,
+          "labels": labels,
+          "dimension": dimension
+      })
   )
 
 

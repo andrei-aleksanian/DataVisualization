@@ -2,14 +2,14 @@
 Generate all possible combinations of parameters and store them in the Database
 """
 import os
-from ..database.database import SessionLocal
-from ..database.crud import createExampleDataANGEL
-from ..database.schemas import DataCreateANGEL
-from ..visualization.Angel import runANGEL
-from ..types.dataGenerated import ParamsANGEL
-from ..types.exceptions import RuntimeANGELError
-from ..types.Custom import Dimension
-from .environment import Env
+from app.database.database import SessionLocal
+from app.database.crud import createExampleDataANGEL
+from app.database.schemas import DataCreateANGEL
+from app.visualization.Angel import runANGEL
+from app.types.dataGenerated import ParamsANGEL
+from app.types.exceptions import RuntimeAlgorithmError
+from app.types.Custom import Dimension
+from app.utils.environment import Env
 
 # Define params and constraints
 neighbourNumber = ['10', '20', '30', '10%', '30%', '50%']
@@ -54,7 +54,7 @@ def generateANGEL(exampleId: int, dimension: Dimension):
               createExampleDataANGEL(database, data, exampleId)
               database.close()
             except Exception as exception:
-              raise RuntimeANGELError(f"\
+              raise RuntimeAlgorithmError(f"\
                 generateANGEL: {exception}\
                 parameters: neighbourNumber - {neighbour}, \
                 anchorDensity - {anchor} \

@@ -7,11 +7,11 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
+from app.visualization.utils.generateCOVA import generateCOVA
+from app.visualization.utils.generateANGEL import generateANGEL
 from ..database import crud, schemas
 from ..dependencies import getDB
-from ..utils.generateCOVA import generateCOVA
-from ..utils.generateANGEL import generateANGEL
-from ..types.exceptions import RuntimeCOVAError, RuntimeANGELError
+from ..types.exceptions import RuntimeAlgorithmError
 
 UNPROCESSABLE_DATASET = "This data set is unprocessable, \
 please make sure it is compatible with our application."
@@ -29,11 +29,6 @@ def createExample(example: schemas.ExampleCreate, database: Session = Depends(ge
   Generates a large number of data sets to be viewed in the application for end users.
   Adds the example to the database.
   """
-  def doesNameExist():
-    exampleDb = crud.getExampleByName(database, example.name)
-    if exampleDb:
-      raise HTTPException(
-          status_code=400, detail=EXAMPLE_ALREADY_EXISTS)
 
   def cleanSession(exampleId: int):
     # in case something goes horribly wrong, delete all entries related to example
@@ -45,24 +40,18 @@ def createExample(example: schemas.ExampleCreate, database: Session = Depends(ge
         detail=UNPROCESSABLE_DATASET
     )
 
-  def generateCOVAData(exampleId: int, dimension: int):
-    try:
-      generateCOVA(exampleId, dimension)
-    except RuntimeCOVAError as exception:
-      print(exception)  # need a logger
-      cleanSession(exampleId)
-
-  def generateANGELData(exampleId: int, dimension: int):
-    try:
-      generateANGEL(exampleId, dimension)
-    except RuntimeANGELError as exception:
-      print(exception)  # need a logger
-      cleanSession(exampleId)
-
-  doesNameExist()
+  exampleDb = crud.getExampleByName(database, example.name)
+  if exampleDb:
+    raise HTTPException(
+        status_code=400, detail=EXAMPLE_ALREADY_EXISTS)
   example = crud.createExample(database, example)
-  generateCOVAData(example.id, example.dimension)
-  generateANGELData(example.id, example.dimension)
+
+  try:
+    generateCOVA(example.id, example.dimension)
+    generateANGEL(example.id, example.dimension)
+  except RuntimeAlgorithmError as exception:
+    print(exception)  # need a logger
+    cleanSession(example.id)
 
   return Response(status_code=status.HTTP_200_OK)
 

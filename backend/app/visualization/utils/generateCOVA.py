@@ -2,14 +2,14 @@
 Generate all possible combinations of parameters and store them in the Database
 """
 import os
-from ..database.database import SessionLocal
-from ..database.crud import createExampleDataCOVA
-from ..database.schemas import DataCreateCOVA
-from ..visualization.Cova import runCOVA
-from ..types.dataGenerated import ParamsCOVA
-from ..types.exceptions import RuntimeCOVAError
-from ..types.Custom import Dimension
-from .environment import Env
+from app.database.database import SessionLocal
+from app.database.crud import createExampleDataCOVA
+from app.database.schemas import DataCreateCOVA
+from app.visualization.Cova import runCOVA
+from app.types.dataGenerated import ParamsCOVA
+from app.types.exceptions import RuntimeAlgorithmError
+from app.types.Custom import Dimension
+from app.utils.environment import Env
 
 # Define params and constraints
 neighbourNumber = ['10', '20', '30', '10%', '30%', '50%']
@@ -49,7 +49,7 @@ def generateCOVA(exampleId: int, dimension: Dimension):
             createExampleDataCOVA(database, data, exampleId)
             database.close()
           except Exception as exception:
-            raise RuntimeCOVAError(f"\
+            raise RuntimeAlgorithmError(f"\
               generateCOVA: {exception}\
               parameters: neighbourNumber - {neighbour}, \
               lambdaParam - {lamb}, \
