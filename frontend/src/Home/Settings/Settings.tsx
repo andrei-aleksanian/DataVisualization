@@ -1,21 +1,20 @@
 import Slider from 'Components/Forms/Slider';
-import { useState } from 'react';
 import { LinkBack } from 'Components/Link';
 
 import { Algorithm } from 'types/Settings';
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
 import classes from './Settings.module.scss';
-import COVA, { defaultSettingsCOVA } from './components/COVA';
-import ANGEL, { defaultSettingsANGEL } from './components/ANGEL';
+import COVA, { SettingsCOVA } from './components/COVA';
+import ANGEL, { SettingsANGEL } from './components/ANGEL';
 
 export const TEXT_CHECKBOX_COVA = 'COVA';
 export const TEXT_CHECKBOX_ANGEL = 'ANGEL';
 export const TEXT_H1 = 'Example: Cylinder';
 export const TEXT_CHECKBOX_ALGORITHM = 'Algorithm:';
-export const TEXT_SLIDER_NEIGHBOUR = 'Neighbour:';
+export const TEXT_SLIDER_NEIGHBOUR = 'Neighbour number:';
 export const TEXT_SLIDER_LAMBDA = 'Lambda:';
-export const TEXT_CHECKBOX_PRESERVATION = 'Show Data Preservation:';
+export const TEXT_CHECKBOX_PRESERVATION = 'Show Data Preservation Error:';
 
 export enum DataPreservation {
   ON,
@@ -27,18 +26,31 @@ export interface SettingsCommon {
   neighbour: number;
   lambda: number;
 }
-export const defaultSettingsCommon = {
+export const defaultSettingsCommon: SettingsCommon = {
   dataPreservation: DataPreservation.OFF,
   algorithm: Algorithm.COVA,
   neighbour: 0,
   lambda: 0,
 };
 
-const Settings = () => {
-  const [settingsCommon, setSettingsCommon] = useState(defaultSettingsCommon);
-  const [settingsCOVA, setSettingsCOVA] = useState(defaultSettingsCOVA);
-  const [settingsANGEL, setSettingsANGEL] = useState(defaultSettingsANGEL);
+export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%', '50%'];
+export interface SettingsProps {
+  settingsCommon: SettingsCommon;
+  setSettingsCommon: React.Dispatch<React.SetStateAction<SettingsCommon>>;
+  settingsCOVA: SettingsCOVA;
+  setSettingsCOVA: React.Dispatch<React.SetStateAction<SettingsCOVA>>;
+  settingsANGEL: SettingsANGEL;
+  setSettingsANGEL: React.Dispatch<React.SetStateAction<SettingsANGEL>>;
+}
 
+const Settings = ({
+  settingsCommon,
+  setSettingsCommon,
+  settingsCOVA,
+  setSettingsCOVA,
+  settingsANGEL,
+  setSettingsANGEL,
+}: SettingsProps) => {
   const onChangeAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
     event.preventDefault();
     setSettingsCommon((prev) => ({ ...prev, algorithm: newAlgorithm }));
@@ -65,9 +77,9 @@ const Settings = () => {
       />
       <Slider
         min={0}
-        max={7}
+        max={5}
         step={1}
-        marksArr={['10', '20', '30', '10%', '20%', '30%', '40%', '50%']}
+        marksArr={NEIGHBOUR_MARKS_ARR}
         onChange={onChangeNeighbour}
         text={TEXT_SLIDER_NEIGHBOUR}
         value={settingsCommon.neighbour}

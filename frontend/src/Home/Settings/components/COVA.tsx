@@ -3,19 +3,19 @@ import Slider from 'Components/Forms/Slider';
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
 export const TEXT_SLIDER_ALPHA = 'Alpha:';
-export const TEXT_CHECKBOX_C = 'C parameter:';
+export const TEXT_CHECKBOX_COHORT_NUMBER = 'Cohort number:';
 
-export enum C {
+export enum CohortNumber {
   ORIGINAL,
   PERCENTAGE,
 }
 export interface SettingsCOVA {
   alpha: number;
-  c: C;
+  cohortNumber: CohortNumber;
 }
 export const defaultSettingsCOVA: SettingsCOVA = {
-  alpha: 0,
-  c: C.ORIGINAL,
+  alpha: 0.4,
+  cohortNumber: CohortNumber.PERCENTAGE,
 };
 
 export interface SettingsCOVAProps {
@@ -25,9 +25,9 @@ export interface SettingsCOVAProps {
 
 const COVA = ({ settingsCOVA, setSettingsCOVA }: SettingsCOVAProps) => {
   const onChangeAlpha = (value: number) => setSettingsCOVA((prev) => ({ ...prev, alpha: value }));
-  const onChangeC = (event: React.ChangeEvent, value: C) => {
+  const onChangeCohortNumber = (event: React.ChangeEvent, value: CohortNumber) => {
     event.preventDefault();
-    setSettingsCOVA((prev) => ({ ...prev, c: value }));
+    setSettingsCOVA((prev) => ({ ...prev, cohortNumber: value }));
   };
 
   return (
@@ -42,12 +42,12 @@ const COVA = ({ settingsCOVA, setSettingsCOVA }: SettingsCOVAProps) => {
         value={settingsCOVA.alpha}
       />
       <CheckBoxes
-        heading={TEXT_CHECKBOX_C}
-        currentValue={settingsCOVA.c}
-        onChange={onChangeC}
+        heading={TEXT_CHECKBOX_COHORT_NUMBER}
+        currentValue={settingsCOVA.cohortNumber}
+        onChange={onChangeCohortNumber}
         entries={[
-          { value: C.ORIGINAL, text: 'Original label' },
-          { value: C.PERCENTAGE, text: '10% of the number of points' },
+          { value: CohortNumber.ORIGINAL, text: 'Original cohort number' },
+          { value: CohortNumber.PERCENTAGE, text: '10% of the number of points' },
         ]}
       />
     </>

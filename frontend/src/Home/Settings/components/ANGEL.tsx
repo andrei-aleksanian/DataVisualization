@@ -2,23 +2,23 @@ import Slider from 'Components/Forms/Slider';
 
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
-export const TEXT_SLIDER_SPARSITY = 'Sparsity:';
+export const TEXT_SLIDER_ANCHOR_DENSITY = 'Anchor density:';
 export const TEXT_SLIDER_EPSILON = 'Epsilon:';
-export const TEXT_CHECKBOX_FLAG_MOVE = 'Flag move:';
+export const TEXT_CHECKBOX_ANCHOR_MODIFICATION = 'Anchor modification:';
 
-enum FlagMove {
+export enum AnchorModification {
   ON,
   OFF,
 }
-interface SettingsANGEL {
-  sparsity: number;
+export interface SettingsANGEL {
+  anchorDensity: number;
   epsilon: number;
-  flagMove: FlagMove;
+  anchorModification: AnchorModification;
 }
 export const defaultSettingsANGEL: SettingsANGEL = {
-  sparsity: 0.05,
-  epsilon: 0.1,
-  flagMove: FlagMove.OFF,
+  anchorDensity: 0.05,
+  epsilon: 0.5,
+  anchorModification: AnchorModification.OFF,
 };
 export interface SettingsANGELProps {
   settingsANGEL: SettingsANGEL;
@@ -26,12 +26,12 @@ export interface SettingsANGELProps {
 }
 
 const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
-  const onChangeSparsity = (value: number) => setSettingsANGEL((prev) => ({ ...prev, sparsity: value }));
+  const onChangeAnchorDensity = (value: number) => setSettingsANGEL((prev) => ({ ...prev, anchorDensity: value }));
   const onChangeEpsilon = (value: number) => setSettingsANGEL((prev) => ({ ...prev, epsilon: value }));
 
-  const onChangeFlagMove = (event: React.ChangeEvent, value: FlagMove) => {
+  const onChangeAnchorModification = (event: React.ChangeEvent, value: AnchorModification) => {
     event.preventDefault();
-    setSettingsANGEL((prev) => ({ ...prev, flagMove: value }));
+    setSettingsANGEL((prev) => ({ ...prev, anchorModification: value }));
   };
 
   return (
@@ -41,26 +41,26 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
         max={0.2}
         step={null}
         marksArr={[0.05, 0.1, 0.2]}
-        onChange={onChangeSparsity}
-        text={TEXT_SLIDER_SPARSITY}
-        value={settingsANGEL.sparsity}
+        onChange={onChangeAnchorDensity}
+        text={TEXT_SLIDER_ANCHOR_DENSITY}
+        value={settingsANGEL.anchorDensity}
       />
       <Slider
-        min={0.1}
-        max={1}
+        min={0.5}
+        max={5}
         step={null}
-        marksArr={[0.1, 0.5, 1]}
+        marksArr={[0.5, 5]}
         onChange={onChangeEpsilon}
         text={TEXT_SLIDER_EPSILON}
         value={settingsANGEL.epsilon}
       />
       <CheckBoxes
-        heading={TEXT_CHECKBOX_FLAG_MOVE}
-        currentValue={settingsANGEL.flagMove}
-        onChange={onChangeFlagMove}
+        heading={TEXT_CHECKBOX_ANCHOR_MODIFICATION}
+        currentValue={settingsANGEL.anchorModification}
+        onChange={onChangeAnchorModification}
         entries={[
-          { value: FlagMove.OFF, text: '0' },
-          { value: FlagMove.ON, text: '1' },
+          { value: AnchorModification.OFF, text: '0' },
+          { value: AnchorModification.ON, text: '1' },
         ]}
       />
     </>

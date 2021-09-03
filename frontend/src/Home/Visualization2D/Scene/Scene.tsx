@@ -7,11 +7,13 @@ import { getRadius } from './utils';
 export interface SceneProps {
   data: DataPerseveranceColored;
   dimension2D: boolean;
+  showPreservation: boolean;
 }
 
 export default function Scene({
   data: { colors, points, prevPartsave, prevWrongInLow, prevWrongInHigh },
   dimension2D,
+  showPreservation,
 }: SceneProps) {
   return (
     <>
@@ -24,23 +26,25 @@ export default function Scene({
           z={p[2]}
           color={colors[i]}
           key={getId('point')}
-          radius={getRadius(prevPartsave.includes(i))}
+          radius={getRadius(prevPartsave.includes(i) && showPreservation)}
         />
       ))}
-      {prevPartsave.map((i) => {
-        const pointFrom = points[i];
-        return prevWrongInLow[i].map((p) => {
-          const pointTo = points[p];
-          return <Line points={[pointFrom, pointTo]} color="red" lineWidth={1} dashed={false} key={getId('line')} />;
-        });
-      })}
-      {prevPartsave.map((i) => {
-        const pointFrom = points[i];
-        return prevWrongInHigh[i].map((p) => {
-          const pointTo = points[p];
-          return <Line points={[pointFrom, pointTo]} color="blue" lineWidth={1} dashed key={getId('line')} />;
-        });
-      })}
+      {showPreservation &&
+        prevPartsave.map((i) => {
+          const pointFrom = points[i];
+          return prevWrongInLow[i].map((p) => {
+            const pointTo = points[p];
+            return <Line points={[pointFrom, pointTo]} color="red" lineWidth={1} dashed={false} key={getId('line')} />;
+          });
+        })}
+      {showPreservation &&
+        prevPartsave.map((i) => {
+          const pointFrom = points[i];
+          return prevWrongInHigh[i].map((p) => {
+            const pointTo = points[p];
+            return <Line points={[pointFrom, pointTo]} color="blue" lineWidth={1} dashed key={getId('line')} />;
+          });
+        })}
     </>
   );
 }

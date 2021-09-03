@@ -4,7 +4,6 @@ exports[`Settings matches snapshot 1`] = `
 <DocumentFragment>
   <div
     class="index"
-    data-testid="Home"
   >
     <div
       class="Container"

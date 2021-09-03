@@ -10,7 +10,7 @@ export const TEXT_P =
 
 const Home = () => {
   return (
-    <div className={classes.index} data-testid="Home">
+    <div className={classes.index}>
       <div className={classes.Container}>
         <h1>{TEXT_H1}</h1>
         <p>{TEXT_P}</p>

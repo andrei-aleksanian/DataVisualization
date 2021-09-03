@@ -1,20 +1,45 @@
-version: '3.9'
+version: "3.9"
 
 services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/node_modules:/frontend/node_modules
+      - ./frontend:/frontend
+    env_file:
+      - frontend.env
+    depends_on:
+      - backend
+
   backend:
     build:
       context: ./backend
     ports:
-      - '8080:8080'
+      - "8080:8080"
     volumes:
       - ./backend:/backend
-  frontend:
-    build:
-      context: ./frontend
-    volumes:
-      - /frontend/node_modules
-      - ./frontend:/frontend
-    ports:
-      - 3000:3000
+    env_file:
+      - backend.env
+      - db.env
     depends_on:
-      - backend
+      - db
+
+  db:
+    image: mysql:8.0.26
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+      - mysql_config:/etc/mysql
+    env_file:
+      - db.env
+    cap_add:
+      - SYS_NICE # CAP_SYS_NICE
+
+volumes:
+  mysql:
+  mysql_config:

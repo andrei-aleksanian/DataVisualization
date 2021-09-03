@@ -1,3 +1,5 @@
+import { DataPreservation } from 'Home/Settings';
+
 export const colorPartsave = (prevPartsave: number[], colors: string[]) => {
   const colorsPartsave = colors;
   for (let i = 0; i < prevPartsave.length; i += 1) {
@@ -30,7 +32,7 @@ const findUniqueColors = (labels: number[]) => {
   return colorMap;
 };
 
-export default (labels: number[]): string[] => {
+export default (labels: number[], isPreserved: DataPreservation, prevPartsave: number[]): string[] => {
   const colors: string[] = [];
 
   const colorMap = findUniqueColors(labels);
@@ -38,6 +40,8 @@ export default (labels: number[]): string[] => {
   for (let i = 0; i < labels.length; i += 1) {
     colors.push(colorMap[labels[i]]);
   }
+
+  if (isPreserved === DataPreservation.ON) colorPartsave(prevPartsave, colors);
 
   return colors;
 };
