@@ -8,16 +8,13 @@ export interface SceneProps {
   data: DataPerseveranceColored;
   dimension2D: boolean;
   showPreservation: boolean;
-  colorPreservation: () => void;
 }
 
 export default function Scene({
   data: { colors, points, prevPartsave, prevWrongInLow, prevWrongInHigh },
   dimension2D,
   showPreservation,
-  colorPreservation,
 }: SceneProps) {
-  if (showPreservation) colorPreservation();
   return (
     <>
       <ambientLight color="#fff" intensity={1.0} />

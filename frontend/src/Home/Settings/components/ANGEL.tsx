@@ -6,19 +6,19 @@ export const TEXT_SLIDER_ANCHOR_DENSITY = 'Anchor density:';
 export const TEXT_SLIDER_EPSILON = 'Epsilon:';
 export const TEXT_CHECKBOX_ANCHOR_MODIFICATION = 'Anchor modification:';
 
-export enum FlagMove {
+export enum AnchorModification {
   ON,
   OFF,
 }
 export interface SettingsANGEL {
-  sparsity: number;
+  anchorDensity: number;
   epsilon: number;
-  flagMove: FlagMove;
+  anchorModification: AnchorModification;
 }
 export const defaultSettingsANGEL: SettingsANGEL = {
-  sparsity: 0.05,
+  anchorDensity: 0.05,
   epsilon: 0.5,
-  flagMove: FlagMove.OFF,
+  anchorModification: AnchorModification.OFF,
 };
 export interface SettingsANGELProps {
   settingsANGEL: SettingsANGEL;
@@ -26,12 +26,12 @@ export interface SettingsANGELProps {
 }
 
 const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
-  const onChangeSparsity = (value: number) => setSettingsANGEL((prev) => ({ ...prev, sparsity: value }));
+  const onChangeAnchorDensity = (value: number) => setSettingsANGEL((prev) => ({ ...prev, anchorDensity: value }));
   const onChangeEpsilon = (value: number) => setSettingsANGEL((prev) => ({ ...prev, epsilon: value }));
 
-  const onChangeFlagMove = (event: React.ChangeEvent, value: FlagMove) => {
+  const onChangeAnchorModification = (event: React.ChangeEvent, value: AnchorModification) => {
     event.preventDefault();
-    setSettingsANGEL((prev) => ({ ...prev, flagMove: value }));
+    setSettingsANGEL((prev) => ({ ...prev, anchorModification: value }));
   };
 
   return (
@@ -41,9 +41,9 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
         max={0.2}
         step={null}
         marksArr={[0.05, 0.1, 0.2]}
-        onChange={onChangeSparsity}
+        onChange={onChangeAnchorDensity}
         text={TEXT_SLIDER_ANCHOR_DENSITY}
-        value={settingsANGEL.sparsity}
+        value={settingsANGEL.anchorDensity}
       />
       <Slider
         min={0.5}
@@ -56,11 +56,11 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
       />
       <CheckBoxes
         heading={TEXT_CHECKBOX_ANCHOR_MODIFICATION}
-        currentValue={settingsANGEL.flagMove}
-        onChange={onChangeFlagMove}
+        currentValue={settingsANGEL.anchorModification}
+        onChange={onChangeAnchorModification}
         entries={[
-          { value: FlagMove.OFF, text: '0' },
-          { value: FlagMove.ON, text: '1' },
+          { value: AnchorModification.OFF, text: '0' },
+          { value: AnchorModification.ON, text: '1' },
         ]}
       />
     </>

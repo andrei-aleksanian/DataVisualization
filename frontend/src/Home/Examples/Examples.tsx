@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
+import getColors from 'utils/getColors';
 import { Algorithm } from 'types/Settings';
 import { Point2D, Point3D } from 'types/Data';
 import { DataPerseveranceLabelled, DataPerseveranceColored } from 'types/Data/DataPerseverance';
-import getColors from 'utils/getColors';
-
 import { ParamsANGEL, ParamsCOVA } from 'types/Data/Params';
+import { Popup } from 'Components/UI';
 import { getDataANGEL, getDataCOVA } from './services';
 
 import Settings, {
@@ -13,63 +14,74 @@ import Settings, {
   defaultSettingsANGEL,
   defaultSettingsCommon,
   NEIGHBOUR_MARKS_ARR,
-  C,
+  CohortNumber,
   DataPreservation,
-  FlagMove,
+  AnchorModification,
 } from '../Settings';
 import Visualization2D from '../Visualization2D';
 
 import classes from './Examples.module.scss';
 
+export const POPUP_TEXT = 'Oops, something went wrong. Please try again later.';
+
 const Examples = () => {
   const [data, setData] = useState<DataPerseveranceColored | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [settingsCommon, setSettingsCommon] = useState(defaultSettingsCommon);
   const [settingsCOVA, setSettingsCOVA] = useState(defaultSettingsCOVA);
   const [settingsANGEL, setSettingsANGEL] = useState(defaultSettingsANGEL);
 
-  const colorPreservation = () => {};
+  const history = useHistory();
+
+  const updateData = (newData: DataPerseveranceLabelled) => {
+    setData(() => {
+      const colors = getColors(newData.labels, settingsCommon.dataPreservation, newData.prevPartsave);
+      return {
+        ...newData,
+        points: newData.points.map((p) => p.map((p2) => p2 * 100 - 50) as Point2D | Point3D),
+        colors,
+      };
+    });
+  };
 
   const fetchData = async (algorithm: Algorithm) => {
-    const updateData = (newData: DataPerseveranceLabelled) => {
-      setData(() => {
-        const colors = getColors(newData.labels, settingsCommon.dataPreservation, newData.prevPartsave);
-        return {
-          ...newData,
-          points: newData.points.map((p) => p.map((p2) => p2 * 100 - 50) as Point2D | Point3D),
-          colors,
-        };
-      });
-    };
-
     let newData;
     if (algorithm === Algorithm.COVA) {
       const params: ParamsCOVA = {
         neighbourNumber: NEIGHBOUR_MARKS_ARR[settingsCommon.neighbour],
         lambdaParam: settingsCommon.lambda,
         alpha: settingsCOVA.alpha,
-        isCohortNumberOriginal: settingsCOVA.c === C.ORIGINAL,
+        isCohortNumberOriginal: settingsCOVA.cohortNumber === CohortNumber.ORIGINAL,
       };
       newData = await getDataCOVA(1, params);
-      updateData(newData);
-    } else if (algorithm === Algorithm.ANGEL) {
+    } else {
       const params: ParamsANGEL = {
         neighbourNumber: NEIGHBOUR_MARKS_ARR[settingsCommon.neighbour],
         lambdaParam: settingsCommon.lambda,
-        anchorDensity: settingsANGEL.sparsity,
+        anchorDensity: settingsANGEL.anchorDensity,
         epsilon: settingsANGEL.epsilon,
-        isAnchorModification: settingsANGEL.flagMove === FlagMove.ON,
+        isAnchorModification: settingsANGEL.anchorModification === AnchorModification.ON,
       };
       newData = await getDataANGEL(1, params);
-      updateData(newData);
-    } else {
-      // handle error
     }
+    return newData;
   };
 
-  // on change - fetch data
   useEffect(() => {
-    fetchData(settingsCommon.algorithm);
+    let isActive = true;
+
+    const asyncHelper = async () => {
+      const [newData, newError] = await fetchData(settingsCommon.algorithm);
+      if (!isActive) return; // don't do anything if not rendered
+      if (newData) updateData(newData); // only update if  data is not null
+      setError(newError); // always update error
+    };
+
+    asyncHelper();
+    return () => {
+      isActive = false;
+    };
   }, [settingsCommon, settingsCOVA, settingsANGEL]);
 
   return (
@@ -78,10 +90,15 @@ const Examples = () => {
         {...{ settingsCommon, setSettingsCommon, settingsCOVA, setSettingsCOVA, settingsANGEL, setSettingsANGEL }}
       />
       {data && (
-        <Visualization2D
-          data={data}
-          showPreservation={settingsCommon.dataPreservation === DataPreservation.ON}
-          colorPreservation={colorPreservation}
+        <Visualization2D data={data} showPreservation={settingsCommon.dataPreservation === DataPreservation.ON} />
+      )}
+      {error && (
+        <Popup
+          text={POPUP_TEXT}
+          onClick={() => {
+            setError(null);
+            history.push('/');
+          }}
         />
       )}
     </div>
