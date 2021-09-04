@@ -18,11 +18,12 @@ from .utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
 
 def runCOVA(params: ParamsCOVA, dimension: Dimension) -> DataGenerated:
   """Used for running COVA on every possible parameter"""
-  originalData, labels, _ = loadData("cylinder_top.mat")
+  originalData, labels, scaler = loadData("cylinder_top.mat")
 
   vParam, clabel = ProtoGeneration(
       originalData,
       labels,
+      scaler,
       dimension,
       C=0 if params.isCohortNumberOriginal else 1,
   )

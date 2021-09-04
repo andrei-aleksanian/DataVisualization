@@ -352,6 +352,7 @@ def COVAembedding(
     elif opttype == 'GD_Euclidean':
       l = Data.shape[0]
       if isinstance(Init, int):
+        np.random.seed(0)
         Init = np.random.random_sample((l, dim))
       elif not isinstance(Init, int) and not isinstance(Init, np.ndarray):
         print('init error')
@@ -412,7 +413,7 @@ def SeparateCohort(data, label, sparsity=0.1):
   return prototype, protolabel, clabel
 
 
-def ProtoGeneration(data, label, dim=2, C=1, metric='euclidean', Embedding='SOE'):
+def ProtoGeneration(data, label, scaler, dim=2, C=1, metric='euclidean', Embedding='SOE'):
   if C == 0:
     if len(label.shape) > 1:
       if label.shape[1] > 1:
@@ -434,19 +435,21 @@ def ProtoGeneration(data, label, dim=2, C=1, metric='euclidean', Embedding='SOE'
 
 
 if __name__ == '__main__':
-  fullData = loadmat('bicycle_sampe.mat')
+  # fullData = loadmat('bicycle_sampe.mat')
 
-  # fullData = loadmat('../Data/cylinder_top.mat')
+  fullData = loadmat('../Data/cylinder_top.mat')
   # x = csr_matrix(fullData.get('newsdata')).toarray()
 
   scaler = preprocessing.MinMaxScaler()
-  scaler.fit(np.array(fullData.get('result')))
-  g = scaler.transform(np.array(fullData.get('result')))
+  scaler.fit(np.array(fullData.get('x')))
+  g = scaler.transform(np.array(fullData.get('x')))
   label = np.array(fullData.get('label')).transpose()
   # fig = plt.figure()
   # ax = fig.add_subplot(projection='3d')
   # ax.scatter(g[:, 0], g[:, 1], g[:, 2], c=label)
   # plt.show()
+
+  # np.random.seed(0)
 
   # prototypes, protolabel, clabel = SeparateCohort(g, label, sparsity=0.1)
   # A = squareform(pdist(prototypes, 'euclidean'))
@@ -462,8 +465,8 @@ if __name__ == '__main__':
   # ax.scatter(V[:, 1], V[:, 2], V[:, 0], c=protolabel)
   # plt.show()
   V, clabel = ProtoGeneration(
-      g, label, dim=2, C=1, metric='euclidean', Embedding='SOE')
-  Ad = AdjacencyMatrix(g, 10)
+      g, label, dim=3, C=1, metric='euclidean', Embedding='SOE')
+  Ad = AdjacencyMatrix(g, 30)
   # temp_order = np.squeeze(np.argsort(label, axis=0))
   # W_show = Ad[temp_order, :]
   # W_show = W_show[:, temp_order]
@@ -489,18 +492,17 @@ if __name__ == '__main__':
   #     init = Result
 
   # init1 = Result
-  Result = COVAembedding(g, Relation, Ad, V, Init=0, dim=2, alpha=0.4, T=100, COVAType='cova1',
+  Result = COVAembedding(g, Relation, Ad, V, Init=0, dim=3, alpha=0.4, T=100, COVAType='cova1',
                          opttype='GD_Euclidean')
-  # fig = plt.figure()
-  # ax = fig.add_subplot(projection='3d')
-  # ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label)
-  # plt.show()
+  fig = plt.figure()
+  ax = fig.add_subplot(projection='3d')
+  ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label)
+  plt.show()
 
-  # fig = plt.figure()
-  # ax = fig.add_subplot(projection='2d')
-  # plt.scatter(Result[:, 0], Result[:, 1], c=label)
-  # plt.show()
+  # pca = PCA(n_components=3)
+  # pca.fit(Result)
+  # a = pca.components_
 
-  plot_neighbor(g, Result, label, k=10, part=0.6, choice='link')
+  # evaluation.plot_neighbor(g, Result, label, k=10, part=0.6, choice='link')
 
   print(Ad)

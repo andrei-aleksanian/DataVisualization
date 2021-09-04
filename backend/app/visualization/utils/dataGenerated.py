@@ -25,7 +25,7 @@ def getNeighbours(data: DataGeneratedNumpy):
       data["originalData"], data["resultData"], data["labels"], 10)
 
   return DataGenerated(
-      points=data["originalData"].tolist(),
+      points=data["resultData"].tolist(),
       labels=data["labels"].ravel().tolist(),
       prevPartsave=prevPartsave,
       prevWrongInLow=childrenToList(prevWrongInLow),
