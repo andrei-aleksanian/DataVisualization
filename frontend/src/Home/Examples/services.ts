@@ -2,7 +2,7 @@ import axios from 'utils/axios';
 import { DataPerseveranceLabelled } from 'types/Data/DataPerseverance';
 import { ParamsANGEL, ParamsCOVA } from 'types/Data/Params';
 
-export const getDataCOVA = async (exampleId: number, params: ParamsCOVA) => {
+export const getDataCOVA = async (exampleId: string, params: ParamsCOVA) => {
   try {
     const { data }: { data: string } = await axios.post(`/examples/cova/data/get/${exampleId}`, params);
 
@@ -13,7 +13,7 @@ export const getDataCOVA = async (exampleId: number, params: ParamsCOVA) => {
   }
 };
 
-export const getDataANGEL = async (exampleId: number, params: ParamsANGEL) => {
+export const getDataANGEL = async (exampleId: string, params: ParamsANGEL) => {
   try {
     const { data }: { data: string } = await axios.post(`/examples/angel/data/get/${exampleId}`, params);
 

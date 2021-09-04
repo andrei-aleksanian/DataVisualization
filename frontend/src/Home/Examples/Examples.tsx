@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import getColors from 'utils/getColors';
 import { Algorithm } from 'types/Settings';
@@ -7,6 +7,7 @@ import { Point2D, Point3D } from 'types/Data';
 import { DataPerseveranceLabelled, DataPerseveranceColored } from 'types/Data/DataPerseverance';
 import { ParamsANGEL, ParamsCOVA } from 'types/Data/Params';
 import { Popup } from 'Components/UI';
+import { LinkBack } from 'Components/Link';
 import { getDataANGEL, getDataCOVA } from './services';
 
 import Settings, {
@@ -33,6 +34,7 @@ const Examples = () => {
   const [settingsANGEL, setSettingsANGEL] = useState(defaultSettingsANGEL);
 
   const history = useHistory();
+  const { id } = useParams<{ id: string }>();
 
   const updateData = (newData: DataPerseveranceLabelled) => {
     setData(() => {
@@ -54,7 +56,7 @@ const Examples = () => {
         alpha: settingsCOVA.alpha,
         isCohortNumberOriginal: settingsCOVA.cohortNumber === CohortNumber.ORIGINAL,
       };
-      newData = await getDataCOVA(1, params);
+      newData = await getDataCOVA(id, params);
     } else {
       const params: ParamsANGEL = {
         neighbourNumber: NEIGHBOUR_MARKS_ARR[settingsCommon.neighbour],
@@ -63,7 +65,7 @@ const Examples = () => {
         epsilon: settingsANGEL.epsilon,
         isAnchorModification: settingsANGEL.anchorModification === AnchorModification.ON,
       };
-      newData = await getDataANGEL(1, params);
+      newData = await getDataANGEL(id, params);
     }
     return newData;
   };
@@ -86,6 +88,7 @@ const Examples = () => {
 
   return (
     <div className={classes.index}>
+      <LinkBack link="/examples" />
       <Settings
         {...{ settingsCommon, setSettingsCommon, settingsCOVA, setSettingsCOVA, settingsANGEL, setSettingsANGEL }}
       />

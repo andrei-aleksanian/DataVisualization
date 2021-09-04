@@ -1,0 +1,31 @@
+.index {
+  width: 100vw;
+  min-height: 100vh;
+  background: rgb(2, 0, 36);
+  background: linear-gradient(135deg, rgba(2, 0, 36, 1) 0%, rgba(80, 20, 52, 1) 85%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.Example {
+  width: 350px;
+  height: 350px;
+  margin: 2rem;
+  background-color: #eee;
+  border-radius: 1rem;
+  // border: var(--color-action) 5px solid;
+}
+
+.Example img {
+  border-radius: 1rem 1rem 0 0;
+  cursor: pointer;
+}
+
+.ExampleInfo h3 {
+  margin: 1rem;
+}
+
+.ExampleInfo p {
+  margin: 1rem;
+}

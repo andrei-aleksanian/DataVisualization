@@ -1,5 +1,4 @@
 import Slider from 'Components/Forms/Slider';
-import { LinkBack } from 'Components/Link';
 
 import { Algorithm } from 'types/Settings';
 import CheckBoxes from 'Components/Forms/CheckBoxes';
@@ -64,7 +63,6 @@ const Settings = ({
 
   return (
     <div className={classes.index}>
-      <LinkBack link="/" />
       <h1>{TEXT_H1}</h1>
       <CheckBoxes
         heading={TEXT_CHECKBOX_ALGORITHM}
