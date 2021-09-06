@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from app.api import app
 from app.routers.exampleDataCOVA import PARAMS_DO_NOT_EXIST
 from app.types.dataGenerated import ParamsCOVA
-from ..utilsTests import cleanupDB, mockExample
+from ..utilsTests import cleanupDB, postMockExample
 
 client = TestClient(app)
 
@@ -28,7 +28,7 @@ def testGetCOVAExampleSuccess():
   """
   Test successful get example after creation
   """
-  response = client.post("/api/examples/", json=mockExample)
+  postMockExample(client)
   params = ParamsCOVA(**{
       "neighbourNumber": "10",
       "lambdaParam": 0,
@@ -46,7 +46,7 @@ def testGetANGELExampleFailiure():
   """
   Test successful get example after creation
   """
-  response = client.post("/api/examples/", json=mockExample)
+  postMockExample(client)
   params = ParamsCOVA(**{
       "neighbourNumber": "10",
       "lambdaParam": OBSCURE_NUMBER,

@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 from app.api import app
 from app.routers.exampleDataANGEL import PARAMS_DO_NOT_EXIST
 from app.types.dataGenerated import ParamsANGEL
-from ..utilsTests import cleanupDB, mockExample
+from ..utilsTests import cleanupDB, postMockExample
 
 client = TestClient(app)
 
@@ -28,7 +28,7 @@ def testGetANGELExampleSuccess():
   """
   Test successful get example after creation
   """
-  response = client.post("/api/examples/", json=mockExample)
+  postMockExample(client)
   params = ParamsANGEL(**{
       "neighbourNumber": "10",
       "lambdaParam": 0,
@@ -47,7 +47,7 @@ def testGetANGELExampleFailiure():
   """
   Test successful get example after creation
   """
-  response = client.post("/api/examples/", json=mockExample)
+  postMockExample(client)
   params = ParamsANGEL(**{
       "neighbourNumber": "10",
       "lambdaParam": OBSCURE_NUMBER,

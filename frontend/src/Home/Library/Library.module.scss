@@ -3,6 +3,16 @@
   min-height: 100vh;
   background: rgb(2, 0, 36);
   background: linear-gradient(135deg, rgba(2, 0, 36, 1) 0%, rgba(80, 20, 52, 1) 85%);
+}
+
+.index h1 {
+  text-align: center;
+  padding: 2rem 0;
+  font-size: 3rem;
+  color: var(--color-text);
+}
+
+.ExamplesContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -20,6 +30,8 @@
 .Example img {
   border-radius: 1rem 1rem 0 0;
   cursor: pointer;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .ExampleInfo h3 {

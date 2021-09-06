@@ -100,7 +100,7 @@ const Examples = () => {
           text={POPUP_TEXT}
           onClick={() => {
             setError(null);
-            history.push('/');
+            history.push('/examples');
           }}
         />
       )}

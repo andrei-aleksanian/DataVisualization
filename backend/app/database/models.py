@@ -15,9 +15,10 @@ class Examples(Base):
   __tablename__ = "examples"
 
   id = Column(Integer, primary_key=True, index=True)
-  name = Column(String(64), unique=True)
-  description = Column(String(512))
+  name = Column(String(64), unique=True, nullable=False)
+  imagePath = Column(String(256), unique=True, nullable=False)
   dimension = Column(Integer, nullable=False)
+  description = Column(String(512))
 
   dataSamplesCOVA = relationship(
       "ExamplesDataCOVA", back_populates="example")

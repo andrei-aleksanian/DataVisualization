@@ -5,9 +5,11 @@ import { MemoryRouter } from 'react-router-dom';
 import axios from 'utils/axios';
 import { DATA_PERSEVERANCE } from 'types/Data/DataPerseverance';
 
+import { placeholderExamples } from 'Home/Library/Library.test';
 import App from './App';
-import { TEXT_LINK_CUSTOM_DATA, TEXT_LINK_EXAMPLES, TEXT_H1 as TEXT_H1_HOME } from './Home';
-import { TEXT_H1 } from './Home/Settings';
+import { TEXT_LINK_CUSTOM_DATA, TEXT_LINK_LIBRARY, TEXT_H1 as TEXT_H1_HOME } from './Home';
+import { TEXT_H1 as TEXT_H1_EXAMPLES } from './Home/Settings';
+import { TEXT_H1 as TEXT_H1_LIBRARY } from './Home/Library';
 
 test('App matches snapshot', async () => {
   const { asFragment } = render(<App />, { wrapper: MemoryRouter });
@@ -19,14 +21,6 @@ describe('Test navigation transitions', () => {
     render(<App />, { wrapper: MemoryRouter });
   };
 
-  test('Examples page transition', () => {
-    init();
-    const linkExamples = screen.getByText(TEXT_LINK_EXAMPLES);
-    userEvent.click(linkExamples);
-
-    expect(screen.getByText(TEXT_H1)).toBeInTheDocument();
-  });
-
   test('Custom data page transition', () => {
     init();
     const linkCustom = screen.getByText(TEXT_LINK_CUSTOM_DATA);
@@ -35,35 +29,82 @@ describe('Test navigation transitions', () => {
     expect(screen.getByText('Sorry, this page is not implemented yet!')).toBeInTheDocument();
   });
 
-  test('Back to home from examples', () => {
+  test('Library page transition', async () => {
     init();
-    const linkExamples = screen.getByText(TEXT_LINK_EXAMPLES);
-    userEvent.click(linkExamples);
+    jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: placeholderExamples });
+    const linkLibrary = screen.getByText(TEXT_LINK_LIBRARY);
+    userEvent.click(linkLibrary);
 
-    const linkBack = screen.getByAltText('back');
+    const libraryHeading = await waitFor(() => screen.getByText(TEXT_H1_LIBRARY));
+
+    expect(libraryHeading).toBeInTheDocument();
+  });
+
+  test('Back to home from library', async () => {
+    init();
+    jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: placeholderExamples });
+    const linkLibrary = screen.getByText(TEXT_LINK_LIBRARY);
+    userEvent.click(linkLibrary);
+
+    const linkBack = await waitFor(() => screen.getByAltText('back'));
     userEvent.click(linkBack);
 
     expect(screen.getByText(TEXT_H1_HOME)).toBeInTheDocument();
   });
 
-  test('Back to home from errored exaxmples page', async () => {
+  test('Examples page transition', async () => {
     init();
-    // mocking the post(actually get) request in useEffect
-    jest.spyOn(axios, 'post').mockRejectedValueOnce({ data: JSON.stringify(DATA_PERSEVERANCE) });
+    jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: placeholderExamples });
+    jest.spyOn(axios, 'post').mockResolvedValueOnce({ data: JSON.stringify(DATA_PERSEVERANCE) });
 
-    const linkExamples = screen.getByText(TEXT_LINK_EXAMPLES);
-    userEvent.click(linkExamples);
+    const linkLibrary = await waitFor(() => screen.getByText(TEXT_LINK_LIBRARY));
+    userEvent.click(linkLibrary);
+    const linkExample = await waitFor(() => screen.getByAltText(`example ${placeholderExamples[0].name} image`));
+    userEvent.click(linkExample);
+
+    const heading = await waitFor(() => screen.getByText(TEXT_H1_EXAMPLES));
+    expect(heading).toBeInTheDocument();
+  });
+
+  test('Back to library from examples', async () => {
+    init();
+    jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: placeholderExamples });
+    jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: placeholderExamples });
+
+    const linkLibrary = screen.getByText(TEXT_LINK_LIBRARY);
+    userEvent.click(linkLibrary);
+    const linkExample = await waitFor(() => screen.getByAltText(`example ${placeholderExamples[0].name} image`));
+    userEvent.click(linkExample);
+
+    const linkBack = await waitFor(() => screen.getByAltText('back'));
+    userEvent.click(linkBack);
+
+    const libraryHeading = await waitFor(() => screen.getByText(TEXT_H1_LIBRARY));
+    expect(libraryHeading).toBeInTheDocument();
+  });
+
+  test('Back to library from errored exaxmples page', async () => {
+    init();
+    jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: placeholderExamples });
+    jest.spyOn(axios, 'post').mockRejectedValueOnce(new Error('Something went wrong'));
+    jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: placeholderExamples });
+
+    const linkLibrary = screen.getByText(TEXT_LINK_LIBRARY);
+    userEvent.click(linkLibrary);
+    const linkExample = await waitFor(() => screen.getByAltText(`example ${placeholderExamples[0].name} image`));
+    userEvent.click(linkExample);
 
     const linkBack = await waitFor(() => screen.getByText('OK'));
     userEvent.click(linkBack);
 
-    expect(screen.getByText(TEXT_H1_HOME)).toBeInTheDocument();
+    const libraryHeading = await waitFor(() => screen.getByText(TEXT_H1_LIBRARY));
+    expect(libraryHeading).toBeInTheDocument();
   });
 
   test('Back to home from custom data page', () => {
     init();
-    const linkExamples = screen.getByText(TEXT_LINK_CUSTOM_DATA);
-    userEvent.click(linkExamples);
+    const linkCustom = screen.getByText(TEXT_LINK_CUSTOM_DATA);
+    userEvent.click(linkCustom);
 
     const linkBack = screen.getByAltText('back');
     userEvent.click(linkBack);

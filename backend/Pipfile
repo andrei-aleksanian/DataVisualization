@@ -12,6 +12,8 @@ numba = "*"
 sqlalchemy = "*"
 pymysql = "*"
 cryptography = "*"
+python-multipart = "*"
+aiofiles = "*"
 
 [dev-packages]
 pytest = "*"

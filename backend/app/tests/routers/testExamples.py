@@ -8,7 +8,7 @@ from app.api import app
 from app.routers.examples import EXAMPLE_ALREADY_EXISTS
 from app.database.crud import getAllExampleDataCOVA, getAllExampleDataANGEL
 from app.database.database import SessionLocal
-from ..utilsTests import cleanupDB, mockExample, createMockExample
+from ..utilsTests import cleanupDB, mockExampleWithImage, createMockExample, postMockExample
 
 client = TestClient(app)
 
@@ -27,7 +27,7 @@ def testCreateExampleSuccess():
   """
   Test successful create example
   """
-  response = client.post("/api/examples/", json=mockExample)
+  response = postMockExample(client)
 
   assert response.status_code == 200
 
@@ -37,7 +37,7 @@ def testCreateExampleNameExists400():
   Test 400 name already exists
   """
   createMockExample()
-  response = client.post("/api/examples/", json=mockExample)
+  response = postMockExample(client)
 
   assert response.status_code == 400
   assert response.json() == {"detail": EXAMPLE_ALREADY_EXISTS}
@@ -47,7 +47,7 @@ def testCreateExampleRequired422():
   """
   Test 422 name is required
   """
-  response = client.post("/api/examples/", json={})
+  response = client.post("/api/examples/", data={})
 
   assert response.status_code == 422
 
@@ -55,10 +55,8 @@ def testCreateExampleRequired422():
 def testCreateExampleGenerateCOVAANGEL():
   """
   Generates COVA and ANGEL entries
-
-  Note: ANGEL generation is not implemented yet
   """
-  client.post("/api/examples/", json=mockExample)
+  postMockExample(client)
 
   database = SessionLocal()
   exampleCOVAData = getAllExampleDataCOVA(database, 1)
@@ -85,8 +83,8 @@ def testGetAllExamplesSuccessNotEmpty():
   createMockExample()
   response = client.get("/api/examples/")
 
-  assert response.json() == [{
-      "name": mockExample["name"],
-      "description": mockExample["description"],
-      "id": 1,
-  }]
+  mockResponseNoDimension = {**mockExampleWithImage}
+  del mockResponseNoDimension["dimension"]
+  mockResponseNoDimension["id"] = 1
+
+  assert response.json() == [mockResponseNoDimension]

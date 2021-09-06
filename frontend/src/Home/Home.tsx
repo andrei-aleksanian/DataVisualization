@@ -1,7 +1,7 @@
 import { LinkHero } from 'Components/Link';
 import classes from './Home.module.scss';
 
-export const TEXT_LINK_EXAMPLES = 'See an Example';
+export const TEXT_LINK_LIBRARY = 'See an Example';
 export const TEXT_LINK_CUSTOM_DATA = 'Visualize Your Data';
 
 export const TEXT_H1 = 'COVA/ANGEL Visualization';
@@ -15,7 +15,7 @@ const Home = () => {
         <h1>{TEXT_H1}</h1>
         <p>{TEXT_P}</p>
         <div className={classes.LinkWrapper}>
-          <LinkHero text={TEXT_LINK_EXAMPLES} link="/examples" />
+          <LinkHero text={TEXT_LINK_LIBRARY} link="/examples" />
           <LinkHero text={TEXT_LINK_CUSTOM_DATA} link="/your-data" />
         </div>
       </div>

@@ -12,3 +12,4 @@ Points = NewType('Points', List[conlist(
     item_type=float, min_items=3, max_items=3)])
 
 Dimension = Literal[2, 3]
+DimensionIn = Literal["2", "3"]

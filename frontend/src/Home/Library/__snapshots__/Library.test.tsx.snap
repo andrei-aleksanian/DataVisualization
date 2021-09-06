@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Library matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="index"
+  >
+    <a
+      class="index Back"
+      href="/"
+    >
+      <img
+        alt="back"
+        src="arrow.svg"
+      />
+    </a>
+    <h1>
+      Examples Library
+    </h1>
+    <div
+      class="ExamplesContainer"
+    >
+      <div
+        class="Example"
+      >
+        <img
+          alt="example test image"
+          src="http://localhost:8080/images/test.jpg"
+        />
+        <div
+          class="ExampleInfo"
+        >
+          <h3>
+            test
+          </h3>
+          <p>
+            description
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

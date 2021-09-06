@@ -56,9 +56,9 @@ def loadData(filename: str):
   fullData = loadmat(f'./app/visualization/Data/{filename}')
   xParam = fullData.get('x')
 
-  sampleSize = 150
-  if env == Env.PRODUCTION.value:
-    sampleSize = len(xParam)
+  sampleSize = len(xParam)
+  if env == Env.TEST.value:
+    sampleSize = 150
 
   scaler = preprocessing.MinMaxScaler()
   scaler.fit(np.array(xParam)[:sampleSize, :])

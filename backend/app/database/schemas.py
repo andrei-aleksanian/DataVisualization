@@ -55,6 +55,7 @@ class ExampleBase(BaseModel):
   Used for reading data records
   """
   name: str
+  imagePath: str
   description: Optional[str] = None
 
 
@@ -70,3 +71,7 @@ class Example(ExampleBase):
 
   class Config:
     orm_mode = True
+
+
+class ExampleCrud(Example):
+  dimension: Dimension

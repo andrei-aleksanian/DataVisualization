@@ -5,18 +5,18 @@ exports[`Examples matches snapshot 1`] = `
   <div
     class="index"
   >
+    <a
+      class="index Back"
+      href="/examples"
+    >
+      <img
+        alt="back"
+        src="arrow.svg"
+      />
+    </a>
     <div
       class="index"
     >
-      <a
-        class="index Back"
-        href="/"
-      >
-        <img
-          alt="back"
-          src="arrow.svg"
-        />
-      </a>
       <h1>
         Example: Cylinder
       </h1>

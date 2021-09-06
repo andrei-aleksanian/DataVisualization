@@ -32,10 +32,6 @@ def getExampleByName(database: Session, name: str):
 def getExamples(database: Session):
   return database.query(
       Examples
-  ).with_entities(
-      Examples.description,
-      Examples.name,
-      Examples.id,
   ).all()
 
 
