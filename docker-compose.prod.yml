@@ -14,7 +14,7 @@ services:
     ports:
       - "80:80"
     env_file:
-      - frontend.env
+      - frontend.prod.env
 
   backend:
     restart: unless-stopped
@@ -22,7 +22,7 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - backend.env
+      - backend.prod.env
       - db.env
 
   db:
