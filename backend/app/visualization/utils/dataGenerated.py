@@ -54,7 +54,7 @@ def toDataGenerated(data: DataGeneratedNumpy) -> DataGenerated:
 def loadData(filename: str):
   """Load data for an eaxmple"""
   fullData = loadmat(f'./app/visualization/Data/{filename}')
-  xParam = fullData.get('x')
+  xParam = fullData.get('g')
 
   sampleSize = len(xParam)
   if env == Env.TEST.value:

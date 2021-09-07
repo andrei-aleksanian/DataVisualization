@@ -68,7 +68,8 @@ class ExamplesDataANGEL(Base):
           'lambdaParam',
           'anchorDensity',
           'epsilon',
-          'isAnchorModification'
+          'isAnchorModification',
+          'exampleId'
       ),)
 
   id = Column(Integer, primary_key=True, index=True)

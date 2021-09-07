@@ -12,7 +12,7 @@ from .utils.dataGenerated import getNeighbourNumber, loadData, toDataGenerated
 
 def runANGEL(params: ParamsANGEL, dimension: Dimension) -> DataGenerated:
   """Used for running ANGEL on every possible parameter"""
-  originalData, labels, scaler = loadData("cylinder_top.mat")
+  originalData, labels, scaler = loadData("bicycle_sample.mat")
 
   [anchorPoint, anchorLabel, zParam] = AnchorPointGeneration(
       originalData, labels, sparsity=params.anchorDensity)
