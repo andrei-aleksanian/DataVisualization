@@ -7,7 +7,6 @@ import { Point2D, Point3D } from 'types/Data';
 import { DataPerseveranceLabelled, DataPerseveranceColored } from 'types/Data/DataPerseverance';
 import { ParamsANGEL, ParamsCOVA } from 'types/Data/Params';
 import { Popup } from 'Components/UI';
-import { LinkBack } from 'Components/Link';
 import { getDataANGEL, getDataCOVA } from './services';
 
 import Settings, {
@@ -88,9 +87,16 @@ const Examples = () => {
 
   return (
     <div className={classes.index}>
-      <LinkBack link="/examples" />
       <Settings
-        {...{ settingsCommon, setSettingsCommon, settingsCOVA, setSettingsCOVA, settingsANGEL, setSettingsANGEL }}
+        {...{
+          settingsCommon,
+          setSettingsCommon,
+          settingsCOVA,
+          setSettingsCOVA,
+          settingsANGEL,
+          setSettingsANGEL,
+          backLink: '/examples',
+        }}
       />
       {data && (
         <Visualization2D data={data} showPreservation={settingsCommon.dataPreservation === DataPreservation.ON} />

@@ -3,6 +3,7 @@ import Slider from 'Components/Forms/Slider';
 import { Algorithm } from 'types/Settings';
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
+import { LinkBack } from 'Components/Link';
 import classes from './Settings.module.scss';
 import COVA, { SettingsCOVA } from './components/COVA';
 import ANGEL, { SettingsANGEL } from './components/ANGEL';
@@ -40,6 +41,7 @@ export interface SettingsProps {
   setSettingsCOVA: React.Dispatch<React.SetStateAction<SettingsCOVA>>;
   settingsANGEL: SettingsANGEL;
   setSettingsANGEL: React.Dispatch<React.SetStateAction<SettingsANGEL>>;
+  backLink: string;
 }
 
 const Settings = ({
@@ -49,6 +51,7 @@ const Settings = ({
   setSettingsCOVA,
   settingsANGEL,
   setSettingsANGEL,
+  backLink,
 }: SettingsProps) => {
   const onChangeAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
     event.preventDefault();
@@ -63,6 +66,7 @@ const Settings = ({
 
   return (
     <div className={classes.index}>
+      <LinkBack link={backLink} />
       <h1>{TEXT_H1}</h1>
       <CheckBoxes
         heading={TEXT_CHECKBOX_ALGORITHM}

@@ -1,6 +1,6 @@
 .Modal {
   position: absolute;
-  z-index: var(--z-index-10);
+  z-index: var(--z-index-100);
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -43,6 +43,7 @@
   --z-index-normal: 0;
   --z-index-10: 10;
   --z-index-100: 100;
+  --z-index-1000: 1000;
   --top-popup-final: calc((100vh - 120px - 2rem) / 2);
 }
 
