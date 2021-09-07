@@ -37,7 +37,7 @@ const Examples = () => {
 
   const updateData = (newData: DataPerseveranceLabelled) => {
     setData(() => {
-      const colors = getColors(newData.labels, settingsCommon.dataPreservation, newData.prevPartsave);
+      const colors = getColors(newData.labels);
       return {
         ...newData,
         points: newData.points.map((p) => p.map((p2) => p2 * 100 - 50) as Point2D | Point3D),

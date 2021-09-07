@@ -27,6 +27,7 @@ export default function Scene({
           color={colors[i]}
           key={getId('point')}
           radius={getRadius(prevPartsave.includes(i) && showPreservation)}
+          isPreservation={showPreservation}
         />
       ))}
       {showPreservation &&
