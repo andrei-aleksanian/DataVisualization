@@ -27,6 +27,7 @@ const mockSettingsProps: SettingsProps = {
   setSettingsCOVA: () => {},
   settingsANGEL: defaultSettingsANGEL,
   setSettingsANGEL: () => {},
+  backLink: '/examples',
 };
 
 test('Settings matches snapshot', () => {
