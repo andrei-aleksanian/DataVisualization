@@ -4,9 +4,10 @@ import numpy as np
 from scipy.spatial.distance import pdist, squareform
 
 from .lib.SOEmbedding import SOE
+from .lib.FunctionFile import funInit, AdjacencyMatrix
 from .lib.evaluation import neighbor_prev_disturb
-from .lib.COVA import ProtoGeneration, AdjacencyMatrix,\
-    CohortConfidence, COVAembedding, SeparateCohort
+from .lib.COVA import ProtoGeneration,\
+    CohortConfidence, COVAembedding, SeparateCohort, PrototypeEmbedding
 
 from ..types.Custom import Dimension
 from ..types.dataGenerated import DataGenerated, ParamsCOVA, DataGeneratedNumpy
@@ -20,14 +21,16 @@ def runCOVA(params: ParamsCOVA, dimension: Dimension) -> DataGenerated:
   """Used for running COVA on every possible parameter"""
   originalData, labels, scaler = loadData("bicycle_sample.mat")
 
-  vParam, clabel = ProtoGeneration(
+  dcParam, protolabel, clabel = ProtoGeneration(
       originalData,
       labels,
-      scaler,
-      dimension,
       C=0 if params.isCohortNumberOriginal else 1,
   )
-
+  initdata, initanchor, _ = funInit(labels, protolabel, dim=dimension)
+  vParam = PrototypeEmbedding(dcParam, protolabel, dim=dimension,
+                              Embedding='SOE', init=initanchor)
+  scaler.fit(vParam)
+  vParam = scaler.transform(vParam)
   adjacencyMatrix = AdjacencyMatrix(
       originalData,
       getNeighbourNumber(
@@ -41,7 +44,7 @@ def runCOVA(params: ParamsCOVA, dimension: Dimension) -> DataGenerated:
       relation,
       adjacencyMatrix,
       vParam,
-      0,
+      initdata,
       dimension,
       params.alpha,
       20,
@@ -63,7 +66,7 @@ def initCOVA() -> DataFormatted:
 
   Returns: original data set in 2d/3d space without optimisation
   """
-  originalData, labels, scaler = loadData("cylinder_top.mat")
+  originalData, labels, scaler = loadData("bicycle_sample.mat")
 
   prototypes, protolabel, clabel = SeparateCohort(
       originalData, labels, sparsity=0.1)
@@ -75,6 +78,7 @@ def initCOVA() -> DataFormatted:
 
   adjacencyMatrix = AdjacencyMatrix(originalData, 10)
 
+  print(clabel)
   relation = CohortConfidence(originalData, clabel, 0)
 
   resultData = COVAembedding(originalData, relation,

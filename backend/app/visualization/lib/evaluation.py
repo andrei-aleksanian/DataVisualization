@@ -48,8 +48,7 @@ def neighbor_prev_disturb(high_d, low_d, label, k, metric='euclidean', part=0.5)
     temp_high = squareform(pdist(temp_high_data, metric=metric))
     temp_low_data = low_d[temp_index, :]
     temp_low = squareform(pdist(temp_low_data, metric=metric))
-    temp_nei_high = k_nearest_neighbor(
-        temp_high, k=k, weight=0, direction=1)
+    temp_nei_high = k_nearest_neighbor(temp_high, k=k, weight=0, direction=1)
     temp_nei_low = k_nearest_neighbor_disturb(
         temp_low, k=k, weight=0, direction=1)
     dis_high[np.ix_(temp_index, temp_index)] = temp_high
@@ -67,6 +66,9 @@ def neighbor_prev_disturb(high_d, low_d, label, k, metric='euclidean', part=0.5)
     neil = neighbor_low[i, :]
     whereneighh = np.squeeze(np.where(neih == 1))
     whereneighl = np.squeeze(np.where(neil == 1))
+    if len(whereneighh) < 10:
+      templh = len(whereneighh)
+      prev_keep_high[i, templh:] = 1e1000
     if k == 1:
       if whereneighh == whereneighl:
         same_neigh = same_neigh + 1
@@ -83,8 +85,7 @@ def neighbor_prev_disturb(high_d, low_d, label, k, metric='euclidean', part=0.5)
             temp_marklow[a] = whereneighl[a]
       temp_nomarkhigh = whereneighh[np.squeeze(
           np.argwhere(prev_keep_high[i, :] == 0))]
-      temp_nomarklow = whereneighl[np.squeeze(
-          np.argwhere(temp_marklow == 0))]
+      temp_nomarklow = whereneighl[np.squeeze(np.argwhere(temp_marklow == 0))]
       prev_wrong_in_high.append(temp_nomarkhigh)
       prev_wrong_in_low.append(temp_nomarklow)
     if same_neigh < part * k:
@@ -106,7 +107,7 @@ def P_local(high_d, low_d, label, k, metric='euclidean'):
   return prev_score, save_prev
 
 
-def CohortSpearman(high_d, low_d, label, CohortMetric):
+def P_global(high_d, low_d, label, CohortMetric):
   k = np.unique(label)
   num_k = len(k)
   d_cohort1 = CohortDistance(
@@ -131,7 +132,7 @@ def Prev(high_d, low_d, label, specific='all', metric='euclidean', CohortMetric=
     neigh = int(np.floor(0.5 * smallest_label))
     P_l = P_local(high_d, low_d, label, neigh, metric=metric)[0]
 
-    P_g = CohortSpearman(high_d, low_d, label, CohortMetric)
+    P_g = P_global(high_d, low_d, label, CohortMetric)
 
     knn = KNeighborsClassifier(n_neighbors=1, weights='distance')
     cv_scores = cross_val_score(knn, low_d, np.ravel(label), cv=5)
@@ -151,7 +152,7 @@ def Prev(high_d, low_d, label, specific='all', metric='euclidean', CohortMetric=
     P_l = P_local(high_d, low_d, label, neigh, metric=metric)[0]
     return P_l
   elif specific == 'global':
-    P_g = CohortSpearman(high_d, low_d, label, CohortMetric)
+    P_g = P_global(high_d, low_d, label, CohortMetric)
     return P_g
   elif specific == 'separability':
     knn = KNeighborsClassifier(n_neighbors=1, weights='distance')
@@ -165,6 +166,7 @@ def Prev(high_d, low_d, label, specific='all', metric='euclidean', CohortMetric=
 
 def plot_neighbor(high_d, low_d, label, k=10, part=0.5, choice='link'):
   l = high_d.shape[0]
+  dim = low_d.shape[1]
   Result_nei = neighbor_prev_disturb(
       high_d, low_d, label, k=k, metric='euclidean', part=part)
   neigh_low = Result_nei[1]
@@ -176,11 +178,20 @@ def plot_neighbor(high_d, low_d, label, k=10, part=0.5, choice='link'):
   if part > 0:
     colorall = np.ones([l])
     temp_save = np.asarray(prev_partsave)
-    colorall[temp_save] = 2
-    colorlabel = ['gray', 'yellow']
+    # colorall[temp_save] = 2
+    colorlabel = ['gray']
     if choice == 'link':
-      plt.scatter(low_d[:, 0], low_d[:, 1], c=colorall,
-                  cmap=mplt.colors.ListedColormap(colorlabel))
+      if dim == 2:
+        plt.scatter(low_d[:, 0], low_d[:, 1], c=colorall,
+                    cmap=mplt.colors.ListedColormap(colorlabel))
+      elif dim == 3:
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        ax.scatter(low_d[:, 0], low_d[:, 1], low_d[:, 2],
+                   c=colorall, cmap=mplt.colors.ListedColormap(colorlabel))
+      else:
+        print('error')
+        return 0
       for i in range(len(prev_partsave)):
         templist = prev_wrong_in_low[prev_partsave[i]]
         temppoint = low_d[templist, :]
@@ -189,29 +200,42 @@ def plot_neighbor(high_d, low_d, label, k=10, part=0.5, choice='link'):
           tempp = low_d[prev_partsave[i], :]
           tempj = temppoint[j, :]
           tempset = np.array([tempp, tempj])
-          plt.plot(tempset[:, 0], tempset[:, 1], 'r')
+          if dim == 2:
+            plt.plot(tempset[:, 0], tempset[:, 1], 'r')
+          elif dim == 3:
+            plt.plot(tempset[:, 0], tempset[:, 1], tempset[:, 2], 'r')
+          else:
+            print('error')
+            return 0
     elif choice == 'size':
       sizeall = np.ones([l]) * 10
       sizeall[temp_save] = 100
-      plt.scatter(low_d[:, 0], low_d[:, 1], s=sizeall,
-                  c=colorall, cmap=mplt.colors.ListedColormap(colorlabel))
+      if dim == 2:
+        plt.scatter(low_d[:, 0], low_d[:, 1], s=sizeall,
+                    c=colorall, cmap=mplt.colors.ListedColormap(colorlabel))
+      elif dim == 3:
+        plt.scatter(low_d[:, 0], low_d[:, 1], low_d[:, 2], s=sizeall,
+                    c=colorall, cmap=mplt.colors.ListedColormap(colorlabel))
+      else:
+        print('error')
+        return 0
   plt.show()
   return 0
 
 
 if __name__ == '__main__':
-  fullData = loadmat('../Data/OneFlower.mat')
+  fullData = loadmat('../Data/cylinder_top.mat')
   scaler = preprocessing.MinMaxScaler()
   # x = csr_matrix(fullData.get('newsdata')).toarray()
-  scaler.fit(np.array(fullData.get('g')))
-  g = scaler.transform(np.array(fullData.get('g')))
+  scaler.fit(np.array(fullData.get('x')))
+  g = scaler.transform(np.array(fullData.get('x')))
   label = np.array(fullData.get('label')).transpose()
   Adis = squareform(pdist(g, metric='euclidean'))
 
-  fullresult = loadmat(
-      '../Result/flower/OneFlower_AnchorLOE_constrained_eps2.mat')
-  x = np.array(fullresult.get('x'))
+  # fullresult = loadmat('../Result/flower/OneFlower_AnchorLOE_constrained_eps2.mat')
+  fullresult = loadmat('angel_neigh300.mat')
+  x = np.array(fullresult.get('result'))
 
   # a = Prev(g, x, label, specific='local')
 
-  plot_neighbor(g, x, label, k=10, part=0.6, choice='size')
+  plot_neighbor(g, x, label, k=10, part=0.6, choice='link')

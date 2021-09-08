@@ -1,7 +1,7 @@
 """
 My angel functions
 """
-from .lib.FunctionFile import AdjacencyMatrix
+from .lib.FunctionFile import AdjacencyMatrix, funInit
 from .lib.ANGEL import AnchorPointGeneration, AnchorEmbedding, ANGEL_embedding
 
 from ..types.dataGenerated import ParamsANGEL, DataGenerated, DataGeneratedNumpy
@@ -16,13 +16,16 @@ def runANGEL(params: ParamsANGEL, dimension: Dimension) -> DataGenerated:
 
   [anchorPoint, anchorLabel, zParam] = AnchorPointGeneration(
       originalData, labels, sparsity=params.anchorDensity)
+  initdata, initanchor, cinit = funInit(labels, anchorPoint, dimension)
 
   anchorpoint, _, _ = AnchorEmbedding(
       anchorPoint,
       anchorLabel,
       flagMove=1 if params.isAnchorModification else 0,
       lamb=params.lambdaParam,
-      dim=dimension
+      dim=dimension,
+      init=initanchor,
+      cinit=cinit
   )
   scaler.fit(anchorpoint)
   anchorpoint = scaler.transform(anchorpoint)
@@ -35,7 +38,7 @@ def runANGEL(params: ParamsANGEL, dimension: Dimension) -> DataGenerated:
       metric='euclidean'
   )
   resultData = ANGEL_embedding(originalData, anchorpoint, zParam, wParam, dim=dimension,
-                               T=15, eps=params.epsilon)
+                               init=initdata, T=15, eps=params.epsilon)
 
   return toDataGenerated(
       DataGeneratedNumpy({

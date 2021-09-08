@@ -49,8 +49,7 @@ def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
       if i == j:
         dCluster[i, j] = 0
       else:
-        tempj = np.squeeze(np.argwhere(
-            np.squeeze(DataLabel) == u_Label[j]))
+        tempj = np.squeeze(np.argwhere(np.squeeze(DataLabel) == u_Label[j]))
         Dist_ij = DistData[np.ix_(tempi, tempj)]
         if linkC == 'single':
           np.fill_diagonal(Dist_ij, float('inf'))
@@ -69,8 +68,7 @@ def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
         elif linkC == 'Hausdoff':
           tempCluster_i = Data[tempi, :]
           tempCluster_j = Data[tempj, :]
-          dCluster[i, j] = directed_hausdorff(
-              tempCluster_i, tempCluster_j)[0]
+          dCluster[i, j] = directed_hausdorff(tempCluster_i, tempCluster_j)[0]
           dCluster[j, i] = dCluster[i, j]
         else:
           print('Wrong Information')
@@ -125,8 +123,7 @@ def k_nearest_neighbor(disgraph, k=10, weight=1, direction=0):
     dis_sort = disgraph[i, :]
     dis_ascend = np.argsort(dis_sort)
     if weight == 1:
-      simgraph[i, dis_ascend[1: k + 1]
-               ] = abs(dis_sort[dis_ascend[1: k + 1]])
+      simgraph[i, dis_ascend[1: k + 1]] = abs(dis_sort[dis_ascend[1: k + 1]])
     else:
       simgraph[i, dis_ascend[1: k + 1]] = 1
   if direction == 0:
@@ -154,8 +151,7 @@ def k_nearest_neighbor_disturb(disgraph, k=10, weight=1, direction=0):
       while temp_num == 0:
         tempm = tempm + 1
         if tempm <= l - k:
-          temp_dis_min_temp = dis_sort[:,
-                                       k + tempm] - dis_sort[:, k + 1]
+          temp_dis_min_temp = dis_sort[:, k + tempm] - dis_sort[:, k + 1]
           temp_num = sum(temp_dis_min_temp) / l
       temp_num = temp_num * 10
       temp_count = temp_count + 1
@@ -171,8 +167,7 @@ def k_nearest_neighbor_disturb(disgraph, k=10, weight=1, direction=0):
     dis_sort = disgraph[i, :]
     dis_ascend = np.argsort(dis_sort)
     if weight == 1:
-      simgraph[i, dis_ascend[1: k + 1]
-               ] = abs(dis_sort[dis_ascend[1: k + 1]])
+      simgraph[i, dis_ascend[1: k + 1]] = abs(dis_sort[dis_ascend[1: k + 1]])
     else:
       simgraph[i, dis_ascend[1: k + 1]] = 1
     if delta > 0:
@@ -202,3 +197,25 @@ def k_nearest_neighbor_disturb(disgraph, k=10, weight=1, direction=0):
             if simgraph[j, i] == 0:
               simgraph[j, i] = simgraph[i, j]
   return simgraph
+
+
+def funInit(label, anchor, dim=2):
+  if len(label.shape) > 1:
+    if label.shape[0] > label.shape[1]:
+      ldata = label.shape[0]
+    else:
+      ldata = label.shape[1]
+  elif len(label.shape) == 1:
+    ldata = label.shape[0]
+  lc = len(np.unique(label))
+  if len(anchor.shape) > 1:
+    if anchor.shape[0] > anchor.shape[1]:
+      lanchor = anchor.shape[0]
+    else:
+      lanchor = anchor.shape[1]
+  elif len(anchor.shape) == 1:
+    lanchor = anchor.shape[0]
+  initdata = np.random.random_sample((ldata, dim))
+  initanchor = np.random.random_sample((lanchor, dim))
+  initc = np.random.random_sample((lc, dim))
+  return initdata, initanchor, initc

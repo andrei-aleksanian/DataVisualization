@@ -20,8 +20,8 @@ isCohortNumberOriginal = [True, False]
 if os.environ.get("ENVIRONMENT") == Env.TEST.value:
   neighbourNumber = ['10']
   lambdaParam = [0]
-  alpha = [0]
-  isCohortNumberOriginal = [True]
+  alpha = [0.4]
+  isCohortNumberOriginal = [False]
 
 
 def generateCOVA(exampleId: int, dimension: Dimension):

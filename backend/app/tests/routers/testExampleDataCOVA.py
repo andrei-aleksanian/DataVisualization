@@ -32,8 +32,8 @@ def testGetCOVAExampleSuccess():
   params = ParamsCOVA(**{
       "neighbourNumber": "10",
       "lambdaParam": 0,
-      "alpha": 0,
-      "isCohortNumberOriginal": True
+      "alpha": 0.4,
+      "isCohortNumberOriginal": False
   })
   response = client.post("api/examples/cova/data/get/1",
                          json=params.dict())

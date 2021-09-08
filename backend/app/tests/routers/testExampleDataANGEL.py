@@ -34,7 +34,7 @@ def testGetANGELExampleSuccess():
       "lambdaParam": 0,
       "anchorDensity": 0.05,
       "epsilon": 0.5,
-      "isAnchorModification": True
+      "isAnchorModification": False
   })
   response = client.post("api/examples/angel/data/get/1",
                          json=params.dict())

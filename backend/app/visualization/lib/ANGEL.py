@@ -24,6 +24,8 @@ from scipy.sparse import csr_matrix
 import os
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from .FunctionFile import funInit
 
 
 def AnchorPointGeneration(Data, DataLabel, sparsity=0.1, t=3, metric='euclidean', cn=10):
@@ -90,9 +92,11 @@ def AnchorEmbedding(
         T=500,
         metric="euclidean",
         cohortmetric="average",
-        scale=1):
+        scale=1,
+        cinit=0):
   l = Anchor.shape[0]
-  if init == 0:
+  if isinstance(init, int):
+    # np.random.seed(0)
     init = np.random.random_sample((l, dim))
   if flagDistanceMatrix == 0:
     A = squareform(pdist(Anchor, metric))
@@ -106,14 +110,15 @@ def AnchorEmbedding(
     A_order = Ad_cohort_order_chg(
         A_order, anchorlabel, linkage_order, k, lamb).astype(int)
 
-  anchor0 = SOE(A_order.astype(int), anchorlabel, T=T, scale=scale, dim=dim)
+  anchor0 = SOE(A_order.astype(int), anchorlabel,
+                Init=init, T=T, scale=scale, dim=dim)
   # plt.scatter(anchor0[:, 0], anchor0[:, 1], c=anchorlabel)
   # plt.show()
 
   if flagMove != 0:
     d_cohort = CohortDistance(Anchor, anchorlabel)
     C_order = np.argsort(d_cohort, axis=-1).astype(int)
-    C = SOE(C_order.astype(int), k, dim=dim)
+    C = SOE(C_order.astype(int), k, dim=dim, Init=cinit)
     # plt.scatter(C[:, 0], C[:, 1], c=k)
     # plt.show()
     C = C / (np.max(np.max(C)) / np.max(np.max(anchor0)))
@@ -216,6 +221,56 @@ def GradLOE_loop(x0, n, Del, dim, tempj, lj, templ, ll, disgraph):
   return gradX
 
 
+def reformX(x, dim):
+  n = int(x.shape[0] / dim)
+  x0 = np.reshape(x, (n, dim))
+  return x0
+
+
+def ErrTSNE(x, *args):
+  A_order, dim = args[0], args[1]
+  x0 = reformX(x, dim)
+  E = TSNEcost(x0, A_order)
+  return E
+
+
+def GradTSNE(x, *args):
+  A_order, dim = args[0], args[1]
+  x0 = reformX(x, dim)
+  grad = TSNEgrad(x0, A_order)
+  gradX0 = np.squeeze(np.reshape(grad, (x.shape[0], 1)))
+  return gradX0
+
+
+def TSNEcost(x, Ad):
+  n = Ad.shape[0]
+  P = Ad / sum(sum(Ad))
+  d2 = squareform(pdist(x, 'euclidean'))
+  d2 = d2 * d2
+  Q = 1 / (1 + d2)
+  Q[range(n), range(n)] = 0
+  Q_n = Q / sum(Q)
+  Q_n = np.maximum(Q_n, 1e-12)
+  y = -P * np.log(Q_n)
+  y[range(n), range(n)] = 0
+  o = sum(sum(y))
+  return o
+
+
+def TSNEgrad(x, Ad):
+  n = Ad.shape[0]
+  P = Ad / sum(sum(Ad))
+  d2 = squareform(pdist(x, 'euclidean'))
+  d2 = d2 * d2
+  Q = 1 / (1 + d2)
+  Q[range(n), range(n)] = 0
+  Q_n = Q / sum(Q)
+  Q_n = np.maximum(Q_n, 1e-12)
+  L = (P - Q_n) * Q
+  gd = 4 * (np.diag(np.sum(L, axis=0)) - L) @ x
+  return gd
+
+
 def ANGEL_embedding(
         Data,
         anchor,
@@ -226,82 +281,161 @@ def ANGEL_embedding(
         init=0,
         eps=0.05,
         metric='euclidean',
-        T=80):
+        T=80,
+        neighbor=10):
   [l, D] = Data.shape
-  if init == 0:
+  if isinstance(init, int):
+    # np.random.seed(0)
     init = np.random.random_sample((l * dim, 1))
+  else:
+    if len(init.shape) > 1:
+      init = np.reshape(init, (l * dim, 1))
   LAEstart = Z @ anchor
   additional = (W, dim)
   initstart = np.reshape(LAEstart, (l * dim, 1))
+  if dim == 2:
+    bnds1 = [(LAEstart[i, 0] - eps, LAEstart[i, 0] + eps) for i in range(0, l)]
+    bnds2 = [(LAEstart[i, 1] - eps, LAEstart[i, 1] + eps) for i in range(0, l)]
+    bnds = []
+    for i in range(0, l):
+      bnds.append(bnds1[i])
+      bnds.append(bnds2[i])
+  elif dim == 3:
+    bnds1 = [(LAEstart[i, 0] - eps, LAEstart[i, 0] + eps) for i in range(0, l)]
+    bnds2 = [(LAEstart[i, 1] - eps, LAEstart[i, 1] + eps) for i in range(0, l)]
+    bnds3 = [(LAEstart[i, 2] - eps, LAEstart[i, 2] + eps) for i in range(0, l)]
+    bnds = []
+    for i in range(0, l):
+      bnds.append(bnds1[i])
+      bnds.append(bnds2[i])
+      bnds.append(bnds3[i])
+  else:
+    print('error')
+    return
   if optType == 'constrained':
-    if dim == 2:
-      bnds1 = [(LAEstart[i, 0] - eps, LAEstart[i, 0] + eps)
-               for i in range(0, l)]
-      bnds2 = [(LAEstart[i, 1] - eps, LAEstart[i, 1] + eps)
-               for i in range(0, l)]
-      bnds = []
-      for i in range(0, l):
-        bnds.append(bnds1[i])
-        bnds.append(bnds2[i])
-    elif dim == 3:
-      bnds1 = [(LAEstart[i, 0] - eps, LAEstart[i, 0] + eps)
-               for i in range(0, l)]
-      bnds2 = [(LAEstart[i, 1] - eps, LAEstart[i, 1] + eps)
-               for i in range(0, l)]
-      bnds3 = [(LAEstart[i, 2] - eps, LAEstart[i, 2] + eps)
-               for i in range(0, l)]
-      bnds = []
-      for i in range(0, l):
-        bnds.append(bnds1[i])
-        bnds.append(bnds2[i])
-        bnds.append(bnds3[i])
     x = minimize(ErrLOE, init, method='SLSQP', args=additional, jac=GradLOE,
                  bounds=bnds, options={'disp': True, 'maxiter': T})
     x = np.reshape(x.x, (l, dim))
 
   elif optType == 'fast':
-    T = 5
-    x = minimize(ErrLOE, initstart, method='BFGS', args=additional, jac=GradLOE,
-                 options={'disp': True, 'maxiter': T})
+    W0 = AdjacencyMatrix(Data, neighbor=neighbor, weight=1, metric='euclidean')
+    additional = (W0, dim)
+    x = minimize(ErrTSNE, init, method='L-BFGS-B', args=additional, jac=GradTSNE,
+                 bounds=bnds, options={'disp': True, 'maxiter': T})
     x = np.reshape(x.x, (l, dim))
   else:
     x = 0
     print('error')
+  pca = PCA(n_components=dim)
+  pca.fit(x)
+  x = pca.transform(x)
   return x
 
 
 if __name__ == '__main__':
-  fullData = loadmat('../Data/cylinder_top.mat')
+  fullData = loadmat('bicycle_sample.mat')
+  # fullData = loadmat('../Data/cylinder_top.mat')
   scaler = preprocessing.MinMaxScaler()
   # x = csr_matrix(fullData.get('newsdata')).toarray()
-  scaler.fit(np.array(fullData.get('x')))
-  g = scaler.transform(np.array(fullData.get('x')))
+  scaler.fit(np.array(fullData.get('g')))
+  g = scaler.transform(np.array(fullData.get('g')))
   label = np.array(fullData.get('label')).transpose()
-  np.random.seed(0)
+  label.astype(int)
+  # np.random.seed(0)
 
   [AnchorPoint, AnchorLabel, Z] = AnchorPointGeneration(
-      g, label, sparsity=0.05)  # anchor density - sparsity
+      g, label, sparsity=0.05)
+  initdata, initanchor, initc = funInit(label, AnchorPoint, dim=2)
+
   anchorpoint, anchor0, C = AnchorEmbedding(
-      AnchorPoint, AnchorLabel, flagMove=0, lamb=0, dim=2)
+      AnchorPoint, AnchorLabel, init=initanchor, flagMove=0, lamb=0, dim=2, cinit=initc)
   scaler.fit(anchorpoint)
   anchorpoint = scaler.transform(anchorpoint)
-
-  plt.scatter(anchorpoint[:, 0], anchorpoint[:, 1], c=AnchorLabel)
-  plt.show()
+  # colorlabel = ['red','pink','green','blue','black','gray']
+  # plt.scatter(anchorpoint[:, 0], anchorpoint[:, 1], c=AnchorLabel, cmap='rainbow')
+  # plt.show()
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='3d')
+  # ax.scatter(anchorpoint[:, 0], anchorpoint[:, 1], anchorpoint[:, 2], c=AnchorLabel)
+  # plt.show()
 
   W = AdjacencyMatrix(g, neighbor=10, weight=0, metric='euclidean')
   result = ANGEL_embedding(g, anchorpoint, Z, W, dim=2,
-                           T=15, eps=0.1)  # eps -epsilon
+                           T=10, eps=0.1, init=initdata, optType='constrained')
   # fig = plt.figure()
   # ax = fig.add_subplot(projection='3d')
-  # ax.scatter(result[:, 0], result[:, 1], result[:, 2], c=label)
+  # ax.scatter(result[:, 0], result[:, 1], result[:, 2], c=label, cmap='rainbow')
   # plt.show()
 
-  plt.scatter(result[:, 0], result[:, 1], c=label)
+  plt.scatter(result[:, 0], result[:, 1], c=label, cmap='rainbow')
   plt.show()
+
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='3d')
+  # ax.scatter(x[:, 0], x[:, 1], x[:, 2], c=label, cmap='rainbow')
+  # plt.show()
+
+  # plot_neighbor(g, result, label, k=10, part=0.5, choice='link')
 
   print('finish')
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+  # Generate Cellbt
+  # fullData = loadmat('cellBT.mat')
+  # scaler = preprocessing.MinMaxScaler()
+  # # x = csr_matrix(fullData.get('newsdata')).toarray()
+  # scaler.fit(np.array(fullData.get('g')))
+  # g = scaler.transform(np.array(fullData.get('g')))
+  # label = np.squeeze(np.array(fullData.get('label'))).transpose()
+  # a = np.array([3, 4, 21, 20, 14, 1])
+  # gtemp = np.zeros((55306, 38))
+  # labeltemp = np.zeros((55306, 1))
+  # temp = 0
+  # for i in range(len(a)):
+  #     t = np.squeeze(np.argwhere(label == a[i]))
+  #     gtemp[temp: temp + len(t), :] = g[t, :]
+  #     labeltemp[temp: temp + len(t), 0] = label[t]
+  #     temp = temp + len(t)
+  # g = np.array(gtemp)
+  # label = np.array(labeltemp)
+  # rnds = random.sample(range(0, 55306), 500)
+  # g = g[rnds, :]
+  # label = label[rnds]
+
+
+# Read bicycle
+  # g = []
+  # with open('bicycle.pts') as file:
+  #     for line in file:
+  #         line = line.strip('\n')
+  #         all_data = line.split()
+  #         for ii in range(len(all_data)):
+  #             all_data[ii] = float(all_data[ii])
+  #         g.append(all_data)
+  # g = np.asarray(g)
+  #
+  # label = []
+  # with open('bicycle.seg') as file:
+  #     for line in file:
+  #         line = line.strip('\n')
+  #         all_data = line.split()
+  #         for ii in range(len(all_data)):
+  #             all_data[ii] = float(all_data[ii])
+  #         label.append(all_data)
+  # label = np.asarray(label)
+  #
+  # rnds = random.sample(range(0, 2346), 500)
+  # g = g[rnds, :]
+  # label = label[rnds]
+  #
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='3d')
+  # ax.scatter(g[:, 0], g[:, 1], g[:, 2], c=label)
+  # plt.show()
+  #
+  # scaler = preprocessing.MinMaxScaler()
+  # scaler.fit(g)
+  # g = scaler.transform(g)
 
 
 # x = Init

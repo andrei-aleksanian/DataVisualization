@@ -6,6 +6,7 @@ from scipy.spatial.distance import pdist, cdist, squareform
 from scipy.optimize import minimize
 # from sklearn.neighbors import NearestNeighbors
 from sklearn import preprocessing
+from sklearn.decomposition import PCA
 
 # from FunctionFile import AdjacencyMatrix
 from sklearn.metrics import pairwise_distances
@@ -21,6 +22,7 @@ from .ANGEL import AnchorPointGeneration, AnchorEmbedding
 from sklearn.cluster import KMeans
 # import imagesc
 from .evaluation import plot_neighbor
+from .FunctionFile import funInit, AdjacencyMatrix
 
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
@@ -71,30 +73,6 @@ def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
   return dCluster
 
 
-def PrototypeEmbedding(Dc, DataLabel, dim=2, Embedding='SOE'):
-  linkage_order = np.argsort(Dc, axis=-1)
-  if Embedding == 'SOE':
-    V = SOE(linkage_order.astype(int), DataLabel, dim=dim)
-  elif Embedding == 'MDS':
-    embedding = MDS(n_components=2, dissimilarity='precomputed')
-    V = embedding.fit_transform(Dc)
-  return V
-
-
-def AdjacencyMatrix(Data, neighbor=10, weight=1, metric='euclidean'):
-  # nbrs = NearestNeighbors(n_neighbors=neighbor + 1).fit(Data)
-  # Aj = nbrs.kneighbors_graph(Data).toarray()
-  Adis = squareform(pdist(Data, metric))
-  # if metric == 'euclidean':
-  # Adis = - (np.max(Adis) - Adis)
-  Aj = k_nearest_neighbor(Adis, neighbor, weight, direction=0)
-  # Aj = Aj * Adis
-  # n = Data.shape[0]
-  # Aj[range(n), range(n)] = 0
-  # Aj = Aj / sum(sum(Aj))
-  return Aj
-
-
 def k_nearest_neighbor(disgraph, k=10, weight=1, direction=0):
   l = disgraph.shape[0]
   simgraph = np.zeros([l, l])
@@ -137,9 +115,14 @@ def CohortConfidence(Data, DataCohort, lamb):
       tData = Data[np.squeeze(DataCohort == diffLabel[j]), :]
       tempw = cdist(np.expand_dims(
           tempc, axis=1).transpose(), tData, 'euclidean')
-      mu = np.mean(tempw)
-      sigma = np.cov(tempw)
-      p = np.exp(-(tempw - mu) * (tempw - mu) / sigma)
+      if tData.shape[0] == 1 or len(tData.shape) == 1:
+        p = tempw
+      else:
+        mu = np.mean(tempw)
+        sigma = np.cov(tempw)
+        p = np.exp(-(tempw - mu) * (tempw - mu) / sigma)
+        if sigma < 1e-10:
+          p = tempw
       W[np.squeeze(DataCohort == diffLabel[j]), i] = p
   if lamb != 0:
     Rtemp = ReScale(W * Y, 1 - lamb, 1) * Y
@@ -352,7 +335,7 @@ def COVAembedding(
     elif opttype == 'GD_Euclidean':
       l = Data.shape[0]
       if isinstance(Init, int):
-        np.random.seed(0)
+        # np.random.seed(0)
         Init = np.random.random_sample((l, dim))
       elif not isinstance(Init, int) and not isinstance(Init, np.ndarray):
         print('init error')
@@ -372,6 +355,9 @@ def COVAembedding(
     else:
       print('error')
       return 0
+  pca = PCA(n_components=dim)
+  pca.fit(x)
+  x = pca.transform(x)
   return x
 
 
@@ -413,36 +399,42 @@ def SeparateCohort(data, label, sparsity=0.1):
   return prototype, protolabel, clabel
 
 
-def ProtoGeneration(data, label, scaler, dim=2, C=1, metric='euclidean', Embedding='SOE'):
+def PrototypeEmbedding(Dc, DataLabel, dim=2, Embedding='SOE', init=0):
+  linkage_order = np.argsort(Dc, axis=-1).astype(int)
+  if Embedding == 'SOE':
+    V = SOE(linkage_order, DataLabel, dim=dim, Init=init)
+  elif Embedding == 'MDS':
+    embedding = MDS(n_components=2, dissimilarity='precomputed')
+    V = embedding.fit_transform(Dc)
+  return V
+
+
+def ProtoGeneration(data, label, C=1, metric='euclidean'):
   if C == 0:
     if len(label.shape) > 1:
       if label.shape[1] > 1:
         label = label.transpose()
     Dc = CohortDistance(data, label)
-    V = PrototypeEmbedding(Dc, label, dim, Embedding)
+    protolabel = np.unique(label).astype(int)
     clabel = label
   elif C == 1:
     prototypes, protolabel, clabel = SeparateCohort(data, label, sparsity=0.1)
-    A = squareform(pdist(prototypes, metric))
-    A_order = np.argsort(A, axis=1).astype(int)
-    V = SOE(A_order.astype(int), protolabel, dim=dim)
-    scaler.fit(V)
-    V = scaler.transform(V)
+    Dc = squareform(pdist(prototypes, metric))
   else:
     print('Error')
     return 0
-  return V, clabel
+  return Dc, protolabel, clabel
 
 
 if __name__ == '__main__':
-  # fullData = loadmat('bicycle_sampe.mat')
+  fullData = loadmat('bicycle_sample.mat')
 
-  fullData = loadmat('../Data/cylinder_top.mat')
+  # fullData = loadmat('../Data/cylinder_top.mat')
   # x = csr_matrix(fullData.get('newsdata')).toarray()
 
   scaler = preprocessing.MinMaxScaler()
-  scaler.fit(np.array(fullData.get('x')))
-  g = scaler.transform(np.array(fullData.get('x')))
+  scaler.fit(np.array(fullData.get('g')))
+  g = scaler.transform(np.array(fullData.get('g')))
   label = np.array(fullData.get('label')).transpose()
   # fig = plt.figure()
   # ax = fig.add_subplot(projection='3d')
@@ -460,13 +452,18 @@ if __name__ == '__main__':
   # # Dc = CohortDistance(g, r_label)
   # V = PrototypeEmbedding(A_order, protolabel, dim=3, Embedding='SOE')
 
+  Dc, protolabel, clabel = ProtoGeneration(g, label, C=1, metric='euclidean')
+  initdata, initanchor, initc = funInit(label, protolabel, dim=2)
+  V = PrototypeEmbedding(Dc, protolabel, dim=2,
+                         Embedding='SOE', init=initanchor)
+  scaler.fit(V)
+  Ad = AdjacencyMatrix(g, 10)
+
   # fig = plt.figure()
   # ax = fig.add_subplot(projection='3d')
-  # ax.scatter(V[:, 1], V[:, 2], V[:, 0], c=protolabel)
+  # ax.scatter(V[:, 1], V[:, 2], V[:, 0], c=protolabel, cmap='rainbow')
   # plt.show()
-  V, clabel = ProtoGeneration(
-      g, label, dim=3, C=1, metric='euclidean', Embedding='SOE')
-  Ad = AdjacencyMatrix(g, 30)
+
   # temp_order = np.squeeze(np.argsort(label, axis=0))
   # W_show = Ad[temp_order, :]
   # W_show = W_show[:, temp_order]
@@ -478,30 +475,25 @@ if __name__ == '__main__':
   # R_show = Relation[temp_order,:]
   # imagesc.plot(R_show, extent=[0, 1000, 0, 1000])
 
-  # Cost, Result = analyticalCOVA(Relation, Ad, V, 0.9)
-  # init = 0
-  # for i in range(50):
-  #     Result = COVAembedding(g, Relation, Ad, V, Init=init, dim=3, alpha=0.5, T=1, COVAType='cova1', opttype='GD_Riemannian')
-  # # x = Result
-  # # plt.scatter(x[:, 0], x[:, 1])
-  # # plt.show()
-  #     fig = plt.figure()
-  #     ax = fig.add_subplot(projection='3d')
-  #     ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label)
-  #     plt.show()
-  #     init = Result
-
   # init1 = Result
-  Result = COVAembedding(g, Relation, Ad, V, Init=0, dim=3, alpha=0.4, T=100, COVAType='cova1',
-                         opttype='GD_Euclidean')
-  fig = plt.figure()
-  ax = fig.add_subplot(projection='3d')
-  ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label)
+  Result = COVAembedding(g, Relation, Ad, V, Init=initdata, dim=2, alpha=0.6,
+                         T=100, COVAType='cova1', opttype='GD_Euclidean')
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='3d')
+  # ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label, cmap='rainbow')
+  # plt.show()
+
+  plt.scatter(Result[:, 0], Result[:, 1], c=label, cmap='rainbow')
   plt.show()
 
   # pca = PCA(n_components=3)
   # pca.fit(Result)
-  # a = pca.components_
+  # x = pca.transform(Result)
+  #
+  # fig = plt.figure()
+  # ax = fig.add_subplot(projection='3d')
+  # ax.scatter(x[:, 0], x[:, 1], x[:, 2], c=label, cmap='rainbow')
+  # plt.show()
 
   # evaluation.plot_neighbor(g, Result, label, k=10, part=0.6, choice='link')
 

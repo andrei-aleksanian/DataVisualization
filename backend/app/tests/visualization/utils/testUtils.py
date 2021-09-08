@@ -158,6 +158,6 @@ def testGetNeighbourNumberZeroLength():
 
 def testLoadData():
   """Load example data successfully"""
-  data, labels, _ = loadData("cylinder_top.mat")
+  data, labels, _ = loadData("bicycle_sample.mat")
   assert data.shape[0] == 150
   assert labels.shape[1] == 150

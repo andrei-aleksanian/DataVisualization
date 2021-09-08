@@ -54,15 +54,15 @@ def toDataGenerated(data: DataGeneratedNumpy) -> DataGenerated:
 def loadData(filename: str):
   """Load data for an eaxmple"""
   fullData = loadmat(f'./app/visualization/Data/{filename}')
-  xParam = fullData.get('g')
+  originalData = fullData.get('g')
 
-  sampleSize = len(xParam)
+  sampleSize = len(originalData)
   if env == Env.TEST.value:
     sampleSize = 150
 
   scaler = preprocessing.MinMaxScaler()
-  scaler.fit(np.array(xParam)[:sampleSize, :])
-  data: np.ndarray = scaler.transform(np.array(xParam)[:sampleSize, :])
+  scaler.fit(np.array(originalData)[:sampleSize, :])
+  data: np.ndarray = scaler.transform(np.array(originalData)[:sampleSize, :])
   labels: np.ndarray = np.array(fullData.get('label'))[
       :sampleSize, :].transpose()
 

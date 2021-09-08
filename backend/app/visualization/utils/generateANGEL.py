@@ -16,14 +16,14 @@ neighbourNumber = ['10', '20', '30', '10%', '30%', '50%']
 lambdaParam = [0, 0.2, 0.4, 0.6, 0.8, 1]
 anchorDensity = [0.05, 0.1, 0.2]
 epsilon = [0.5, 5]
-isAnchorModification = [True, False]
+isAnchorModification = [False, True]
 
 if os.environ.get("ENVIRONMENT") == Env.TEST.value:
   neighbourNumber = ['10']
   lambdaParam = [0]
   anchorDensity = [0.05]
   epsilon = [0.5]
-  isAnchorModification = [True]
+  isAnchorModification = [False]
 
 
 def generateANGEL(exampleId: int, dimension: Dimension):

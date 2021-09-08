@@ -20,15 +20,11 @@ def SOE(
         eps=1e-6,
         scale=1):
   [l, D] = Matrix.shape
-  if Init == 0:
+  if isinstance(Init, int):
+    np.random.seed(0)
     Init = np.random.random_sample((l, dim))
   if flagMove == 1:
-    # l1 = -0.5 * np.pi * np.ones((C.shape[0], 1))
-    # u1 = 0.5 * np.pi * np.ones((C.shape[0], 1))
-    # l2 = np.zeros((C.shape[0], 1))
-    # u2 = scale * np.ones((C.shape[0], 1))
-    # b1 = np.concatenate((l1, l2), axis=0)
-    # b2 = np.concatenate((u1, u2), axis=0)
+    np.random.seed(0)
     Init = np.random.random_sample((C.shape[0], 2))
     bnds1 = [(-0.5 * np.pi, 0.5 * np.pi) for i in range(0, C.shape[0])]
     bnds2 = [(0, scale) for i in range(0, C.shape[0])]
@@ -257,24 +253,18 @@ def GradSOE_Relocate_loop(delx, n, Del, A_order, disgraph, theta, scal, C, diffL
                 A_order[i, 0], A_order[i, k]] + Del) * ((x_i - x_k) / d_ik)
 
             gradT[li, 0] = gradT[li, 0] + \
-                gradXi @ gradRS(theta_li, scal_li, dim,
-                                C[li, :]) @ delx[A_order[i, 0], :].transpose()
+                gradXi @ gradRS(theta_li, scal_li, dim, C[li, :]) @ delx[A_order[i, 0], :].transpose()
             gradT[lj, 0] = gradT[lj, 0] + \
-                gradXj @ gradRS(theta_li, scal_lj, dim,
-                                C[li, :]) @ delx[A_order[i, j], :].transpose()
+                gradXj @ gradRS(theta_li, scal_lj, dim, C[li, :]) @ delx[A_order[i, j], :].transpose()
             gradT[lk, 0] = gradT[lk, 0] + \
-                gradXk @ gradRS(theta_lk, scal_lk, dim,
-                                C[li, :]) @ delx[A_order[i, k], :].transpose()
+                gradXk @ gradRS(theta_lk, scal_lk, dim, C[li, :]) @ delx[A_order[i, k], :].transpose()
 
             gradT[li, 1] = gradT[li, 1] + \
-                gradXi @ Rtheta(theta_li, dim,
-                                C[li, :]) @ delx[A_order[i, 0], :].transpose()
+                gradXi @ Rtheta(theta_li, dim, C[li, :]) @ delx[A_order[i, 0], :].transpose()
             gradT[lj, 1] = gradT[lj, 1] + \
-                gradXj @ Rtheta(theta_lj, dim,
-                                C[li, :]) @ delx[A_order[i, j], :].transpose()
+                gradXj @ Rtheta(theta_lj, dim, C[li, :]) @ delx[A_order[i, j], :].transpose()
             gradT[lk, 1] = gradT[lk, 1] + \
-                gradXk @ Rtheta(theta_lk, dim,
-                                C[li, :]) @ delx[A_order[i, k], :].transpose()
+                gradXk @ Rtheta(theta_lk, dim, C[li, :]) @ delx[A_order[i, k], :].transpose()
   return gradT
 
 
