@@ -1,7 +1,9 @@
 export const COLOR_SCHEME = [
   '#fe5f55',
+  '#fea82f',
+  '#006d77',
+  '#6e0d25',
   '#235789',
-  '#f1d302',
   '#161925',
   '#7e1f86',
   '#E0CBA8',
@@ -38,16 +40,30 @@ const getUniqueLabels = (labels: number[]) => {
   return Array.from(colorArr);
 };
 
-export default (labels: number[]): string[] => {
-  const colors: string[] = [];
-  const uniqueLabels = getUniqueLabels(labels);
-  let colorMap = null;
-  if (uniqueLabels.length > 10) colorMap = findUniqueColors(uniqueLabels);
-
-  for (let i = 0; i < labels.length; i += 1) {
-    if (colorMap) colors.push(colorMap[labels[i]]);
-    else colors.push(COLOR_SCHEME[labels[i]]);
+const colorDefault = (labels: number[], uniqueLabels: number[]) => {
+  const uniqueLabelsMap = {} as any; // should be something like {[number: number]}
+  const colors = [];
+  for (let i = 0; i < uniqueLabels.length; i += 1) {
+    uniqueLabelsMap[uniqueLabels[i]] = i;
   }
 
+  for (let i = 0; i < labels.length; i += 1) {
+    colors.push(COLOR_SCHEME[uniqueLabelsMap[labels[i]]]);
+  }
   return colors;
+};
+
+const colorByHSL = (labels: number[], uniqueLabels: number[]) => {
+  const colorMap = findUniqueColors(uniqueLabels);
+  const colors = [];
+  for (let i = 0; i < labels.length; i += 1) {
+    colors.push(colorMap[labels[i]]);
+  }
+  return colors;
+};
+
+export default (labels: number[]): string[] => {
+  const uniqueLabels = getUniqueLabels(labels);
+
+  return uniqueLabels.length < 10 ? colorDefault(labels, uniqueLabels) : colorByHSL(labels, uniqueLabels);
 };
