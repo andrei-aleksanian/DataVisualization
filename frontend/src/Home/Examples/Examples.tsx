@@ -40,7 +40,7 @@ const Examples = () => {
       const colors = getColors(newData.labels);
       return {
         ...newData,
-        points: newData.points.map((p) => p.map((p2) => p2 * 100 - 50) as Point2D | Point3D),
+        points: newData.points.map((p) => p.map((p2) => p2 * 100) as Point2D | Point3D),
         colors,
       };
     });
