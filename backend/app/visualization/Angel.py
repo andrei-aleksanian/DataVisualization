@@ -1,19 +1,23 @@
 """
 My angel functions
 """
+import numpy as np
+from sklearn import preprocessing
 from .lib.FunctionFile import AdjacencyMatrix, funInit
 from .lib.ANGEL import AnchorPointGeneration, AnchorEmbedding, ANGEL_embedding
 
 from ..types.dataGenerated import ParamsANGEL, DataGenerated, DataGeneratedNumpy
 from ..types.Custom import Dimension
 
-from .utils.dataGenerated import getNeighbourNumber, loadData, toDataGenerated
+from .utils.dataGenerated import getNeighbourNumber, toDataGenerated
 
 
-def runANGEL(params: ParamsANGEL, dimension: Dimension) -> DataGenerated:
+def runANGEL(params: ParamsANGEL,
+             dimension: Dimension,
+             originalData: np.ndarray,
+             labels: np.ndarray,
+             scaler: preprocessing.MinMaxScaler) -> DataGenerated:
   """Used for running ANGEL on every possible parameter"""
-  originalData, labels, scaler = loadData("bicycle_sample.mat")
-
   [anchorPoint, anchorLabel, zParam] = AnchorPointGeneration(
       originalData, labels, sparsity=params.anchorDensity)
   initdata, initanchor, cinit = funInit(labels, anchorPoint, dimension)

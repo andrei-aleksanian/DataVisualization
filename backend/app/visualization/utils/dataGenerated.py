@@ -6,7 +6,7 @@ import numpy as np
 from scipy.io import loadmat
 from sklearn import preprocessing
 
-from app.types.exceptions import RuntimeAlgorithmError
+from app.types.exceptions import RuntimeAlgorithmError, FileConstraintsError
 from app.types.dataGenerated import DataGenerated, DataGeneratedNumpy
 from app.utils.environment import Env
 from .dataDynamic import childrenToList
@@ -51,22 +51,39 @@ def toDataGenerated(data: DataGeneratedNumpy) -> DataGenerated:
   return getNeighbours(data)
 
 
+def validateData(data: np.ndarray, labels: np.ndarray):
+  """Validate the file constraints"""
+  if data is None:
+    raise FileConstraintsError(
+        "The file must contain a dataset with the name g")
+  if labels is None:
+    raise FileConstraintsError(
+        "The file must contain labels with the name label")
+  if data.shape[0] > 500:
+    raise FileConstraintsError("The file must contain no more than 500 points")
+  if data.shape[0] != labels.shape[0]:
+    raise FileConstraintsError(
+        "You should have a label exactly for each point in your dataset")
+
+
 def loadData(filename: str):
   """Load data for an eaxmple"""
   fullData = loadmat(f'./app/visualization/Data/{filename}')
-  originalData = fullData.get('g')
+  originalData: np.ndarray = fullData.get('g')
+  labels: np.ndarray = fullData.get('label')
+  scaler = preprocessing.MinMaxScaler()
+
+  validateData(originalData, labels)
 
   sampleSize = len(originalData)
-  if env == Env.TEST.value:
+  if env in [Env.TEST.value, Env.DEV.value]:
     sampleSize = 150
 
-  scaler = preprocessing.MinMaxScaler()
-  scaler.fit(np.array(originalData)[:sampleSize, :])
-  data: np.ndarray = scaler.transform(np.array(originalData)[:sampleSize, :])
-  labels: np.ndarray = np.array(fullData.get('label'))[
-      :sampleSize, :].transpose()
+  scaler.fit(originalData[:sampleSize, :])
+  originalData = scaler.transform(originalData[:sampleSize, :])
+  labels = labels[:sampleSize, :].transpose()
 
-  return data, labels, scaler
+  return originalData, labels, scaler
 
 
 def getNeighbourNumber(pointsLength: int, neighbourNumber: str) -> int:

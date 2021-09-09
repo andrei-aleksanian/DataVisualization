@@ -1,6 +1,7 @@
 """COVA algorithm to api communication"""
 
 import numpy as np
+from sklearn import preprocessing
 from scipy.spatial.distance import pdist, squareform
 
 from .lib.SOEmbedding import SOE
@@ -17,10 +18,12 @@ from .utils.dataGenerated import getNeighbourNumber, loadData, toDataGenerated
 from .utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
 
 
-def runCOVA(params: ParamsCOVA, dimension: Dimension) -> DataGenerated:
+def runCOVA(params: ParamsCOVA,
+            dimension: Dimension,
+            originalData: np.ndarray,
+            labels: np.ndarray,
+            scaler: preprocessing.MinMaxScaler) -> DataGenerated:
   """Used for running COVA on every possible parameter"""
-  originalData, labels, scaler = loadData("bicycle_sample.mat")
-
   dcParam, protolabel, clabel = ProtoGeneration(
       originalData,
       labels,

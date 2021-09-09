@@ -5,6 +5,7 @@ import pytest
 from app.database.database import SessionLocal
 from app.database.crud import getAllExampleDataANGEL
 from app.visualization.utils.generateANGEL import generateANGEL
+from app.visualization.utils.dataGenerated import loadData
 from ...utilsTests import cleanupDB, createMockExample
 
 
@@ -22,7 +23,8 @@ def testGenerateDataSuccess():
   """Successful data generation"""
   createMockExample()
 
-  generateANGEL(1, 3)
+  originalData, labels, scaler = loadData("bicycle_sample.mat")
+  generateANGEL(1, 3, originalData, labels, scaler)
 
   database = SessionLocal()
   dataANGEL = getAllExampleDataANGEL(database, 1)

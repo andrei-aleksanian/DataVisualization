@@ -5,6 +5,7 @@ import pytest
 from app.database.database import SessionLocal
 from app.database.crud import getAllExampleDataCOVA
 from app.visualization.utils.generateCOVA import generateCOVA
+from app.visualization.utils.dataGenerated import loadData
 from ...utilsTests import cleanupDB, createMockExample
 
 
@@ -22,7 +23,8 @@ def testGenerateDataSuccess():
   """Successful data generation"""
   createMockExample()
 
-  generateCOVA(1, 3)
+  originalData, labels, scaler = loadData("bicycle_sample.mat")
+  generateCOVA(1, 3, originalData, labels, scaler)
 
   database = SessionLocal()
   dataCOVA = getAllExampleDataCOVA(database, 1)

@@ -3,6 +3,7 @@ Endpoints for Examples.
 """
 # pylint: disable=R0801
 import os
+import traceback
 import uuid
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Response, status, File, Form, UploadFile
@@ -11,15 +12,16 @@ from PIL import Image
 
 from app.visualization.utils.generateCOVA import generateCOVA
 from app.visualization.utils.generateANGEL import generateANGEL
+from app.visualization.utils.dataGenerated import loadData
 from app.types.Custom import DimensionIn
 from ..database import crud, schemas
 from ..dependencies import getDB
-from ..types.exceptions import RuntimeAlgorithmError
+from ..types.exceptions import RuntimeAlgorithmError, FileConstraintsError
 from ..utils.static import staticFolderPath
 from ..utils.environment import Env
 
-UNPROCESSABLE_DATASET = "This data set or image is unprocessable, \
-please make sure it is compatible with our application."
+UNPROCESSABLE_DATASET = "Something went wrong while running the algorithm on your dataset. " +\
+    "Please, try a different file"
 EXAMPLE_ALREADY_EXISTS = "An example with this name already exists"
 CANNOT_DELETE = "The file cannot be deleted"
 
@@ -59,7 +61,7 @@ def createExample(
   Adds the example to the database.
   """
 
-  def cleanSession(exampleId: int = None, imagePath: str = None):
+  def cleanSession(exampleId: int = None, imagePath: str = None, error: Exception = None):
     # in case something goes horribly wrong, delete all entries related to example
     if exampleId:
       deleteExampleData(database, exampleId)
@@ -69,7 +71,7 @@ def createExample(
 
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        detail=UNPROCESSABLE_DATASET
+        detail=str(error) if error else UNPROCESSABLE_DATASET
     )
 
   def saveImage(image: File):
@@ -92,11 +94,16 @@ def createExample(
 
   def generateData(example: schemas.ExampleCrud, imagePath: str):
     try:
-      generateCOVA(example.id, example.dimension)
-      generateANGEL(example.id, example.dimension)
-    except RuntimeAlgorithmError as exception:
-      print(exception)  # need a logger
+      originalData, labels, scaler = loadData("bicycle_sample.mat")
+      generateCOVA(example.id, example.dimension, originalData, labels, scaler)
+      generateANGEL(example.id, example.dimension,
+                    originalData, labels, scaler)
+    except RuntimeAlgorithmError:
+      print(traceback.format_exc())
       cleanSession(example.id, imagePath)
+    except FileConstraintsError as error:
+      print(traceback.format_exc())
+      cleanSession(example.id, imagePath, error)
 
   checkExists(database, name)
   imagePath = saveImage(image)

@@ -2,6 +2,8 @@
 Generate all possible combinations of parameters and store them in the Database
 """
 import os
+import numpy as np
+from sklearn import preprocessing
 from app.database.database import SessionLocal
 from app.database.crud import createExampleDataCOVA
 from app.database.schemas import DataCreateCOVA
@@ -17,14 +19,18 @@ lambdaParam = [0, 0.2, 0.4, 0.6, 0.8, 1]
 alpha = [0, 0.2, 0.4, 0.6, 0.8, 1]
 isCohortNumberOriginal = [True, False]
 
-if os.environ.get("ENVIRONMENT") == Env.TEST.value:
+if os.environ.get("ENVIRONMENT") in [Env.TEST.value, Env.DEV.value]:
   neighbourNumber = ['10']
   lambdaParam = [0]
   alpha = [0.4]
   isCohortNumberOriginal = [False]
 
 
-def generateCOVA(exampleId: int, dimension: Dimension):
+def generateCOVA(exampleId: int,
+                 dimension: Dimension,
+                 originalData: np.ndarray,
+                 labels: np.ndarray,
+                 scaler: preprocessing.MinMaxScaler):
   """
   Genersates all combinations of parameters, runs the COVA algorithm.
   """
@@ -39,7 +45,8 @@ def generateCOVA(exampleId: int, dimension: Dimension):
               isCohortNumberOriginal=isCohort
           )
           try:
-            dataGenerated = runCOVA(params, dimension)
+            dataGenerated = runCOVA(
+                params, dimension, originalData, labels, scaler)
             data = DataCreateCOVA(
                 params=params,
                 jsonData=dataGenerated.json()
@@ -49,9 +56,9 @@ def generateCOVA(exampleId: int, dimension: Dimension):
             createExampleDataCOVA(database, data, exampleId)
             database.close()
           except Exception as exception:
-            raise RuntimeAlgorithmError(f"\
-              generateCOVA: {exception}\
-              parameters: neighbourNumber - {neighbour}, \
-              lambdaParam - {lamb}, \
-              alpha - {alph}, \
-              isCohortNumberOriginal - {isCohort}") from exception
+            raise RuntimeAlgorithmError(f"\n\
+              generateCOVA: {exception}\n\
+              parameters: neighbourNumber - {neighbour}, \n\
+              lambdaParam - {lamb}, \n\
+              alpha - {alph}, \n\
+              isCohortNumberOriginal - {isCohort}\n") from exception
