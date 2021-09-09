@@ -1,28 +1,26 @@
 """
 My API file used for early development.
 """
-import os
+from os import environ
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from .database.database import setUpDatabase
 from .routers import dynamic, exampleDataCOVA, exampleDataANGEL, examples
-from .utils.static import staticFolderPath
+from .utils.static import createStaticDirectory
+from .utils.environment import Env
 
 setUpDatabase()
 
 app = FastAPI()
 
-if not os.path.exists(staticFolderPath):
-  os.mkdir(staticFolderPath)
+createStaticDirectory()
 app.mount("/images", StaticFiles(directory="images"), name="images")
 
-origins = [
-    '0.0.0.0',
-    # Dev environment - todo: introduce env variables to take these out in production
-    'localhost:3000',
-    'http://localhost:3000'
-]
+origins = ['0.0.0.0']
+if environ.get("ENVIRONMENT") == Env.DEV.value:
+  origins.append('localhost:3000')
+  origins.append('http://localhost:3000')
 
 app.add_middleware(
     CORSMiddleware,
