@@ -45,7 +45,7 @@ const Point = ({ x, y, z, color, radius, dimension2D, isPreservation }: PointPro
       ) : (
         <sphereBufferGeometry attach="geometry" args={[radius, 16, 16]} />
       )}
-      <meshStandardMaterial attach="material" color={isPreservation && !hovered ? '#EEEEEE' : color} />
+      <meshStandardMaterial attach="material" color={isPreservation && !hovered ? '#AAAAAA' : color} />
     </mesh>
   );
 };

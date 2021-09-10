@@ -1,6 +1,10 @@
 .index {
+  display: grid;
+  grid:
+    'settings   visualization   visualization  visualization'
+    'settings   visualization   visualization  visualization'
+    'settings   visualization   visualization  visualization';
+  grid-template-columns: repeat(4, 1fr);
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow: hidden;
 }

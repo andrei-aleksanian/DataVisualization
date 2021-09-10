@@ -7,6 +7,7 @@ import { LinkBack } from 'Components/Link';
 import classes from './Settings.module.scss';
 import COVA, { SettingsCOVA } from './components/COVA';
 import ANGEL, { SettingsANGEL } from './components/ANGEL';
+import Custom, { CustomProps } from './components/Custom';
 
 export const TEXT_CHECKBOX_COVA = 'COVA';
 export const TEXT_CHECKBOX_ANGEL = 'ANGEL';
@@ -34,7 +35,7 @@ export const defaultSettingsCommon: SettingsCommon = {
 };
 
 export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%', '50%'];
-export interface SettingsProps {
+export interface SettingsPropsExamples {
   settingsCommon: SettingsCommon;
   setSettingsCommon: React.Dispatch<React.SetStateAction<SettingsCommon>>;
   settingsCOVA: SettingsCOVA;
@@ -42,6 +43,7 @@ export interface SettingsProps {
   settingsANGEL: SettingsANGEL;
   setSettingsANGEL: React.Dispatch<React.SetStateAction<SettingsANGEL>>;
   backLink: string;
+  customProps?: CustomProps;
 }
 
 const Settings = ({
@@ -52,7 +54,8 @@ const Settings = ({
   settingsANGEL,
   setSettingsANGEL,
   backLink,
-}: SettingsProps) => {
+  customProps,
+}: SettingsPropsExamples) => {
   const onChangeAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
     event.preventDefault();
     setSettingsCommon((prev) => ({ ...prev, algorithm: newAlgorithm }));
@@ -109,6 +112,7 @@ const Settings = ({
           { value: DataPreservation.OFF, text: 'No' },
         ]}
       />
+      {customProps && <Custom {...customProps} />}
     </div>
   );
 };

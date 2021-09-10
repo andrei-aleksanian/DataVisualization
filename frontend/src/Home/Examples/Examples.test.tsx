@@ -4,7 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'utils/axios';
 import { DATA_PERSEVERANCE } from 'types/Data/DataPerseverance';
-import Examples, { POPUP_TEXT } from '.';
+import { POPUP_TEXT } from 'Components/UI';
+import Examples from '.';
 
 const mockAxios = () => {
   return jest.spyOn(axios, 'post');

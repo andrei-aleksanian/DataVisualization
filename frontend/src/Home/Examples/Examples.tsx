@@ -22,8 +22,6 @@ import Visualization2D from '../Visualization2D';
 
 import classes from './Examples.module.scss';
 
-export const POPUP_TEXT = 'Oops, something went wrong. Please try again later.';
-
 const Examples = () => {
   const [data, setData] = useState<DataPerseveranceColored | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -103,7 +101,6 @@ const Examples = () => {
       )}
       {error && (
         <Popup
-          text={POPUP_TEXT}
           onClick={() => {
             setError(null);
             history.push('/examples');

@@ -7,7 +7,7 @@ import { DATA_PERSEVERANCE } from 'types/Data/DataPerseverance';
 
 import { placeholderExamples } from 'Home/Library/Library.test';
 import App from './App';
-import { TEXT_LINK_CUSTOM_DATA, TEXT_LINK_LIBRARY, TEXT_H1 as TEXT_H1_HOME } from './Home';
+import { TEXT_LINK_LIBRARY, TEXT_H1 as TEXT_H1_HOME } from './Home';
 import { TEXT_H1 as TEXT_H1_EXAMPLES } from './Home/Settings';
 import { TEXT_H1 as TEXT_H1_LIBRARY } from './Home/Library';
 
@@ -21,13 +21,13 @@ describe('Test navigation transitions', () => {
     render(<App />, { wrapper: MemoryRouter });
   };
 
-  test('Custom data page transition', () => {
-    init();
-    const linkCustom = screen.getByText(TEXT_LINK_CUSTOM_DATA);
-    userEvent.click(linkCustom);
+  // test('Custom data page transition', () => {
+  //   init();
+  //   const linkCustom = screen.getByText(TEXT_LINK_CUSTOM_DATA);
+  //   userEvent.click(linkCustom);
 
-    expect(screen.getByText('Sorry, this page is not implemented yet!')).toBeInTheDocument();
-  });
+  //   expect(screen.getByText('Sorry, this page is not implemented yet!')).toBeInTheDocument();
+  // });
 
   test('Library page transition', async () => {
     init();
@@ -101,14 +101,14 @@ describe('Test navigation transitions', () => {
     expect(libraryHeading).toBeInTheDocument();
   });
 
-  test('Back to home from custom data page', () => {
-    init();
-    const linkCustom = screen.getByText(TEXT_LINK_CUSTOM_DATA);
-    userEvent.click(linkCustom);
+  // test('Back to home from custom data page', () => {
+  //   init();
+  //   const linkCustom = screen.getByText(TEXT_LINK_CUSTOM_DATA);
+  //   userEvent.click(linkCustom);
 
-    const linkBack = screen.getByAltText('back');
-    userEvent.click(linkBack);
+  //   const linkBack = screen.getByAltText('back');
+  //   userEvent.click(linkBack);
 
-    expect(screen.getByText(TEXT_H1_HOME)).toBeInTheDocument();
-  });
+  //   expect(screen.getByText(TEXT_H1_HOME)).toBeInTheDocument();
+  // });
 });
