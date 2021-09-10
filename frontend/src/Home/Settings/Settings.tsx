@@ -7,7 +7,7 @@ import { LinkBack } from 'Components/Link';
 import classes from './Settings.module.scss';
 import COVA, { SettingsCOVA } from './components/COVA';
 import ANGEL, { SettingsANGEL } from './components/ANGEL';
-import Custom, { CustomProps } from './components/Custom';
+import Custom, { SettingsCustom } from './components/Custom';
 
 export const TEXT_CHECKBOX_COVA = 'COVA';
 export const TEXT_CHECKBOX_ANGEL = 'ANGEL';
@@ -33,7 +33,6 @@ export const defaultSettingsCommon: SettingsCommon = {
   neighbour: 0,
   lambda: 0,
 };
-
 export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%', '50%'];
 export interface SettingsPropsExamples {
   settingsCommon: SettingsCommon;
@@ -43,7 +42,11 @@ export interface SettingsPropsExamples {
   settingsANGEL: SettingsANGEL;
   setSettingsANGEL: React.Dispatch<React.SetStateAction<SettingsANGEL>>;
   backLink: string;
-  customProps?: CustomProps;
+  customDataPage?: {
+    settingsCustom: SettingsCustom;
+    setSettingsCustom: React.Dispatch<React.SetStateAction<SettingsCustom>>;
+    onSubmit: Function;
+  } | null;
 }
 
 const Settings = ({
@@ -54,7 +57,7 @@ const Settings = ({
   settingsANGEL,
   setSettingsANGEL,
   backLink,
-  customProps,
+  customDataPage,
 }: SettingsPropsExamples) => {
   const onChangeAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
     event.preventDefault();
@@ -112,9 +115,13 @@ const Settings = ({
           { value: DataPreservation.OFF, text: 'No' },
         ]}
       />
-      {customProps && <Custom {...customProps} />}
+      {customDataPage && <Custom {...customDataPage} />}
     </div>
   );
+};
+
+Settings.defaultProps = {
+  settingsCustom: null,
 };
 
 export default Settings;

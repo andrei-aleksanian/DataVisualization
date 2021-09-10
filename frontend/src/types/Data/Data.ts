@@ -4,8 +4,6 @@ export type Points = Point2D[] | Point3D[];
 
 // Data common properties
 
-export interface HyperParameters {}
-
 export interface DataCore {
   dimension2D: boolean;
   iteration: number;

@@ -1,14 +1,16 @@
 import axios from 'utils/axios';
 import { ParamsCOVA } from 'types/Data/Params';
+import { Dimension } from 'Home/Settings/components/Custom';
 import { DataPerseveranceLabelled, DATA_PERSEVERANCE } from '../../types/Data/DataPerseverance';
 
-export const getCovaDynamicInit = async (params: ParamsCOVA, file: File) => {
+export const getCovaDynamicInit = async (params: ParamsCOVA, file: File, dimension: Dimension) => {
   const formData = new FormData();
+  formData.append('dimension', dimension === Dimension.D2 ? '2' : '3');
   formData.append('neighbourNumber', params.neighbourNumber);
   formData.append('lambdaParam', params.lambdaParam.toString());
   formData.append('alpha', params.alpha.toString());
   formData.append('isCohortNumberOriginal', params.isCohortNumberOriginal.toString());
-  formData.append('datasetFile', file);
+  formData.append('file', file);
 
   try {
     const config = {

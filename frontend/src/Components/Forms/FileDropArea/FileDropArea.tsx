@@ -24,13 +24,13 @@ const getcolor = ({
 };
 
 export interface Validation {
-  setValidation: React.Dispatch<React.SetStateAction<boolean>>;
   validation: boolean;
   validationMessage?: string;
 }
 
 export interface FileDropAreaProps {
-  setFile: React.Dispatch<React.SetStateAction<File | null>>;
+  setValidation: (file: boolean) => void;
+  setFile: (file: File) => void;
   validation: Validation;
 }
 
@@ -38,7 +38,8 @@ export const FILE_NOT_FOUND = 'Please, provide a .mat file';
 
 const FileDropArea = ({
   setFile,
-  validation: { setValidation, validation, validationMessage },
+  setValidation,
+  validation: { validation, validationMessage },
 }: FileDropAreaProps): React.ReactElement => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setFile(acceptedFiles[0]);
