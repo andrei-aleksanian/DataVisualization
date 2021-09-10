@@ -66,9 +66,9 @@ def validateData(data: np.ndarray, labels: np.ndarray):
         "You should have a label exactly for each point in your dataset")
 
 
-def loadData(filename: str):
+def loadData(filePath: str):
   """Load data for an eaxmple"""
-  fullData = loadmat(f'./app/visualization/Data/{filename}')
+  fullData = loadmat(filePath)
   originalData: np.ndarray = fullData.get('g')
   labels: np.ndarray = fullData.get('label')
   scaler = preprocessing.MinMaxScaler()

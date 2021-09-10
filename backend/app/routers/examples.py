@@ -4,7 +4,6 @@ Endpoints for Examples.
 # pylint: disable=R0801
 import os
 import traceback
-import uuid
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Response, status, File, Form, UploadFile
 from sqlalchemy.orm import Session
@@ -14,6 +13,7 @@ from app.visualization.utils.generateCOVA import generateCOVA
 from app.visualization.utils.generateANGEL import generateANGEL
 from app.visualization.utils.dataGenerated import loadData
 from app.types.Custom import DimensionIn
+from .utils import saveFile
 from ..database import crud, schemas
 from ..dependencies import getDB
 from ..types.exceptions import RuntimeAlgorithmError, FileConstraintsError
@@ -75,26 +75,22 @@ def createExample(
     )
 
   def saveImage(image: File):
-    # Creating the static files directory and saving the image
     try:
-      image.filename = str(uuid.uuid4()) + image.filename.replace(" ", "-")
-      imagePath = staticFolderPath + image.filename
-      with open(imagePath, 'wb+') as file:
-        file.write(image.file.read())
-        file.close()
+      imagePath = saveFile(image, staticFolderPath)
 
       if env in [Env.PRODUCTION.value, Env.DEV.value]:
         img = Image.open(imagePath)
         img = img.resize((700, 400), Image.ANTIALIAS)
         img.save(imagePath, quality=95)
       return imagePath
-    except OSError as error:
-      print(error)
+    except OSError:
+      print(traceback.format_exc())
       return cleanSession(imagePath=imagePath)
 
   def generateData(example: schemas.ExampleCrud, imagePath: str):
     try:
-      originalData, labels, scaler = loadData("bicycle_sample.mat")
+      originalData, labels, scaler = loadData(
+          "./app/visualization/Data/bicycle_sample.mat")
       generateCOVA(example.id, example.dimension, originalData, labels, scaler)
       generateANGEL(example.id, example.dimension,
                     originalData, labels, scaler)

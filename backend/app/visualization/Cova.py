@@ -2,28 +2,26 @@
 
 import numpy as np
 from sklearn import preprocessing
-from scipy.spatial.distance import pdist, squareform
 
-from .lib.SOEmbedding import SOE
 from .lib.FunctionFile import funInit, AdjacencyMatrix
 from .lib.evaluation import neighbor_prev_disturb
 from .lib.COVA import ProtoGeneration,\
-    CohortConfidence, COVAembedding, SeparateCohort, PrototypeEmbedding
+    CohortConfidence, COVAembedding, PrototypeEmbedding
 
 from ..types.Custom import Dimension
 from ..types.dataGenerated import DataGenerated, ParamsCOVA, DataGeneratedNumpy
 from ..types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
 
-from .utils.dataGenerated import getNeighbourNumber, loadData, toDataGenerated
+from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData
 from .utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
 
 
-def runCOVA(params: ParamsCOVA,
-            dimension: Dimension,
-            originalData: np.ndarray,
-            labels: np.ndarray,
-            scaler: preprocessing.MinMaxScaler) -> DataGenerated:
-  """Used for running COVA on every possible parameter"""
+def getCovaResult(params: ParamsCOVA,
+                  dimension: Dimension,
+                  originalData: np.ndarray,
+                  labels: np.ndarray,
+                  scaler: preprocessing.MinMaxScaler):
+  """Functoin that runs COVA"""
   dcParam, protolabel, clabel = ProtoGeneration(
       originalData,
       labels,
@@ -53,6 +51,18 @@ def runCOVA(params: ParamsCOVA,
       20,
   )
 
+  return relation, adjacencyMatrix, vParam, resultData
+
+
+def runCOVA(params: ParamsCOVA,
+            dimension: Dimension,
+            originalData: np.ndarray,
+            labels: np.ndarray,
+            scaler: preprocessing.MinMaxScaler) -> DataGenerated:
+  """Used for running COVA on every possible parameter"""
+  *_, resultData = getCovaResult(
+      params, dimension, originalData, labels, scaler)
+
   return toDataGenerated(
       DataGeneratedNumpy({
           "originalData": originalData,
@@ -63,29 +73,18 @@ def runCOVA(params: ParamsCOVA,
   )
 
 
-def initCOVA() -> DataFormatted:
+def initCOVA(params: ParamsCOVA,
+             dimension: Dimension,
+             filePath: str) -> DataFormatted:
   """
   Initialise COVA run.
 
   Returns: original data set in 2d/3d space without optimisation
   """
-  originalData, labels, scaler = loadData("bicycle_sample.mat")
+  originalData, labels, scaler = loadData(filePath)
 
-  prototypes, protolabel, clabel = SeparateCohort(
-      originalData, labels, sparsity=0.1)
-  aParam = squareform(pdist(prototypes, 'euclidean'))
-  aOrder = np.argsort(aParam, axis=1).astype(int)
-  vParam = SOE(aOrder.astype(int), protolabel, dim=3)
-  scaler.fit(vParam)
-  vParam = scaler.transform(vParam)
-
-  adjacencyMatrix = AdjacencyMatrix(originalData, 10)
-
-  print(clabel)
-  relation = CohortConfidence(originalData, clabel, 0)
-
-  resultData = COVAembedding(originalData, relation,
-                             adjacencyMatrix, vParam, 0, dim=3, T=0)
+  relation, adjacencyMatrix, vParam, resultData = getCovaResult(
+      params, dimension, originalData, labels, scaler)
 
   # formatting the data to be api friendly
   initData = DataNumpy({
@@ -95,13 +94,15 @@ def initCOVA() -> DataFormatted:
       "V": vParam,
       "labels": labels,
       "points": resultData,
-      "alpha": 0.5
+      "alpha": params.alpha
   })
 
   return formatDataOut(initData)
 
 
-def dynamicCOVA(previousData: DataDynamic, iterationsPerRequest: int) -> DataDynamic:
+def dynamicCOVA(previousData: DataDynamic,
+                iterationsPerRequest: int,
+                dimension: Dimension) -> DataDynamic:
   """
   Iterates through the COVA algorithm.
 
@@ -119,14 +120,14 @@ def dynamicCOVA(previousData: DataDynamic, iterationsPerRequest: int) -> DataDyn
       data["Ad"],
       data["V"],
       data["points"],
-      3,
+      dimension,
       data["alpha"],
       iterationsPerRequest
   )
 
   previousData.points = resultData.tolist()
 
-  # only run after the last iteration
+  # only run on the last iteration
   if previousData.iteration + 1 == previousData.maxIteration:
     *_, prevWrongInHigh, prevWrongInLow, prevPartsave = neighbor_prev_disturb(
         data["g"], resultData, data["labels"], 10)

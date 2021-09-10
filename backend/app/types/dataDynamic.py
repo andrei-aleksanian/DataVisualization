@@ -7,6 +7,7 @@ from typing import List, TypedDict
 from numpy import ndarray
 from pydantic import BaseModel
 
+# from .Custom import Dimension, DimensionIn, Points
 from .Custom import Points
 
 
@@ -53,3 +54,11 @@ class DataDynamic(DataFormatted):
   prevWrongInHigh: List[List[int]]
   iteration: int = 0
   maxIteration: int
+
+
+# class DataDynamicIn(DataDynamic):
+#   dimension: DimensionIn
+
+
+# class DataDynamicOut(DataDynamic):
+#   dimension: Dimension

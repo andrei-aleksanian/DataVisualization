@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from .database.database import setUpDatabase
 from .routers import dynamic, exampleDataCOVA, exampleDataANGEL, examples
-from .utils.static import createStaticDirectory
+from .utils.static import createStaticDirectory, createTempDirectory
 from .utils.environment import Env
 
 setUpDatabase()
@@ -15,6 +15,7 @@ setUpDatabase()
 app = FastAPI()
 
 createStaticDirectory()
+createTempDirectory()
 app.mount("/images", StaticFiles(directory="images"), name="images")
 
 origins = ['0.0.0.0']
