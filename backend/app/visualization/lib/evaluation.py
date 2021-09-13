@@ -66,14 +66,17 @@ def neighbor_prev_disturb(high_d, low_d, label, k, metric='euclidean', part=0.5)
     neil = neighbor_low[i, :]
     whereneighh = np.squeeze(np.where(neih == 1))
     whereneighl = np.squeeze(np.where(neil == 1))
-    if len(whereneighh) < 10:
-      templh = len(whereneighh)
-      prev_keep_high[i, templh:] = 1e1000
     if k == 1:
       if whereneighh == whereneighl:
         same_neigh = same_neigh + 1
         prev_keep_high[i] = whereneighh
+      else:
+        prev_wrong_in_high.append(whereneighh)
+        prev_wrong_in_low.append(whereneighl)
     else:
+      if whereneighh.shape[0] < k:
+        templh = whereneighh.shape[0]
+        prev_keep_high[i, templh:] = 1e1000
       whereneighh_num = len(whereneighh)
       whereneighl_num = len(whereneighl)
       temp_marklow = np.zeros([whereneighl_num])
@@ -96,14 +99,21 @@ def neighbor_prev_disturb(high_d, low_d, label, k, metric='euclidean', part=0.5)
 
 
 def P_local(high_d, low_d, label, k, metric='euclidean'):
+  if k < 10:
+    k = 20
   save_prev = np.zeros([k, 1])
   sum_score = 0
+  count = 0
   for i in range(k):
-    prev_score = neighbor_prev_disturb(
-        high_d, low_d, label, i + 1, metric=metric)[0]
-    sum_score = sum_score + prev_score
-    save_prev[i] = prev_score
-  prev_score = sum_score / k
+    if i == 0:
+      continue
+    else:
+      count = count + 1
+      prev_score = neighbor_prev_disturb(
+          high_d, low_d, label, i, metric=metric)[0]
+      sum_score = sum_score + prev_score
+      save_prev[i] = prev_score
+  prev_score = sum_score / count
   return prev_score, save_prev
 
 

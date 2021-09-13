@@ -19,10 +19,10 @@ anchorDensity = [0.05, 0.1, 0.2]
 epsilon = [0.1, 5]
 isAnchorModification = [False, True]
 
-if os.environ.get("ENVIRONMENT") in [Env.TEST.value]:
+if os.environ.get("ENVIRONMENT") in [Env.TEST.value, Env.DEV.value]:
   neighbourNumber = ['10']
   anchorDensity = [0.05]
-  epsilon = [0.5]
+  epsilon = [0.1]
   isAnchorModification = [False]
 
 
