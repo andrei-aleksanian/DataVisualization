@@ -65,8 +65,6 @@ def getExampleDataCOVA(database: Session, exampleId: int, params: ParamsCOVA):
   ).filter(
       ExamplesDataCOVA.neighbourNumber == params.neighbourNumber
   ).filter(
-      ExamplesDataCOVA.lambdaParam == params.lambdaParam
-  ).filter(
       ExamplesDataCOVA.isCohortNumberOriginal == params.isCohortNumberOriginal
   ).filter(
       ExamplesDataCOVA.alpha == params.alpha
@@ -95,8 +93,6 @@ def getExampleDataANGEL(database: Session, exampleId: int, params: ParamsANGEL):
       ExamplesDataANGEL.exampleId == exampleId
   ).filter(
       ExamplesDataANGEL.neighbourNumber == params.neighbourNumber
-  ).filter(
-      ExamplesDataANGEL.lambdaParam == params.lambdaParam
   ).filter(
       ExamplesDataANGEL.anchorDensity == params.anchorDensity
   ).filter(

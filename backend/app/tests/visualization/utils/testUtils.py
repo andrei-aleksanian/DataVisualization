@@ -132,9 +132,6 @@ def testGetNeighbourNumberPercentage():
   neighbourNumber = getNeighbourNumber(200, "30%")
   assert neighbourNumber == 60
 
-  neighbourNumber = getNeighbourNumber(200, "50%")
-  assert neighbourNumber == 100
-
 
 def testGetNeighbourNumberError():
   """
@@ -158,6 +155,6 @@ def testGetNeighbourNumberZeroLength():
 
 def testLoadData():
   """Load example data successfully"""
-  data, labels, _ = loadData("bicycle_sample.mat")
+  data, labels, _ = loadData("./app/visualization/Data/bicycle_sample.mat")
   assert data.shape[0] == 150
   assert labels.shape[1] == 150

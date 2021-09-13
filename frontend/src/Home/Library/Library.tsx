@@ -20,7 +20,7 @@ const Library = () => {
   const Example = ({ name, description, id, imagePath }: ExampleProps) => (
     <div className={classes.Example}>
       <img
-        src={`http://localhost:8080/images/${imagePath}`}
+        src={`/api/images/${imagePath}`}
         alt={`example ${name} image`}
         onClick={() => history.push(`/examples/${id}`)}
       />

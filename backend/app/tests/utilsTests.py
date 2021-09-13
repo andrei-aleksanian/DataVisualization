@@ -30,7 +30,14 @@ def getImage():
   """
   Get test imahge as bytes
   """
-  return open(os.getcwd() + '/app/tests/images/test.jpg', 'rb')
+  return open(os.getcwd() + '/app/tests/files/test.jpg', 'rb')
+
+
+def getMat():
+  """
+  Get test imahge as bytes
+  """
+  return open(os.getcwd() + '/app/tests/files/test.mat', 'rb')
 
 
 def postMockExample(client: TestClient):

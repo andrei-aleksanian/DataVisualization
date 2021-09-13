@@ -3,17 +3,28 @@ Tests for dynamic.py
 """
 from fastapi.testclient import TestClient
 from app.api import app
+from ..utilsTests import getMat
 
 client = TestClient(app)
 
-initData = client.get("/api/dynamic/cova").json()
+mockData = {
+    "neighbourNumber": 10,
+    "alpha": 0.4,
+    "isCohortNumberOriginal": False,
+    "dimension": 2,
+}
+
+initData = client.post("/api/dynamic/cova-init", mockData,
+                       files={"file": ("test.mat", getMat())}).json()
 
 
 def testCovaDemoDynamicInitSuccess():
   """
   Test the function initialises a cycle for future iterations.
   """
-  response = client.get("/api/dynamic/cova")
+  response = client.post("/api/dynamic/cova-init", mockData,
+                         files={"file": ("test.mat", getMat())})
+
   assert response.status_code == 200
 
   data = response.json()

@@ -36,7 +36,6 @@ class ExamplesDataCOVA(Base):
   __table_args__ = (
       UniqueConstraint(
           'neighbourNumber',
-          'lambdaParam',
           'alpha',
           'isCohortNumberOriginal',
           'exampleId'
@@ -45,7 +44,6 @@ class ExamplesDataCOVA(Base):
   id = Column(Integer, primary_key=True, index=True)
 
   neighbourNumber = Column(String(4))
-  lambdaParam = Column(DECIMAL(2, 1))
   alpha = Column(DECIMAL(2, 1))
   isCohortNumberOriginal = Column(Boolean)
 
@@ -65,7 +63,6 @@ class ExamplesDataANGEL(Base):
   __table_args__ = (
       UniqueConstraint(
           'neighbourNumber',
-          'lambdaParam',
           'anchorDensity',
           'epsilon',
           'isAnchorModification',
@@ -75,7 +72,6 @@ class ExamplesDataANGEL(Base):
   id = Column(Integer, primary_key=True, index=True)
 
   neighbourNumber = Column(String(4))
-  lambdaParam = Column(DECIMAL(2, 1))
   anchorDensity = Column(DECIMAL(3, 2))
   epsilon = Column(DECIMAL(2, 1))
   isAnchorModification = Column(Boolean)

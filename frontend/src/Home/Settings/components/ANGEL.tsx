@@ -17,7 +17,7 @@ export interface SettingsANGEL {
 }
 export const defaultSettingsANGEL: SettingsANGEL = {
   anchorDensity: 0.05,
-  epsilon: 0.5,
+  epsilon: 0.1,
   anchorModification: AnchorModification.OFF,
 };
 export interface SettingsANGELProps {
@@ -46,10 +46,10 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
         value={settingsANGEL.anchorDensity}
       />
       <Slider
-        min={0.5}
+        min={0.1}
         max={5}
         step={null}
-        marksArr={[0.5, 5]}
+        marksArr={[0.1, 5]}
         onChange={onChangeEpsilon}
         text={TEXT_SLIDER_EPSILON}
         value={settingsANGEL.epsilon}

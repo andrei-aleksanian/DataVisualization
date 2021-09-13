@@ -23,7 +23,8 @@ def testGenerateDataSuccess():
   """Successful data generation"""
   createMockExample()
 
-  originalData, labels, scaler = loadData("bicycle_sample.mat")
+  originalData, labels, scaler = loadData(
+      "./app/visualization/Data/bicycle_sample.mat")
   generateCOVA(1, 3, originalData, labels, scaler)
 
   database = SessionLocal()

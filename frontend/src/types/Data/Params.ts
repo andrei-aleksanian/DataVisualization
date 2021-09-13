@@ -1,6 +1,5 @@
 export interface Params {
   neighbourNumber: string;
-  lambdaParam: number;
 }
 
 export interface ParamsCOVA extends Params {

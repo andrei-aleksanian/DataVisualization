@@ -32,7 +32,6 @@ ITERATIONS_PER_REQUEST = 2
              )
 async def covaDynamicInit(
         neighbourNumber: str = Form(...),
-        lambdaParam: float = Form(...),
         alpha: float = Form(...),
         isCohortNumberOriginal: bool = Form(...),
         dimension: DimensionIn = Form(...),
@@ -46,7 +45,6 @@ async def covaDynamicInit(
 
   params = ParamsCOVA(**{
       "neighbourNumber": neighbourNumber,
-      "lambdaParam": lambdaParam,
       "alpha": alpha,
       "isCohortNumberOriginal": isCohortNumberOriginal
   })

@@ -44,7 +44,7 @@ def getCovaResult(params: ParamsCOVA,
           params.neighbourNumber
       )
   )
-  relation = CohortConfidence(originalData, clabel, params.lambdaParam)
+  relation = CohortConfidence(originalData, clabel, 0)
   resultData: np.ndarray = COVAembedding(
       originalData,
       relation,

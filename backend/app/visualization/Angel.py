@@ -26,7 +26,7 @@ def runANGEL(params: ParamsANGEL,
       anchorPoint,
       anchorLabel,
       flagMove=1 if params.isAnchorModification else 0,
-      lamb=params.lambdaParam,
+      lamb=0,
       dim=dimension,
       init=initanchor,
       cinit=cinit

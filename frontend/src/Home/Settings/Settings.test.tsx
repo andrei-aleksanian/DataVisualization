@@ -5,7 +5,6 @@ import { Algorithm } from 'types/Settings';
 import Settings, {
   TEXT_CHECKBOX_ALGORITHM,
   TEXT_CHECKBOX_PRESERVATION,
-  TEXT_SLIDER_LAMBDA,
   TEXT_SLIDER_NEIGHBOUR,
   TEXT_CHECKBOX_ANGEL,
   TEXT_CHECKBOX_COVA,
@@ -50,7 +49,6 @@ describe('Test UI changes and events', () => {
   const checkCommonArttributes = () => {
     expect(screen.getByText(TEXT_CHECKBOX_ALGORITHM)).toBeInTheDocument();
     expect(screen.getByText(TEXT_SLIDER_NEIGHBOUR)).toBeInTheDocument();
-    expect(screen.getByText(TEXT_SLIDER_LAMBDA)).toBeInTheDocument();
     expect(screen.getByText(TEXT_CHECKBOX_PRESERVATION)).toBeInTheDocument();
   };
 

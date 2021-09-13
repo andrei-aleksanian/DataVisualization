@@ -14,14 +14,12 @@ from app.types.Custom import Dimension
 from app.utils.environment import Env
 
 # Define params and constraints
-neighbourNumber = ['10', '20', '30', '10%', '30%', '50%']
-lambdaParam = [0, 0.2, 0.4, 0.6, 0.8, 1]
+neighbourNumber = ['10', '20', '30', '10%', '30%']
 alpha = [0, 0.2, 0.4, 0.6, 0.8, 1]
 isCohortNumberOriginal = [True, False]
 
 if os.environ.get("ENVIRONMENT") in [Env.TEST.value, Env.DEV.value]:
   neighbourNumber = ['10']
-  lambdaParam = [0]
   alpha = [0.4]
   isCohortNumberOriginal = [False]
 
@@ -35,30 +33,28 @@ def generateCOVA(exampleId: int,
   Genersates all combinations of parameters, runs the COVA algorithm.
   """
   for neighbour in neighbourNumber:
-    for lamb in lambdaParam:
-      for alph in alpha:
-        for isCohort in isCohortNumberOriginal:
-          params = ParamsCOVA(
-              neighbourNumber=neighbour,
-              lambdaParam=lamb,
-              alpha=alph,
-              isCohortNumberOriginal=isCohort
+    for alph in alpha:
+      for isCohort in isCohortNumberOriginal:
+        params = ParamsCOVA(
+            neighbourNumber=neighbour,
+            alpha=alph,
+            isCohortNumberOriginal=isCohort
+        )
+        try:
+          dataGenerated = runCOVA(
+              params, dimension, originalData, labels, scaler)
+          data = DataCreateCOVA(
+              params=params,
+              jsonData=dataGenerated.json()
           )
-          try:
-            dataGenerated = runCOVA(
-                params, dimension, originalData, labels, scaler)
-            data = DataCreateCOVA(
-                params=params,
-                jsonData=dataGenerated.json()
-            )
 
-            database = SessionLocal()
-            createExampleDataCOVA(database, data, exampleId)
-            database.close()
-          except Exception as exception:
-            raise RuntimeAlgorithmError(f"\n\
+          database = SessionLocal()
+          createExampleDataCOVA(database, data, exampleId)
+          database.close()
+        except Exception as exception:
+          raise RuntimeAlgorithmError(f"\n\
               generateCOVA: {exception}\n\
               parameters: neighbourNumber - {neighbour}, \n\
-              lambdaParam - {lamb}, \n\
+              lambdaParam - {0}, \n\
               alpha - {alph}, \n\
               isCohortNumberOriginal - {isCohort}\n") from exception

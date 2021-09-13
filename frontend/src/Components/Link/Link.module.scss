@@ -1,7 +1,7 @@
 .index {
-  border: var(--color-button) solid 3px;
+  border: var(--color-action) solid 3px;
   border-radius: 0.5rem;
-  background-color: var(--color-button);
+  background-color: var(--color-action);
   color: var(--color-text);
   transition: 0.3s all ease-in-out;
   cursor: pointer;
@@ -26,8 +26,4 @@
 
 .Back img {
   height: 15px;
-}
-
-:root {
-  --color-button: #f20574;
 }

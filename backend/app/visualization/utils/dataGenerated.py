@@ -97,7 +97,5 @@ def getNeighbourNumber(pointsLength: int, neighbourNumber: str) -> int:
     return math.floor(pointsLength / 10)
   if neighbourNumber == '30%':
     return math.floor(pointsLength / 100 * 30)
-  if neighbourNumber == '50%':
-    return math.floor(pointsLength / 2)
 
   raise RuntimeAlgorithmError(f"Wrong neighbour value - {neighbourNumber}")

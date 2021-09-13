@@ -31,7 +31,6 @@ def testGetCOVAExampleSuccess():
   postMockExample(client)
   params = ParamsCOVA(**{
       "neighbourNumber": "10",
-      "lambdaParam": 0,
       "alpha": 0.4,
       "isCohortNumberOriginal": False
   })
@@ -49,7 +48,6 @@ def testGetANGELExampleFailiure():
   postMockExample(client)
   params = ParamsCOVA(**{
       "neighbourNumber": "10",
-      "lambdaParam": OBSCURE_NUMBER,
       "alpha": OBSCURE_NUMBER,
       "isCohortNumberOriginal": True
   })

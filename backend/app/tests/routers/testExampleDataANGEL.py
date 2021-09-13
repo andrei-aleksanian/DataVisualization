@@ -31,7 +31,6 @@ def testGetANGELExampleSuccess():
   postMockExample(client)
   params = ParamsANGEL(**{
       "neighbourNumber": "10",
-      "lambdaParam": 0,
       "anchorDensity": 0.05,
       "epsilon": 0.5,
       "isAnchorModification": False
@@ -50,7 +49,6 @@ def testGetANGELExampleFailiure():
   postMockExample(client)
   params = ParamsANGEL(**{
       "neighbourNumber": "10",
-      "lambdaParam": OBSCURE_NUMBER,
       "anchorDensity": OBSCURE_NUMBER,
       "epsilon": OBSCURE_NUMBER,
       "isAnchorModification": True

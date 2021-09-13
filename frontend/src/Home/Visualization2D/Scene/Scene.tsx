@@ -11,7 +11,7 @@ export interface SceneProps {
 }
 
 export default function Scene({
-  data: { colors, points, prevPartsave, prevWrongInLow, prevWrongInHigh },
+  data: { colors, points, prevPartsave, prevWrongInLow },
   dimension2D,
   showPreservation,
 }: SceneProps) {
@@ -36,14 +36,6 @@ export default function Scene({
           return prevWrongInLow[i].map((p) => {
             const pointTo = points[p];
             return <Line points={[pointFrom, pointTo]} color="red" lineWidth={1} dashed={false} key={getId('line')} />;
-          });
-        })}
-      {showPreservation &&
-        prevPartsave.map((i) => {
-          const pointFrom = points[i];
-          return prevWrongInHigh[i].map((p) => {
-            const pointTo = points[p];
-            return <Line points={[pointFrom, pointTo]} color="blue" lineWidth={1} dashed key={getId('line')} />;
           });
         })}
     </>

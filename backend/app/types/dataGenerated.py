@@ -14,7 +14,6 @@ from .Custom import Points, Dimension
 
 class Params(BaseModel):
   neighbourNumber: str
-  lambdaParam: float
 
 
 class ParamsCOVA(Params):

@@ -7,7 +7,6 @@ export const getCovaDynamicInit = async (params: ParamsCOVA, file: File, dimensi
   const formData = new FormData();
   formData.append('dimension', dimension === Dimension.D2 ? '2' : '3');
   formData.append('neighbourNumber', params.neighbourNumber);
-  formData.append('lambdaParam', params.lambdaParam.toString());
   formData.append('alpha', params.alpha.toString());
   formData.append('isCohortNumberOriginal', params.isCohortNumberOriginal.toString());
   formData.append('file', file);

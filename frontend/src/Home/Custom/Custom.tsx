@@ -60,7 +60,6 @@ const Custom = () => {
     if (settingsCommon.algorithm === Algorithm.COVA) {
       const params: ParamsCOVA = {
         neighbourNumber: NEIGHBOUR_MARKS_ARR[settingsCommon.neighbour],
-        lambdaParam: settingsCommon.lambda,
         alpha: settingsCOVA.alpha,
         isCohortNumberOriginal: settingsCOVA.cohortNumber === CohortNumber.ORIGINAL,
       };
@@ -73,7 +72,6 @@ const Custom = () => {
     } else {
       const params: ParamsANGEL = {
         neighbourNumber: NEIGHBOUR_MARKS_ARR[settingsCommon.neighbour],
-        lambdaParam: settingsCommon.lambda,
         anchorDensity: settingsANGEL.anchorDensity,
         epsilon: settingsANGEL.epsilon,
         isAnchorModification: settingsANGEL.anchorModification === AnchorModification.ON,
