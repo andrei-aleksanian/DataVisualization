@@ -18,7 +18,7 @@ import Settings, {
 } from '../Settings';
 import Visualization2D from '../Visualization2D';
 
-import { getCovaDynamicInit } from './services';
+import { getCovaDynamicInit, getCovaDynamic } from './services';
 
 import classes from './Custom.module.scss';
 
@@ -66,10 +66,10 @@ const Custom = () => {
       };
       newData = await getCovaDynamicInit(params, settingsCustom.file, settingsCustom.dimension);
       updateData(newData);
-      // while (newData.iteration < newData.maxIteration) {
-      //   newData = await getCovaDynamic(newData); // eslint-disable-line
-      //   updateData(newData);
-      // }
+      while (newData.iteration < newData.maxIteration) {
+        newData = await getCovaDynamic(newData); // eslint-disable-line
+        updateData(newData);
+      }
     } else {
       const params: ParamsANGEL = {
         neighbourNumber: NEIGHBOUR_MARKS_ARR[settingsCommon.neighbour],

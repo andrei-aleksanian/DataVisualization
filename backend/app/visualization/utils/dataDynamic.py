@@ -3,13 +3,23 @@ utils functions for dynamic data loading
 """
 from typing import List, NewType
 import numpy as np
+from sklearn.decomposition import PCA
 from app.types.dataDynamic import DataDynamic, DataNumpy, DataFormatted
+
+
+def preserveOrientation(points: np.ndarray, dimension) -> np.ndarray:
+  """Rotates the dataset to set it to a ficed orientation. Used after embedding."""
+  pca = PCA(n_components=dimension)
+  pca.fit(points)
+  return pca.transform(points)
 
 
 def formatDataIn(previousData: DataDynamic) -> DataNumpy:
   """
   Reformat input data from lists to np.arrays
   """
+  if previousData.dimension2D:
+    previousData.points = np.delete(previousData.points, 2, 1)
 
   return DataNumpy(**{
       "alpha": previousData.alpha,
@@ -18,8 +28,19 @@ def formatDataIn(previousData: DataDynamic) -> DataNumpy:
       "labels": np.array([previousData.labels]),
       "Relation": np.array(previousData.Relation),
       "Ad": np.array(previousData.Ad),
-      "V": np.array(previousData.V)
+      "V": np.array(previousData.V),
   })
+
+
+def formatDimension(points: np.ndarray):
+  """Format and return points array."""
+  dimension2D = False
+  if points.shape[1] == 2:
+    zeros = np.zeros((points.shape[0], 1))
+    points = np.hstack((points, zeros))
+    dimension2D = True
+
+  return points, dimension2D
 
 
 def formatDataOut(initData: DataNumpy) -> DataFormatted:
@@ -28,12 +49,7 @@ def formatDataOut(initData: DataNumpy) -> DataFormatted:
   Computes wether dimension is 2D or 3D and adds a column of 0s to it if needed.
   Only runs once when a request is intialised.
   """
-  dimension2D = False
-  if initData["points"].shape[1] == 2:
-    zeros = np.zeros((initData["points"].shape[0], 1))
-    initData["points"] = np.hstack((initData["points"], zeros))
-    dimension2D = True
-
+  initData["points"], dimension2D = formatDimension(initData["points"])
   return DataFormatted(**{
       **initData,
       "g": initData["g"].tolist(),

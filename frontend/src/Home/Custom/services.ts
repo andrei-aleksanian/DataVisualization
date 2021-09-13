@@ -16,7 +16,7 @@ export const getCovaDynamicInit = async (params: ParamsCOVA, file: File, dimensi
     const config = {
       headers: { 'content-type': 'multipart/form-data' },
     };
-    const { data }: { data: DataPerseveranceLabelled } = await axios.post('/dynamic/cova', formData, config);
+    const { data }: { data: DataPerseveranceLabelled } = await axios.post('/dynamic/cova-init', formData, config);
     return data;
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -28,7 +28,7 @@ export const getCovaDynamicInit = async (params: ParamsCOVA, file: File, dimensi
 
 export const getCovaDynamic = async (body: DataPerseveranceLabelled) => {
   try {
-    const { data }: { data: DataPerseveranceLabelled } = await axios.post('/cova-demo-dynamic', body);
+    const { data }: { data: DataPerseveranceLabelled } = await axios.post('/dynamic/cova', body);
     return data;
   } catch (e) {
     // eslint-disable-next-line no-console

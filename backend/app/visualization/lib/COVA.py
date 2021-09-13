@@ -355,9 +355,6 @@ def COVAembedding(
     else:
       print('error')
       return 0
-  pca = PCA(n_components=dim)
-  pca.fit(x)
-  x = pca.transform(x)
   return x
 
 

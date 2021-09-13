@@ -13,15 +13,20 @@ from ..types.dataGenerated import DataGenerated, ParamsCOVA, DataGeneratedNumpy
 from ..types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
 
 from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData
-from .utils.dataDynamic import formatDataIn, formatDataOut, childrenToList
+from .utils.dataDynamic import formatDataIn, formatDataOut,\
+    childrenToList, formatDimension, preserveOrientation
+
+# pylint: disable=R0913, R0914
 
 
 def getCovaResult(params: ParamsCOVA,
                   dimension: Dimension,
+                  iterations: int,
                   originalData: np.ndarray,
                   labels: np.ndarray,
                   scaler: preprocessing.MinMaxScaler):
   """Functoin that runs COVA"""
+
   dcParam, protolabel, clabel = ProtoGeneration(
       originalData,
       labels,
@@ -48,7 +53,7 @@ def getCovaResult(params: ParamsCOVA,
       initdata,
       dimension,
       params.alpha,
-      20,
+      iterations,
   )
 
   return relation, adjacencyMatrix, vParam, resultData
@@ -61,7 +66,9 @@ def runCOVA(params: ParamsCOVA,
             scaler: preprocessing.MinMaxScaler) -> DataGenerated:
   """Used for running COVA on every possible parameter"""
   *_, resultData = getCovaResult(
-      params, dimension, originalData, labels, scaler)
+      params, dimension, 20, originalData, labels, scaler)
+
+  resultData = preserveOrientation(resultData, dimension)
 
   return toDataGenerated(
       DataGeneratedNumpy({
@@ -84,7 +91,7 @@ def initCOVA(params: ParamsCOVA,
   originalData, labels, scaler = loadData(filePath)
 
   relation, adjacencyMatrix, vParam, resultData = getCovaResult(
-      params, dimension, originalData, labels, scaler)
+      params, dimension, 0, originalData, labels, scaler)
 
   # formatting the data to be api friendly
   initData = DataNumpy({
@@ -101,8 +108,7 @@ def initCOVA(params: ParamsCOVA,
 
 
 def dynamicCOVA(previousData: DataDynamic,
-                iterationsPerRequest: int,
-                dimension: Dimension) -> DataDynamic:
+                iterationsPerRequest: int) -> DataDynamic:
   """
   Iterates through the COVA algorithm.
 
@@ -113,6 +119,7 @@ def dynamicCOVA(previousData: DataDynamic,
   Returns: new data after a given number of iterations
   """
   data = formatDataIn(previousData)
+  dimension = 2 if previousData.dimension2D else 3
 
   resultData = COVAembedding(
       data["g"],
@@ -124,9 +131,6 @@ def dynamicCOVA(previousData: DataDynamic,
       data["alpha"],
       iterationsPerRequest
   )
-
-  previousData.points = resultData.tolist()
-
   # only run on the last iteration
   if previousData.iteration + 1 == previousData.maxIteration:
     *_, prevWrongInHigh, prevWrongInLow, prevPartsave = neighbor_prev_disturb(
@@ -134,5 +138,10 @@ def dynamicCOVA(previousData: DataDynamic,
     previousData.prevWrongInHigh = childrenToList(prevWrongInHigh)
     previousData.prevWrongInLow = childrenToList(prevWrongInLow)
     previousData.prevPartsave = prevPartsave
+
+    resultData = preserveOrientation(resultData, dimension)
+
+  resultData, _ = formatDimension(resultData)
+  previousData.points = resultData.tolist()
 
   return previousData

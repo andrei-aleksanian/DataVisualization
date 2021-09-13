@@ -6,9 +6,10 @@ The dynamic function runs ITERATIONS_PER_REQUEST amount of cycles of the chosen 
 from any given point in the cycle.
 """
 # pylint: disable=R0801, R0913
+import os
 from fastapi import APIRouter, Form, File, UploadFile
 
-from ..visualization.Cova import initCOVA
+from ..visualization.Cova import initCOVA, dynamicCOVA
 from .utils import saveFile
 
 from ..types.dataDynamic import DataDynamic
@@ -21,22 +22,21 @@ router = APIRouter(
     tags=["dynamic"],
 )
 
-MAX_ITERATIONS = 8
+MAX_ITERATIONS = 10
 ITERATIONS_PER_REQUEST = 2
 
 
-@router.post("/cova",
+@router.post("/cova-init",
              summary="COVA Demo Dynamic Init",
              response_model=DataDynamic
              )
 async def covaDynamicInit(
-    neighbourNumber: str = Form(...),
-    lambdaParam: float = Form(...),
-    alpha: float = Form(...),
-    isCohortNumberOriginal: bool = Form(...),
-    dimension: DimensionIn = Form(...),
-    file: UploadFile = File(...),
-):
+        neighbourNumber: str = Form(...),
+        lambdaParam: float = Form(...),
+        alpha: float = Form(...),
+        isCohortNumberOriginal: bool = Form(...),
+        dimension: DimensionIn = Form(...),
+        file: UploadFile = File(...)):
   """
   Demo endpoint with static output that runs the COVA algorithm.
   Used for early development
@@ -53,6 +53,11 @@ async def covaDynamicInit(
 
   initData = initCOVA(params, int(dimension), filePath)
 
+  try:
+    os.remove(filePath)
+  except OSError as error:
+    print("Error: %s - %s." % (error.filename, error.strerror))
+
   dataDynamic = DataDynamic(**{
       **initData.dict(),
       # init empty perseverance data
@@ -67,19 +72,17 @@ async def covaDynamicInit(
   return dataDynamic
 
 
-# @router.post("/cova",
-#              summary="COVA Demo Perseverance",
-#              response_model=DataDynamic
-#              )
-# async def covaDynamic(data: DataDynamic):
-#   """
-#   Runs ITERATIONS_PER_REQUEST amount of cycles of the chosen algorithm
-#   from any given point in the cycle.
-#   """
-#   # future note:
-#   # check if result has 0s as the last column if user asked for 2d output
+@router.post("/cova",
+             summary="COVA Demo Perseverance",
+             response_model=DataDynamic
+             )
+async def covaDynamic(data: DataDynamic):
+  """
+  Runs ITERATIONS_PER_REQUEST amount of cycles of the chosen algorithm
+  from any given point in the cycle.
+  """
 
-#   dataNew = dynamicCOVA(data, ITERATIONS_PER_REQUEST)
-#   dataNew.iteration += 1
+  dataNew = dynamicCOVA(data, ITERATIONS_PER_REQUEST)
+  dataNew.iteration += 1
 
-#   return dataNew
+  return dataNew

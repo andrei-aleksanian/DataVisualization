@@ -76,7 +76,7 @@ def loadData(filePath: str):
   validateData(originalData, labels)
 
   sampleSize = len(originalData)
-  if env in [Env.TEST.value, Env.DEV.value]:
+  if env in [Env.TEST.value]:
     sampleSize = 150
 
   scaler.fit(originalData[:sampleSize, :])
