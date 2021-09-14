@@ -32,7 +32,7 @@ def testGetANGELExampleSuccess():
   params = ParamsANGEL(**{
       "neighbourNumber": "10",
       "anchorDensity": 0.05,
-      "epsilon": 0.5,
+      "epsilon": 0.1,
       "isAnchorModification": False
   })
   response = client.post("api/examples/angel/data/get/1",
