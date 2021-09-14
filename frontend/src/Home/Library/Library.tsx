@@ -4,6 +4,7 @@ import { ExampleProps } from 'types/Examples';
 
 import { useHistory, useLocation } from 'react-router-dom';
 import getId from 'utils/getId';
+import hostLink from 'utils/hostLink';
 import { Popup } from 'Components/UI';
 import fetchExamples from './services';
 
@@ -11,7 +12,6 @@ import classes from './Library.module.scss';
 
 export const TEXT_H1 = 'Examples Library';
 export const TEXT_POPUP = "Couldn't load examples, please try again later";
-
 export interface LibraryProps {
   reviewer: boolean;
 }
@@ -24,7 +24,7 @@ const Library = ({ reviewer }: LibraryProps) => {
   const Example = ({ name, description, id, imagePath }: ExampleProps) => (
     <div className={classes.Example}>
       <img
-        src={`/api/images/${imagePath}`}
+        src={`${hostLink}/images/${imagePath}`}
         alt={`example ${name} image`}
         onClick={() => history.push(`${location.pathname}/${id}`)}
       />
