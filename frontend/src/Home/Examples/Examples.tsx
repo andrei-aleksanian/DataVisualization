@@ -22,7 +22,11 @@ import Visualization2D from '../Visualization2D';
 
 import classes from './Examples.module.scss';
 
-const Examples = () => {
+export interface ExampleProps {
+  reviewer: boolean;
+}
+
+const Examples = ({ reviewer }: ExampleProps) => {
   const [data, setData] = useState<DataPerseveranceColored | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -92,6 +96,7 @@ const Examples = () => {
           settingsANGEL,
           setSettingsANGEL,
           backLink: '/examples',
+          reviewer,
         }}
       />
       {data && (

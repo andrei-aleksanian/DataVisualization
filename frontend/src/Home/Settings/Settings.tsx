@@ -27,8 +27,8 @@ export interface SettingsCommon {
 }
 export const defaultSettingsCommon: SettingsCommon = {
   dataPreservation: DataPreservation.OFF,
-  algorithm: Algorithm.COVA,
-  neighbour: 0,
+  algorithm: Algorithm.ANGEL,
+  neighbour: 0, // stands for index in NEIGHBOUR_MARKS_ARR, not value
 };
 export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%'];
 export interface SettingsProps {
@@ -44,6 +44,7 @@ export interface SettingsProps {
     setSettingsCustom: React.Dispatch<React.SetStateAction<SettingsCustom>>;
     onSubmit: Function;
   } | null;
+  reviewer: boolean;
 }
 
 const Settings = ({
@@ -55,6 +56,7 @@ const Settings = ({
   setSettingsANGEL,
   backLink,
   customDataPage,
+  reviewer,
 }: SettingsProps) => {
   const onChangeAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
     event.preventDefault();
@@ -70,15 +72,17 @@ const Settings = ({
     <div className={classes.index}>
       <LinkBack link={backLink} />
       <h1>{TEXT_H1}</h1>
-      <CheckBoxes
-        heading={TEXT_CHECKBOX_ALGORITHM}
-        currentValue={settingsCommon.algorithm}
-        onChange={onChangeAlgorithm}
-        entries={[
-          { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
-          { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
-        ]}
-      />
+      {!reviewer && (
+        <CheckBoxes
+          heading={TEXT_CHECKBOX_ALGORITHM}
+          currentValue={settingsCommon.algorithm}
+          onChange={onChangeAlgorithm}
+          entries={[
+            { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
+            { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
+          ]}
+        />
+      )}
       <Slider
         min={0}
         max={NEIGHBOUR_MARKS_ARR.length - 1}

@@ -7,8 +7,11 @@ import Custom from './Home/Custom';
 export default function App() {
   return (
     <Switch>
+      <Route path="/examples-for-review/:id">
+        <Examples reviewer />
+      </Route>
       <Route path="/examples/:id">
-        <Examples />
+        <Examples reviewer={false} />
       </Route>
       <Route path="/examples">
         <Library />
