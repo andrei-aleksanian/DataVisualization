@@ -5,9 +5,8 @@ Endpoints for ANGEL data collection.
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from ..types.dataGenerated import ParamsCOVA
+from ..types.dataGenerated import ParamsCOVA, DataGeneratedOut
 from ..database import crud
-from ..database.schemas import JSONType
 from ..dependencies import getDB
 from .utils import PARAMS_DO_NOT_EXIST
 
@@ -19,7 +18,7 @@ router = APIRouter(
 
 @router.post("/get/{exampleId}",
              summary="Get a sample for given example",
-             response_model=JSONType
+             response_model=DataGeneratedOut
              )
 def getExampleData(exampleId: int, paramsCOVA: ParamsCOVA, database: Session = Depends(getDB)):
   """
@@ -31,4 +30,4 @@ def getExampleData(exampleId: int, paramsCOVA: ParamsCOVA, database: Session = D
   if data is None:
     raise HTTPException(
         status_code=404, detail=PARAMS_DO_NOT_EXIST)
-  return data.jsonData
+  return DataGeneratedOut(**{"jsonData": data.jsonData, "exampleName": data.example.name})

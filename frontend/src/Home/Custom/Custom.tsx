@@ -97,6 +97,7 @@ const Custom = () => {
             setSettingsCustom,
           },
           reviewer: false,
+          name: 'Custom Data',
         }}
       />
       {data && (

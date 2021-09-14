@@ -5,11 +5,15 @@ Different data types for generated data.
 """
 # pylint: disable=C0116, C0115
 
-from typing import List, TypedDict
+from typing import List, TypedDict, Union, Dict, Any
+
 from pydantic import BaseModel
 from numpy import ndarray
 
 from .Custom import Points, Dimension
+
+JSONType = Union[str, int, float, bool,
+                 None, Dict[str, Any], List[Any]]
 
 
 class Params(BaseModel):
@@ -47,3 +51,8 @@ class DataGenerated(BaseModel):
   prevWrongInLow: List[List[int]]
   prevWrongInHigh: List[List[int]]
   dimension2D: bool
+
+
+class DataGeneratedOut(BaseModel):
+  jsonData: JSONType
+  exampleName: str

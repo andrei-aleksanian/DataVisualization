@@ -24,10 +24,12 @@ import classes from './Examples.module.scss';
 
 export interface ExampleProps {
   reviewer: boolean;
+  backLink: string;
 }
 
-const Examples = ({ reviewer }: ExampleProps) => {
+const Examples = ({ reviewer, backLink }: ExampleProps) => {
   const [data, setData] = useState<DataPerseveranceColored | null>(null);
+  const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const [settingsCommon, setSettingsCommon] = useState(defaultSettingsCommon);
@@ -37,7 +39,7 @@ const Examples = ({ reviewer }: ExampleProps) => {
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
 
-  const updateData = (newData: DataPerseveranceLabelled) => {
+  const updateData = (newData: DataPerseveranceLabelled, newName: string) => {
     setData(() => {
       const colors = getColors(newData.labels);
       return {
@@ -46,6 +48,7 @@ const Examples = ({ reviewer }: ExampleProps) => {
         colors,
       };
     });
+    setName(newName);
   };
 
   const fetchData = async (algorithm: Algorithm) => {
@@ -75,7 +78,7 @@ const Examples = ({ reviewer }: ExampleProps) => {
     const asyncHelper = async () => {
       const [newData, newError] = await fetchData(settingsCommon.algorithm);
       if (!isActive) return; // don't do anything if not rendered
-      if (newData) updateData(newData); // only update if  data is not null
+      if (newData) updateData(newData.data, newData.name); // only update if  data is not null
       setError(newError); // always update error
     };
 
@@ -95,8 +98,9 @@ const Examples = ({ reviewer }: ExampleProps) => {
           setSettingsCOVA,
           settingsANGEL,
           setSettingsANGEL,
-          backLink: '/examples',
+          backLink,
           reviewer,
+          name: `Example: ${name}`,
         }}
       />
       {data && (
@@ -106,7 +110,7 @@ const Examples = ({ reviewer }: ExampleProps) => {
         <Popup
           onClick={() => {
             setError(null);
-            history.push('/examples');
+            history.push(backLink);
           }}
         />
       )}

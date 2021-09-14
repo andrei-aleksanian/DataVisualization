@@ -18,6 +18,10 @@ export interface DataPerseveranceColored extends DataPerseveranceLabelled {
   colors: string[];
 }
 
+export interface DataPerseveranceNamed {
+  data: DataPerseveranceLabelled;
+  name: string;
+}
 // dummy example data
 export const DATA_PERSEVERANCE: DataPerseveranceLabelled = {
   dimension2D: true,

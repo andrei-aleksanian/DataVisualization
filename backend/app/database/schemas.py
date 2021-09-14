@@ -10,14 +10,10 @@ Schemas or types to be used in the application on different specific events:
 
 # pylint: disable=C0116, C0115
 
-from typing import List, Optional, Union, Dict, Any
+from typing import Optional
 from pydantic import BaseModel
-from ..types.dataGenerated import ParamsANGEL, ParamsCOVA
+from ..types.dataGenerated import ParamsANGEL, ParamsCOVA, JSONType
 from ..types.Custom import Dimension
-
-
-JSONType = Union[str, int, float, bool,
-                 None, Dict[str, Any], List[Any]]
 
 
 class DataBase(BaseModel):
@@ -45,6 +41,7 @@ class Data(DataBase):
   id: int
   exampleId: int
   jsonData: JSONType
+  exampleName: str
 
   class Config:
     orm_mode = True

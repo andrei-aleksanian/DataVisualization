@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { LinkBack } from 'Components/Link';
 import { ExampleProps } from 'types/Examples';
 
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import getId from 'utils/getId';
 import { Popup } from 'Components/UI';
 import fetchExamples from './services';
@@ -12,17 +12,21 @@ import classes from './Library.module.scss';
 export const TEXT_H1 = 'Examples Library';
 export const TEXT_POPUP = "Couldn't load examples, please try again later";
 
-const Library = () => {
+export interface LibraryProps {
+  reviewer: boolean;
+}
+const Library = ({ reviewer }: LibraryProps) => {
   const [examples, setExamples] = useState([] as ExampleProps[]);
   const [error, setError] = useState(null as null | string);
   const history = useHistory();
+  const location = useLocation();
 
   const Example = ({ name, description, id, imagePath }: ExampleProps) => (
     <div className={classes.Example}>
       <img
         src={`/api/images/${imagePath}`}
         alt={`example ${name} image`}
-        onClick={() => history.push(`/examples/${id}`)}
+        onClick={() => history.push(`${location.pathname}/${id}`)}
       />
       <div className={classes.ExampleInfo}>
         <h3>{name}</h3>
@@ -50,7 +54,7 @@ const Library = () => {
   return (
     <div className={classes.index}>
       {error && <Popup text={TEXT_POPUP} onClick={() => history.push('/')} />}
-      <LinkBack link="/" />
+      {!reviewer && <LinkBack link="/" />}
       <h1>{TEXT_H1}</h1>
       <div className={classes.ExamplesContainer}>
         {examples.map((e) => (

@@ -11,7 +11,6 @@ import Custom, { SettingsCustom } from './components/Custom';
 
 export const TEXT_CHECKBOX_COVA = 'COVA';
 export const TEXT_CHECKBOX_ANGEL = 'ANGEL';
-export const TEXT_H1 = 'Example: Cylinder';
 export const TEXT_CHECKBOX_ALGORITHM = 'Algorithm:';
 export const TEXT_SLIDER_NEIGHBOUR = 'Neighbour number:';
 export const TEXT_CHECKBOX_PRESERVATION = 'Show Data Preservation Error:';
@@ -45,6 +44,7 @@ export interface SettingsProps {
     onSubmit: Function;
   } | null;
   reviewer: boolean;
+  name: string;
 }
 
 const Settings = ({
@@ -57,6 +57,7 @@ const Settings = ({
   backLink,
   customDataPage,
   reviewer,
+  name,
 }: SettingsProps) => {
   const onChangeAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
     event.preventDefault();
@@ -71,7 +72,7 @@ const Settings = ({
   return (
     <div className={classes.index}>
       <LinkBack link={backLink} />
-      <h1>{TEXT_H1}</h1>
+      <h1>{name}</h1>
       {!reviewer && (
         <CheckBoxes
           heading={TEXT_CHECKBOX_ALGORITHM}

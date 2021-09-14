@@ -7,25 +7,35 @@ import { DATA_PERSEVERANCE } from 'types/Data/DataPerseverance';
 import { POPUP_TEXT } from 'Components/UI';
 import Examples from '.';
 
+export const defaultExamplesProps = {
+  reviewer: false,
+  backLink: '/examples',
+};
+
+export const mockData = { data: { jsonData: JSON.stringify(DATA_PERSEVERANCE), exampleName: 'Example' } };
 const mockAxios = () => {
   return jest.spyOn(axios, 'post');
 };
 
 test('Examples matches snapshot', async () => {
   const mockedAxios = mockAxios();
-  mockedAxios.mockResolvedValueOnce({ data: JSON.stringify(DATA_PERSEVERANCE) });
+  mockedAxios.mockResolvedValueOnce(mockData);
 
-  const { asFragment } = await waitFor(async () => render(<Examples />, { wrapper: MemoryRouter }));
+  const { asFragment } = await waitFor(async () =>
+    render(<Examples {...defaultExamplesProps} />, { wrapper: MemoryRouter })
+  );
   expect(asFragment()).toMatchSnapshot();
 });
 
 describe('Examples fetches data correctly', () => {
   test('Examples fetches data on render', async () => {
     const mockedAxios = mockAxios();
-    mockedAxios.mockResolvedValueOnce({ data: JSON.stringify(DATA_PERSEVERANCE) });
+    mockedAxios.mockResolvedValueOnce({
+      data: { jsonData: JSON.stringify(DATA_PERSEVERANCE), exampleName: 'Example' },
+    });
 
     await waitFor(() => {
-      render(<Examples />, { wrapper: MemoryRouter });
+      render(<Examples {...defaultExamplesProps} />, { wrapper: MemoryRouter });
     });
     const canvas = await waitFor(() => screen.getByTestId('canvas'));
     const popup = await waitFor(() => screen.queryByText(POPUP_TEXT));
@@ -37,15 +47,15 @@ describe('Examples fetches data correctly', () => {
 
   test('Examples fetches data on click', async () => {
     const mockedAxios = mockAxios();
-    mockedAxios.mockResolvedValueOnce({ data: JSON.stringify(DATA_PERSEVERANCE) });
-    mockedAxios.mockResolvedValueOnce({ data: JSON.stringify(DATA_PERSEVERANCE) });
+    mockedAxios.mockResolvedValueOnce(mockData);
+    mockedAxios.mockResolvedValueOnce(mockData);
 
     await waitFor(() => {
-      render(<Examples />, { wrapper: MemoryRouter });
+      render(<Examples {...defaultExamplesProps} />, { wrapper: MemoryRouter });
     });
 
     await waitFor(() => {
-      userEvent.click(screen.getByText('ANGEL'));
+      userEvent.click(screen.getByText('COVA'));
     });
     expect(mockedAxios).toHaveBeenCalledTimes(2);
   });
@@ -55,7 +65,7 @@ describe('Examples fetches data correctly', () => {
     mockedAxios.mockRejectedValueOnce(new Error('Something went wrong'));
 
     await waitFor(async () => {
-      render(<Examples />, { wrapper: MemoryRouter });
+      render(<Examples {...defaultExamplesProps} />, { wrapper: MemoryRouter });
     });
 
     const popup = await waitFor(() => screen.getByText(POPUP_TEXT));

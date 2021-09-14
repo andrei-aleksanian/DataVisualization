@@ -7,14 +7,17 @@ import Custom from './Home/Custom';
 export default function App() {
   return (
     <Switch>
-      <Route path="/examples-for-review/:id">
-        <Examples reviewer />
+      <Route path="/demo-review/:id">
+        <Examples reviewer backLink="/demo-review" />
+      </Route>
+      <Route path="/demo-review">
+        <Library reviewer />
       </Route>
       <Route path="/examples/:id">
-        <Examples reviewer={false} />
+        <Examples reviewer={false} backLink="/examples" />
       </Route>
       <Route path="/examples">
-        <Library />
+        <Library reviewer={false} />
       </Route>
       <Route path="/your-data">
         <Custom />

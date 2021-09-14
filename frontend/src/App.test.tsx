@@ -3,13 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 
 import axios from 'utils/axios';
-import { DATA_PERSEVERANCE } from 'types/Data/DataPerseverance';
+// import { DATA_PERSEVERANCE } from 'types/Data/DataPerseverance';
 
 import { placeholderExamples } from 'Home/Library/Library.test';
 import App from './App';
 import { TEXT_LINK_LIBRARY, TEXT_H1 as TEXT_H1_HOME } from './Home';
-import { TEXT_H1 as TEXT_H1_EXAMPLES } from './Home/Settings';
 import { TEXT_H1 as TEXT_H1_LIBRARY } from './Home/Library';
+import { mockData } from './Home/Examples/Examples.test';
 
 test('App matches snapshot', async () => {
   const { asFragment } = render(<App />, { wrapper: MemoryRouter });
@@ -55,14 +55,14 @@ describe('Test navigation transitions', () => {
   test('Examples page transition', async () => {
     init();
     jest.spyOn(axios, 'get').mockResolvedValueOnce({ data: placeholderExamples });
-    jest.spyOn(axios, 'post').mockResolvedValueOnce({ data: JSON.stringify(DATA_PERSEVERANCE) });
+    jest.spyOn(axios, 'post').mockResolvedValueOnce(mockData);
 
     const linkLibrary = await waitFor(() => screen.getByText(TEXT_LINK_LIBRARY));
     userEvent.click(linkLibrary);
     const linkExample = await waitFor(() => screen.getByAltText(`example ${placeholderExamples[0].name} image`));
     userEvent.click(linkExample);
 
-    const heading = await waitFor(() => screen.getByText(TEXT_H1_EXAMPLES));
+    const heading = await waitFor(() => screen.getByText(`Example: ${mockData.data.exampleName}`));
     expect(heading).toBeInTheDocument();
   });
 
