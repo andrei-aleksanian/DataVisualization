@@ -76,7 +76,7 @@ def createExample(
 
   def saveImage(image: File):
     try:
-      imagePath = saveFile(image, staticFolderPath)
+      imagePath = saveFile(image, staticFolderPath, image=True)
 
       if env in [Env.PRODUCTION.value, Env.DEV.value]:
         img = Image.open(imagePath)

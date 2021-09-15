@@ -8,20 +8,25 @@ from app.database.database import SessionLocal
 from app.database.crud import createExampleDataANGEL
 from app.database.schemas import DataCreateANGEL
 from app.visualization.Angel import runANGEL
-from app.types.dataGenerated import ParamsANGEL
+from app.types.dataGenerated import ParamsANGEL,\
+    CONSTRAINED_ANCHOR_DENSITY,\
+    CONSTRAINED_EPSILON,\
+    CONSTRAINED_NEIGHBOUR,\
+    CONSTRAINED_ANCHOR_DENSITY_CUSTOM
 from app.types.exceptions import RuntimeAlgorithmError
 from app.types.Custom import Dimension
 from app.utils.environment import Env
 
 # Define params and constraints
-neighbourNumber = ['10', '20', '30', '10%', '30%']
-anchorDensity = [0.05, 0.1, 0.2]
-epsilon = [0.1, 5]
-isAnchorModification = [False, True]
+neighbourNumber = CONSTRAINED_NEIGHBOUR
+anchorDensity = CONSTRAINED_ANCHOR_DENSITY
+epsilon = CONSTRAINED_EPSILON
+isAnchorModification = CONSTRAINED_ANCHOR_DENSITY_CUSTOM
+
 
 if os.environ.get("ENVIRONMENT") in [Env.TEST.value, Env.DEV.value]:
   neighbourNumber = ['10']
-  anchorDensity = [0.05]
+  anchorDensity = [0.1]
   epsilon = [0.1]
   isAnchorModification = [False]
 

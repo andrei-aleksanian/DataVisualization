@@ -8,15 +8,18 @@ from app.database.database import SessionLocal
 from app.database.crud import createExampleDataCOVA
 from app.database.schemas import DataCreateCOVA
 from app.visualization.Cova import runCOVA
-from app.types.dataGenerated import ParamsCOVA
+from app.types.dataGenerated import ParamsCOVA,\
+    CONSTRAINED_NEIGHBOUR,\
+    CONSTRAINED_ALPHA,\
+    CONSTRAINED_IS_COHORT_NUMBER_ORIGINAL
 from app.types.exceptions import RuntimeAlgorithmError
 from app.types.Custom import Dimension
 from app.utils.environment import Env
 
 # Define params and constraints
-neighbourNumber = ['10', '20', '30', '10%', '30%']
-alpha = [0, 0.2, 0.4, 0.6, 0.8, 1]
-isCohortNumberOriginal = [True, False]
+neighbourNumber = CONSTRAINED_NEIGHBOUR
+alpha = CONSTRAINED_ALPHA
+isCohortNumberOriginal = CONSTRAINED_IS_COHORT_NUMBER_ORIGINAL
 
 if os.environ.get("ENVIRONMENT") in [Env.TEST.value, Env.DEV.value]:
   neighbourNumber = ['10']

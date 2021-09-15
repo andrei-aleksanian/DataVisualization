@@ -7,16 +7,20 @@ from any given point in the cycle.
 """
 # pylint: disable=R0801, R0913
 import os
-from fastapi import APIRouter, Form, File, UploadFile
+import traceback
+from fastapi import APIRouter, Form, File, UploadFile, HTTPException
+
+from .utils import saveFile, removeFile, validateParamsCOVA
+from ..utils.static import tempFolderPath
 
 from ..visualization.Cova import initCOVA, dynamicCOVA
 from ..visualization.Angel import initANGEL, dynamicANGEL
-from .utils import saveFile
 
 from ..types.dataDynamic import DataDynamic, DataDynamicANGEL
 from ..types.dataGenerated import ParamsANGEL, ParamsCOVA
 from ..types.Custom import DimensionIn
-from ..utils.static import tempFolderPath
+from ..types.exceptions import RuntimeAlgorithmError, FileConstraintsError
+
 
 router = APIRouter(
     prefix="/dynamic",
@@ -25,6 +29,15 @@ router = APIRouter(
 
 MAX_ITERATIONS = 10
 ITERATIONS_PER_REQUEST = 2
+INIT_DATA = {
+    # init empty perseverance data
+    "prevPartsave": [],
+    "prevWrongInHigh": [[]],
+    "prevWrongInLow": [[]],
+    # init maxiterations and iteration = 0 by default
+    "maxIteration": MAX_ITERATIONS,
+    "iteration": 0
+}
 
 
 @router.post("/cova-init",
@@ -50,22 +63,24 @@ async def covaDynamicInit(
       "isCohortNumberOriginal": isCohortNumberOriginal
   })
 
-  initData = initCOVA(params, int(dimension), filePath)
-
+  initData = None
   try:
-    os.remove(filePath)
-  except OSError as error:
-    print("Error: %s - %s." % (error.filename, error.strerror))
+    validateParamsCOVA(params)
+    initData = initCOVA(params, int(dimension), filePath)
+  except RuntimeAlgorithmError as error:
+    print(traceback.format_exc())
+    raise HTTPException(
+        status_code=400, detail=error.message) from error
+  except FileConstraintsError as error:
+    print(traceback.format_exc())
+    raise HTTPException(
+        status_code=422, detail=error.message) from error
+  finally:
+    removeFile(filePath)
 
   dataDynamic = DataDynamic(**{
       **initData.dict(),
-      # init empty perseverance data
-      "prevPartsave": [],
-      "prevWrongInHigh": [[]],
-      "prevWrongInLow": [[]],
-      # init maxiterations and iteration = 0 by default
-      "maxIteration": MAX_ITERATIONS,
-      "iteration": 0
+      **INIT_DATA
   })
 
   return dataDynamic
@@ -121,13 +136,7 @@ async def angelDynamicInit(
 
   dataDynamic = DataDynamicANGEL(**{
       **initData.dict(),
-      # init empty perseverance data
-      "prevPartsave": [],
-      "prevWrongInHigh": [[]],
-      "prevWrongInLow": [[]],
-      # init maxiterations and iteration = 0 by default
-      "maxIteration": MAX_ITERATIONS,
-      "iteration": 0
+      **INIT_DATA
   })
 
   return dataDynamic

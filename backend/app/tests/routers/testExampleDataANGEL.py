@@ -31,7 +31,7 @@ def testGetANGELExampleSuccess():
   postMockExample(client)
   params = ParamsANGEL(**{
       "neighbourNumber": "10",
-      "anchorDensity": 0.05,
+      "anchorDensity": 0.1,
       "epsilon": 0.1,
       "isAnchorModification": False
   })
