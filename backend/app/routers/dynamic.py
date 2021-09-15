@@ -12,6 +12,7 @@ from fastapi import APIRouter, Form, File, UploadFile, HTTPException
 
 from .utils import saveFile, removeFile, validateParamsCOVA
 from ..utils.static import tempFolderPath
+from ..config import runWithAsync
 
 from ..visualization.Cova import initCOVA, dynamicCOVA
 from ..visualization.Angel import initANGEL, dynamicANGEL
@@ -66,7 +67,7 @@ async def covaDynamicInit(
   initData = None
   try:
     validateParamsCOVA(params)
-    initData = initCOVA(params, int(dimension), filePath)
+    initData = await runWithAsync(initCOVA, params, int(dimension), filePath)
   except RuntimeAlgorithmError as error:
     print(traceback.format_exc())
     raise HTTPException(
@@ -96,7 +97,7 @@ async def covaDynamic(data: DataDynamic):
   from any given point in the cycle.
   """
 
-  dataNew = dynamicCOVA(data, ITERATIONS_PER_REQUEST)
+  dataNew = await runWithAsync(dynamicCOVA, data, ITERATIONS_PER_REQUEST)
   dataNew.iteration += 1
 
   return dataNew
@@ -127,7 +128,7 @@ async def angelDynamicInit(
       "isAnchorModification": isAnchorModification
   })
 
-  initData = initANGEL(params, int(dimension), filePath)
+  initData = await runWithAsync(initANGEL, params, int(dimension), filePath)
 
   try:
     os.remove(filePath)
@@ -152,7 +153,7 @@ async def angelDynamic(data: DataDynamicANGEL):
   from any given point in the cycle.
   """
 
-  dataNew = dynamicANGEL(data, ITERATIONS_PER_REQUEST)
+  dataNew = await runWithAsync(dynamicANGEL, data, ITERATIONS_PER_REQUEST)
   dataNew.iteration += 1
 
   return dataNew
