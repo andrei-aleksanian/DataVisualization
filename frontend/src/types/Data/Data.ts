@@ -8,11 +8,11 @@ export interface DataCore {
   dimension2D: boolean;
   iteration: number;
   maxIteration: number;
-  g: number[][];
+  originalData: number[][];
   labels: number[];
-  Relation: number[][];
-  Ad: number[][];
-  V: number[][];
+  paramRelation: number[][];
+  paramAd: number[][];
+  paramV: number[][];
   points: Points;
   alpha: number;
 }
@@ -34,11 +34,11 @@ export const DATA: DataLabelled = {
     [-3, 4, 0],
     [-3, 1, 0],
   ],
-  g: [[]],
+  originalData: [[]],
   labels: [1, 1, 1, 0, 0, 0, 3, 3],
-  Relation: [[]],
-  Ad: [[]],
-  V: [[]],
+  paramRelation: [[]],
+  paramAd: [[]],
+  paramV: [[]],
   alpha: 0.5,
   iteration: 0,
   maxIteration: 0,

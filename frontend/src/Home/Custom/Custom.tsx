@@ -18,7 +18,7 @@ import Settings, {
 } from '../Settings';
 import Visualization2D from '../Visualization2D';
 
-import { getCovaDynamicInit, getCovaDynamic } from './services';
+import { getCovaDynamicInit, getCovaDynamic, getAngelDynamic, getAngelDynamicInit } from './services';
 
 import classes from './Custom.module.scss';
 
@@ -76,7 +76,12 @@ const Custom = () => {
         epsilon: settingsANGEL.epsilon,
         isAnchorModification: settingsANGEL.anchorModification === AnchorModification.ON,
       };
-      console.log(params, settingsCustom.file); // eslint-disable-line no-console
+      newData = await getAngelDynamicInit(params, settingsCustom.file, settingsCustom.dimension);
+      updateData(newData);
+      while (newData.iteration < newData.maxIteration) {
+        newData = await getAngelDynamic(newData); // eslint-disable-line
+        updateData(newData);
+      }
     }
   };
 

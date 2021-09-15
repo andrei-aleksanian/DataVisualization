@@ -21,11 +21,11 @@ def getInputData(points):
 
   return DataNumpy(**{
       "points": points,
-      "g": npArray,
+      "originalData": npArray,
       "labels": labels,
-      "Relation": npArray,
-      "Ad": npArray,
-      "V": npArray,
+      "paramRelation": npArray,
+      "paramAd": npArray,
+      "paramV": npArray,
       "alpha": 0
   })
 

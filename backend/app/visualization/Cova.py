@@ -95,10 +95,10 @@ def initCOVA(params: ParamsCOVA,
 
   # formatting the data to be api friendly
   initData = DataNumpy({
-      "g": originalData,
-      "Relation": relation,
-      "Ad": adjacencyMatrix,
-      "V": vParam,
+      "originalData": originalData,
+      "paramRelation": relation,
+      "paramAd": adjacencyMatrix,
+      "paramV": vParam,
       "labels": labels,
       "points": resultData,
       "alpha": params.alpha
@@ -122,10 +122,10 @@ def dynamicCOVA(previousData: DataDynamic,
   dimension = 2 if previousData.dimension2D else 3
 
   resultData = COVAembedding(
-      data["g"],
-      data["Relation"],
-      data["Ad"],
-      data["V"],
+      data["originalData"],
+      data["paramRelation"],
+      data["paramAd"],
+      data["paramV"],
       data["points"],
       dimension,
       data["alpha"],
@@ -134,7 +134,7 @@ def dynamicCOVA(previousData: DataDynamic,
   # only run on the last iteration
   if previousData.iteration + 1 == previousData.maxIteration:
     *_, prevWrongInHigh, prevWrongInLow, prevPartsave = neighbor_prev_disturb(
-        data["g"], resultData, data["labels"], 10)
+        data["originalData"], resultData, data["labels"], 10)
     previousData.prevWrongInHigh = childrenToList(prevWrongInHigh)
     previousData.prevWrongInLow = childrenToList(prevWrongInLow)
     previousData.prevPartsave = prevPartsave

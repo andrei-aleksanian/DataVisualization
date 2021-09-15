@@ -4,7 +4,8 @@ utils functions for dynamic data loading
 from typing import List, NewType
 import numpy as np
 from sklearn.decomposition import PCA
-from app.types.dataDynamic import DataDynamic, DataNumpy, DataFormatted
+from app.types.dataDynamic import DataDynamic, DataNumpy, DataFormatted,\
+    DataNumpyANGEL, DataFormattedANGEL, DataDynamicANGEL
 
 
 def preserveOrientation(points: np.ndarray, dimension) -> np.ndarray:
@@ -12,6 +13,24 @@ def preserveOrientation(points: np.ndarray, dimension) -> np.ndarray:
   pca = PCA(n_components=dimension)
   pca.fit(points)
   return pca.transform(points)
+
+
+def formatDataInANGEL(previousData: DataDynamicANGEL) -> DataNumpyANGEL:
+  """
+  Reformat ANGEL input data to np.arrays
+  """
+  if previousData.dimension2D:
+    previousData.points = np.delete(previousData.points, 2, 1)
+
+  return DataNumpyANGEL(**{
+      "paramEps": previousData.paramEps,
+      "anchorPoint": np.array(previousData.anchorPoint),
+      "zParam": np.array(previousData.zParam),
+      "wParam": np.array(previousData.wParam),
+      "originalData": np.array(previousData.originalData),
+      "labels": np.array([previousData.labels]),
+      "points": np.array(previousData.points)
+  })
 
 
 def formatDataIn(previousData: DataDynamic) -> DataNumpy:
@@ -24,11 +43,11 @@ def formatDataIn(previousData: DataDynamic) -> DataNumpy:
   return DataNumpy(**{
       "alpha": previousData.alpha,
       "points": np.array(previousData.points),
-      "g": np.array(previousData.g),
+      "originalData": np.array(previousData.originalData),
       "labels": np.array([previousData.labels]),
-      "Relation": np.array(previousData.Relation),
-      "Ad": np.array(previousData.Ad),
-      "V": np.array(previousData.V),
+      "paramRelation": np.array(previousData.paramRelation),
+      "paramAd": np.array(previousData.paramAd),
+      "paramV": np.array(previousData.paramV),
   })
 
 
@@ -43,19 +62,38 @@ def formatDimension(points: np.ndarray):
   return points, dimension2D
 
 
+def formatDataOutANGEL(initData: DataNumpyANGEL) -> DataFormattedANGEL:
+  """
+  Reformat input data from np.arrays to lists.
+  Computes wether dimension is 2D or 3D and adds a column of 0s to it if needed.
+  Only runs once when a request is intialised for ANGEL.
+  """
+  initData["points"], dimension2D = formatDimension(initData["points"])
+  return DataFormattedANGEL(**{
+      **initData,
+      "anchorPoint": initData["anchorPoint"].tolist(),
+      "zParam": initData["zParam"].tolist(),
+      "wParam": initData["wParam"].tolist(),
+      "originalData": initData["originalData"].tolist(),
+      "labels": initData["labels"].ravel().tolist(),
+      "points": initData["points"].tolist(),
+      "dimension2D": dimension2D,
+  })
+
+
 def formatDataOut(initData: DataNumpy) -> DataFormatted:
   """
-  Reformat input data from lnp.arrays to lists.
+  Reformat input data from np.arrays to lists.
   Computes wether dimension is 2D or 3D and adds a column of 0s to it if needed.
   Only runs once when a request is intialised.
   """
   initData["points"], dimension2D = formatDimension(initData["points"])
   return DataFormatted(**{
       **initData,
-      "g": initData["g"].tolist(),
-      "Relation": initData["Relation"].tolist(),
-      "Ad": initData["Ad"].tolist(),
-      "V": initData["V"].tolist(),
+      "originalData": initData["originalData"].tolist(),
+      "paramRelation": initData["paramRelation"].tolist(),
+      "paramAd": initData["paramAd"].tolist(),
+      "paramV": initData["paramV"].tolist(),
       "labels": initData["labels"].ravel().tolist(),
       "points": initData["points"].tolist(),
       "dimension2D": dimension2D,

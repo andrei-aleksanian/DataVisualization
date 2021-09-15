@@ -15,11 +15,24 @@ class DataNumpy(TypedDict):
   """
   Data that gets processed in COVA
   """
-  g: ndarray
-  Relation: ndarray
-  Ad: ndarray
+  originalData: ndarray
+  paramRelation: ndarray
+  paramAd: ndarray
   alpha: int
-  V: ndarray
+  paramV: ndarray
+  labels: ndarray
+  points: ndarray
+
+
+class DataNumpyANGEL(TypedDict):
+  """
+  Data that gets processed in COVA
+  """
+  anchorPoint: ndarray
+  zParam: ndarray
+  wParam: ndarray
+  paramEps: float
+  originalData: ndarray
   labels: ndarray
   points: ndarray
 
@@ -38,11 +51,22 @@ class DataFormatted(DataCore):
   """
   Data that gets processed in COVA
   """
-  g: List
-  Relation: List
-  Ad: List
-  V: List
+  originalData: List
+  paramRelation: List
+  paramAd: List
+  paramV: List
   alpha: float
+
+
+class DataFormattedANGEL(DataCore):
+  """
+  Data that gets processed in COVA
+  """
+  originalData: List
+  anchorPoint: List
+  zParam: List
+  wParam: List
+  paramEps: float
 
 
 class DataDynamic(DataFormatted):
@@ -56,9 +80,12 @@ class DataDynamic(DataFormatted):
   maxIteration: int
 
 
-# class DataDynamicIn(DataDynamic):
-#   dimension: DimensionIn
-
-
-# class DataDynamicOut(DataDynamic):
-#   dimension: Dimension
+class DataDynamicANGEL(DataFormattedANGEL):
+  """
+  Data model to be used in demo 2 perseverance
+  """
+  prevPartsave: List[int]
+  prevWrongInLow: List[List[int]]
+  prevWrongInHigh: List[List[int]]
+  iteration: int = 0
+  maxIteration: int
