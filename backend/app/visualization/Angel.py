@@ -15,7 +15,7 @@ from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData
 from .utils.dataDynamic import formatDataOutANGEL, childrenToList, \
     preserveOrientation, formatDimension, formatDataInANGEL
 
-# pylint: disable=R0913
+# pylint: disable=R0913, R0914
 
 
 def getAngelResult(params: ParamsANGEL,
@@ -23,7 +23,9 @@ def getAngelResult(params: ParamsANGEL,
                    iterations: int,
                    originalData: np.ndarray,
                    labels: np.ndarray,
-                   scaler: preprocessing.MinMaxScaler) -> DataGenerated:
+                   scaler: preprocessing.MinMaxScaler,
+                   fast: bool = False
+                   ) -> DataGenerated:
   """Used for running ANGEL on every possible parameter"""
   [anchorPoint, anchorLabel, zParam] = AnchorPointGeneration(
       originalData, labels, sparsity=params.anchorDensity)
@@ -48,8 +50,16 @@ def getAngelResult(params: ParamsANGEL,
       weight=0,
       metric='euclidean'
   )
-  resultData = ANGEL_embedding(originalData, anchorPoint, zParam, wParam, dim=dimension,
-                               init=initdata, T=iterations, eps=params.epsilon, optType="fast")
+  resultData = ANGEL_embedding(
+      originalData,
+      anchorPoint,
+      zParam,
+      wParam,
+      dim=dimension,
+      init=initdata,
+      T=iterations,
+      eps=params.epsilon,
+      optType="fast" if fast else "constrained")
 
   return anchorPoint, zParam, wParam, resultData
 
@@ -81,7 +91,7 @@ def initANGEL(params: ParamsANGEL,
   originalData, labels, scaler = loadData(filePath)
 
   anchorPoint, zParam, wParam, resultData = getAngelResult(
-      params, dimension, 0, originalData, labels, scaler)
+      params, dimension, 0, originalData, labels, scaler, fast=True)
 
   initData = DataNumpyANGEL(**{
       "anchorPoint": anchorPoint,
