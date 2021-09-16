@@ -16,7 +16,7 @@ export interface SettingsANGEL {
   anchorModification: AnchorModification;
 }
 export const defaultSettingsANGEL: SettingsANGEL = {
-  anchorDensity: 0.05,
+  anchorDensity: 0.1,
   epsilon: 0.1,
   anchorModification: AnchorModification.OFF,
 };
