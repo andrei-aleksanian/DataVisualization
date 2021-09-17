@@ -6,18 +6,18 @@ The dynamic function runs ITERATIONS_PER_REQUEST amount of cycles of the chosen 
 from any given point in the cycle.
 """
 # pylint: disable=R0801, R0913
-import os
 import traceback
 from fastapi import APIRouter, Form, File, UploadFile, HTTPException
 
-from common.routers.utils import saveFile, removeFile, validateParamsCOVA
+from common.routers.utils import saveFile, removeFile, validateParamsCOVA, validateParamsANGEL
 from common.static import tempFolderPath
 from common.config import runWithAsync
 
 from common.visualization.Cova import initCOVA, dynamicCOVA
 from common.visualization.Angel import initANGEL, dynamicANGEL
 
-from common.types.dataDynamic import DataDynamic, DataDynamicANGEL
+from common.types.dataDynamic import DataDynamic, DataFormatted,\
+    DataDynamicANGEL, DataFormattedANGEL
 from common.types.dataGenerated import ParamsANGEL, ParamsCOVA
 from common.types.Custom import DimensionIn
 from common.types.exceptions import RuntimeAlgorithmError, FileConstraintsError
@@ -64,7 +64,7 @@ async def covaDynamicInit(
       "isCohortNumberOriginal": isCohortNumberOriginal
   })
 
-  initData = None
+  initData: DataFormatted = None
   try:
     validateParamsCOVA(params)
     initData = await runWithAsync(initCOVA, params, int(dimension), filePath)
@@ -96,9 +96,14 @@ async def covaDynamic(data: DataDynamic):
   Runs ITERATIONS_PER_REQUEST amount of cycles of the chosen algorithm
   from any given point in the cycle.
   """
-
-  dataNew = await runWithAsync(dynamicCOVA, data, ITERATIONS_PER_REQUEST)
-  dataNew.iteration += 1
+  dataNew: DataDynamic = None
+  try:
+    dataNew = await runWithAsync(dynamicCOVA, data, ITERATIONS_PER_REQUEST)
+    dataNew.iteration += 1
+  except RuntimeAlgorithmError as error:
+    print(traceback.format_exc())
+    raise HTTPException(
+        status_code=400, detail=error.message) from error
 
   return dataNew
 
@@ -128,12 +133,20 @@ async def angelDynamicInit(
       "isAnchorModification": isAnchorModification
   })
 
-  initData = await runWithAsync(initANGEL, params, int(dimension), filePath)
-
+  initData: DataFormattedANGEL = None
   try:
-    os.remove(filePath)
-  except OSError as error:
-    print("Error: %s - %s." % (error.filename, error.strerror))
+    validateParamsANGEL(params)
+    initData = await runWithAsync(initANGEL, params, int(dimension), filePath)
+  except RuntimeAlgorithmError as error:
+    print(traceback.format_exc())
+    raise HTTPException(
+        status_code=400, detail=error.message) from error
+  except FileConstraintsError as error:
+    print(traceback.format_exc())
+    raise HTTPException(
+        status_code=422, detail=error.message) from error
+  finally:
+    removeFile(filePath)
 
   dataDynamic = DataDynamicANGEL(**{
       **initData.dict(),
@@ -152,8 +165,13 @@ async def angelDynamic(data: DataDynamicANGEL):
   Runs ITERATIONS_PER_REQUEST amount of cycles of the chosen algorithm
   from any given point in the cycle.
   """
-
-  dataNew = await runWithAsync(dynamicANGEL, data, ITERATIONS_PER_REQUEST)
-  dataNew.iteration += 1
+  dataNew: DataDynamicANGEL = None
+  try:
+    dataNew = await runWithAsync(dynamicANGEL, data, ITERATIONS_PER_REQUEST)
+    dataNew.iteration += 1
+  except RuntimeAlgorithmError as error:
+    print(traceback.format_exc())
+    raise HTTPException(
+        status_code=400, detail=error.message) from error
 
   return dataNew
