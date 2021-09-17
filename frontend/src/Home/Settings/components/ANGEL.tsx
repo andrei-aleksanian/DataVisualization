@@ -23,9 +23,10 @@ export const defaultSettingsANGEL: SettingsANGEL = {
 export interface SettingsANGELProps {
   settingsANGEL: SettingsANGEL;
   setSettingsANGEL: React.Dispatch<React.SetStateAction<SettingsANGEL>>;
+  isCustomDataPage: boolean;
 }
 
-const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
+const ANGEL = ({ settingsANGEL, setSettingsANGEL, isCustomDataPage }: SettingsANGELProps) => {
   const onChangeAnchorDensity = (value: number) => setSettingsANGEL((prev) => ({ ...prev, anchorDensity: value }));
   const onChangeEpsilon = (value: number) => setSettingsANGEL((prev) => ({ ...prev, epsilon: value }));
 
@@ -37,10 +38,10 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL }: SettingsANGELProps) => {
   return (
     <>
       <Slider
-        min={0.05}
+        min={isCustomDataPage ? 0.1 : 0.05}
         max={0.2}
         step={null}
-        marksArr={[0.05, 0.1, 0.2]}
+        marksArr={isCustomDataPage ? [0.1, 0.2] : [0.05, 0.1, 0.2]}
         onChange={onChangeAnchorDensity}
         text={TEXT_SLIDER_ANCHOR_DENSITY}
         value={settingsANGEL.anchorDensity}

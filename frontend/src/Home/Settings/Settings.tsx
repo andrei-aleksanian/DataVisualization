@@ -96,7 +96,7 @@ const Settings = ({
       {settingsCommon.algorithm === Algorithm.COVA ? (
         <COVA {...{ settingsCOVA, setSettingsCOVA }} />
       ) : (
-        <ANGEL {...{ settingsANGEL, setSettingsANGEL }} />
+        <ANGEL {...{ settingsANGEL, setSettingsANGEL, isCustomDataPage: !!customDataPage }} />
       )}
       <CheckBoxes
         heading={TEXT_CHECKBOX_PRESERVATION}
