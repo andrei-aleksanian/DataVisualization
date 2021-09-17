@@ -21,7 +21,7 @@ services:
     ports:
       - "8082:8082"
     env_file:
-      - backend.env
+      - backend.prod.env
 
   examples_api:
     image: andreialeksanian/data-visualization-tool-examples_api
@@ -30,7 +30,7 @@ services:
     volumes:
       - ./backend/images:/app/images
     env_file:
-      - backend.env
+      - backend.prod.env
       - db.env
     depends_on:
       - db

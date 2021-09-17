@@ -96,7 +96,7 @@ jobs:
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-frontend:${{GITHUB_SHA:0:8}}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-frontend:latest
 
       - name: Build and push Custom Data API
         id: docker_build_custom_data_api
@@ -108,7 +108,7 @@ jobs:
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-custom_data_api:${{GITHUB_SHA:0:8}}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-custom_data_api:latest
 
       - name: Build and push Examples API
         id: docker_build_examples_api
@@ -120,7 +120,7 @@ jobs:
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-examples_api:${{GITHUB_SHA:0:8}}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-examples_api:latest
 
       - name: Image digest
         run: |
