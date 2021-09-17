@@ -28,7 +28,7 @@ services:
     ports:
       - "8081:8081"
     volumes:
-      - ./backend/images:/app/images
+      - images:/app/images
     env_file:
       - backend.prod.env
       - db.env
@@ -49,5 +49,6 @@ services:
       - SYS_NICE # CAP_SYS_NICE
 
 volumes:
+  images:
   mysql:
   mysql_config:
