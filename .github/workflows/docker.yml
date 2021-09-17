@@ -96,21 +96,34 @@ jobs:
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-frontend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-frontend:${{GITHUB_SHA:0:8}}
 
-      - name: Build and push Backend
-        id: docker_build_backend
+      - name: Build and push Custom Data API
+        id: docker_build_custom_data_api
         uses: docker/build-push-action@v2
         with:
           context: ./backend
-          file: ./backend/Dockerfile
+          file: ./backend/custom_data_api/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-backend:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-custom_data_api:${{GITHUB_SHA:0:8}}
+
+      - name: Build and push Examples API
+        id: docker_build_examples_api
+        uses: docker/build-push-action@v2
+        with:
+          context: ./backend
+          file: ./backend/examples_api/Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/data-visualization-tool-examples_api:${{GITHUB_SHA:0:8}}
 
       - name: Image digest
         run: |
           echo ${{ steps.docker_build_frontend.outputs.digest }}
-          echo ${{ steps.docker_build_backend.outputs.digest }}
+          echo ${{ steps.docker_build_custom_data_api.outputs.digest }}
+          echo ${{ steps.docker_build_examples_api.outputs.digest }}
