@@ -1,10 +1,11 @@
 .Button {
-  font-size: 1rem;
-  padding: 0.5em 3em;
-  height: 3em;
-  border: var(--color-button) solid 3px;
+  font-size: 1.3rem;
+  // font-weight: bold;
+  padding: 0 2.2em;
+  height: 2.4em;
+  border: var(--color-action) solid 3px;
   border-radius: 2rem;
-  background-color: var(--color-button);
+  background-color: var(--color-action);
   color: var(--color-text);
   transition: 0.3s all ease-in-out;
   cursor: pointer;
@@ -15,15 +16,11 @@
 }
 
 .Long {
-  border: var(--color-button) solid 3px;
+  border: var(--color-action) solid 3px;
 }
 
 .WrapperCenter {
   display: flex;
   justify-content: center;
   margin: 1rem 0;
-}
-
-:root {
-  --color-button: #f20574;
 }

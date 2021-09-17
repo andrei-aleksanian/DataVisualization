@@ -12,7 +12,7 @@ const getcolor = ({
   isDragReject: boolean;
 }) => {
   if (isDragAccept) {
-    return '#00e676';
+    return 'var(--color-action)';
   }
   if (isDragReject) {
     return '#ff1744';
@@ -20,7 +20,7 @@ const getcolor = ({
   if (isDragActive) {
     return '#2196f3';
   }
-  return '#eeeeee';
+  return '#bbb';
 };
 
 export interface Validation {
@@ -52,14 +52,16 @@ const FileDropArea = ({
 
   return (
     <>
-      <div
-        style={{
-          borderColor: getcolor({ isDragActive, isDragAccept, isDragReject }), // stylelint-disable-line
-        }}
-        {...getRootProps({ className: classes.Container })}
-      >
-        <input {...getInputProps()} />
-        <p>Drag and Drop or Click HERE to choose file</p>
+      <div className={classes.Wrapper}>
+        <div
+          style={{
+            borderColor: getcolor({ isDragActive, isDragAccept, isDragReject }), // stylelint-disable-line
+          }}
+          {...getRootProps({ className: classes.Container })}
+        >
+          <input {...getInputProps()} />
+          <p>Drag and Drop or Click HERE to choose file</p>
+        </div>
       </div>
       {validation && <span className={classes.error}>{validationMessage || FILE_NOT_FOUND}</span>}
     </>

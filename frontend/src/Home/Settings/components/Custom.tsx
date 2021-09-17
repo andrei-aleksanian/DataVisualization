@@ -2,6 +2,8 @@ import FileDropArea, { Validation } from 'Components/Forms/FileDropArea';
 import Button from 'Components/Forms/Button';
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
+import classes from '../Settings.module.scss';
+
 export enum Dimension {
   D2,
   D3,
@@ -43,7 +45,7 @@ const Custom = ({ onSubmit, setSettingsCustom, settingsCustom: { validation, dim
         ]}
       />
       <FileDropArea setFile={setFile} setValidation={setValidation} validation={validation} />
-      <Button text="Submit" onClick={() => onSubmit()} active={false} />
+      <Button text="Submit" onClick={() => onSubmit()} active={false} customClass={classes.submit} />
     </div>
   );
 };
