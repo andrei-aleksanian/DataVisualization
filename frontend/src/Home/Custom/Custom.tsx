@@ -52,9 +52,15 @@ const Custom = () => {
     });
   };
 
+  const validateFile = (file: File | null) => {
+    const isNull = file === null;
+    setSettingsCustom((prev) => ({ ...prev, validation: { validation: isNull } }));
+    return isNull;
+  };
+
   const onSubmit = async () => {
-    setSettingsCustom((prev) => ({ ...prev, validation: { validation: settingsCustom.file === null } }));
-    if (settingsCustom.file === null) return;
+    if (validateFile(settingsCustom.file)) return;
+    const file = settingsCustom.file as File;
 
     let newData: DataPerseveranceLabelled;
     if (settingsCommon.algorithm === Algorithm.COVA) {
@@ -63,7 +69,7 @@ const Custom = () => {
         alpha: settingsCOVA.alpha,
         isCohortNumberOriginal: settingsCOVA.cohortNumber === CohortNumber.ORIGINAL,
       };
-      newData = await getCovaDynamicInit(params, settingsCustom.file, settingsCustom.dimension);
+      newData = await getCovaDynamicInit(params, file, settingsCustom.dimension);
       updateData(newData);
       while (newData.iteration < newData.maxIteration) {
         newData = await getCovaDynamic(newData); // eslint-disable-line
@@ -76,7 +82,7 @@ const Custom = () => {
         epsilon: settingsANGEL.epsilon,
         isAnchorModification: settingsANGEL.anchorModification === AnchorModification.ON,
       };
-      newData = await getAngelDynamicInit(params, settingsCustom.file, settingsCustom.dimension);
+      newData = await getAngelDynamicInit(params, file, settingsCustom.dimension);
       updateData(newData);
       while (newData.iteration < newData.maxIteration) {
         newData = await getAngelDynamic(newData); // eslint-disable-line

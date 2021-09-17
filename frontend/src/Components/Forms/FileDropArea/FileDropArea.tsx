@@ -34,6 +34,7 @@ export interface FileDropAreaProps {
   validation: Validation;
 }
 
+export const TEXT_FILEDROP_AREA = 'Choose a File:';
 export const FILE_NOT_FOUND = 'Please, provide a .mat file';
 
 const FileDropArea = ({
@@ -48,10 +49,12 @@ const FileDropArea = ({
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     maxFiles: 1,
     onDrop,
+    accept: '.mat',
   });
 
   return (
     <>
+      <p className={classes.p}>{TEXT_FILEDROP_AREA}</p>
       <div className={classes.Wrapper}>
         <div
           style={{
