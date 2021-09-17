@@ -7,7 +7,7 @@ import { LinkBack } from 'Components/Link';
 import classes from './Settings.module.scss';
 import COVA, { SettingsCOVA } from './components/COVA';
 import ANGEL, { SettingsANGEL } from './components/ANGEL';
-import Custom, { SettingsCustom } from './components/Custom';
+import Custom, { CustomProps } from './components/Custom';
 
 export const TEXT_CHECKBOX_COVA = 'COVA';
 export const TEXT_CHECKBOX_ANGEL = 'ANGEL';
@@ -38,11 +38,7 @@ export interface SettingsProps {
   settingsANGEL: SettingsANGEL;
   setSettingsANGEL: React.Dispatch<React.SetStateAction<SettingsANGEL>>;
   backLink: string;
-  customDataPage?: {
-    settingsCustom: SettingsCustom;
-    setSettingsCustom: React.Dispatch<React.SetStateAction<SettingsCustom>>;
-    onSubmit: Function;
-  } | null;
+  customDataPage?: CustomProps | null;
   reviewer: boolean;
   name: string;
 }

@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import Error from '../Error';
 import classes from './FileDropArea.module.scss';
 
 const getcolor = ({
@@ -15,7 +16,7 @@ const getcolor = ({
     return 'var(--color-action)';
   }
   if (isDragReject) {
-    return '#ff1744';
+    return 'var(--color-error)';
   }
   if (isDragActive) {
     return '#2196f3';
@@ -23,33 +24,28 @@ const getcolor = ({
   return '#bbb';
 };
 
-export interface Validation {
-  validation: boolean;
-  validationMessage?: string;
+export interface FileArea {
+  file: File | null;
+  error: string | null;
 }
 
 export interface FileDropAreaProps {
-  setValidation: (file: boolean) => void;
-  setFile: (file: File) => void;
-  validation: Validation;
+  setFile: (file: FileArea) => void;
+  file: FileArea;
+  acceptedType: string;
 }
 
 export const TEXT_FILEDROP_AREA = 'Choose a File:';
-export const FILE_NOT_FOUND = 'Please, provide a .mat file';
 
-const FileDropArea = ({
-  setFile,
-  setValidation,
-  validation: { validation, validationMessage },
-}: FileDropAreaProps): React.ReactElement => {
+const FileDropArea = ({ setFile, file: { error, file }, acceptedType }: FileDropAreaProps): React.ReactElement => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFile(acceptedFiles[0]);
-    setValidation(acceptedFiles[0] === null);
+    if (acceptedFiles.length === 0) return;
+    setFile({ file: acceptedFiles[0], error: null });
   }, []);
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     maxFiles: 1,
     onDrop,
-    accept: '.mat',
+    accept: acceptedType,
   });
 
   return (
@@ -66,7 +62,8 @@ const FileDropArea = ({
           <p>Drag and Drop or Click HERE to choose file</p>
         </div>
       </div>
-      {validation && <span className={classes.error}>{validationMessage || FILE_NOT_FOUND}</span>}
+      {file && <p className={classes.fileName}>Submitted file: {file.name}</p>}
+      {error && <Error text={error} />}
     </>
   );
 };

@@ -1,3 +1,16 @@
+.p {
+  font-size: var(--font-size-label-p);
+  margin: 1rem 0;
+}
+
+.fileName {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  margin: 0.3rem 0;
+  color: var(--color-text-secondary);
+}
+
 .Wrapper {
   padding: 1px;
   background-color: var(--color-bg-filearea);
@@ -20,16 +33,6 @@
   outline: none;
   transition: border 0.24s ease-in-out;
   cursor: pointer;
-}
-
-.p {
-  font-size: var(--font-size-label-p);
-  margin: 1rem 0;
-}
-
-.error {
-  color: red;
-  margin: 5rem 0;
 }
 
 :root {

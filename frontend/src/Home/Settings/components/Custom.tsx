@@ -1,6 +1,7 @@
-import FileDropArea, { Validation } from 'Components/Forms/FileDropArea';
+import FileDropArea, { FileArea } from 'Components/Forms/FileDropArea';
 import Button from 'Components/Forms/Button';
 import CheckBoxes from 'Components/Forms/CheckBoxes';
+import Error from 'Components/Forms/Error';
 
 import classes from '../Settings.module.scss';
 
@@ -10,27 +11,35 @@ export enum Dimension {
 }
 export interface SettingsCustom {
   dimension: Dimension;
-  validation: Validation;
-  file: File | null;
+  file: FileArea;
 }
+export const defaultSettingsCustom: SettingsCustom = {
+  file: { file: null, error: null },
+  dimension: Dimension.D2,
+};
 export interface CustomProps {
   onSubmit: Function;
   setSettingsCustom: React.Dispatch<React.SetStateAction<SettingsCustom>>;
   settingsCustom: SettingsCustom;
+  error: string | null;
+  acceptedType: string;
 }
 
 export const TEXT_CHECKBOX_DIMENSION = 'Dimension:';
 
-const Custom = ({ onSubmit, setSettingsCustom, settingsCustom: { validation, dimension } }: CustomProps) => {
+const Custom = ({
+  onSubmit,
+  setSettingsCustom,
+  settingsCustom: { dimension, file },
+  error,
+  acceptedType,
+}: CustomProps) => {
   const onChangeDimension = (event: React.ChangeEvent, value: Dimension) => {
     event.preventDefault();
     setSettingsCustom((prev) => ({ ...prev, dimension: value }));
   };
-  const setFile = (value: File) => {
-    setSettingsCustom((prev) => ({ ...prev, file: value }));
-  };
-  const setValidation = (value: boolean) => {
-    setSettingsCustom((prev) => ({ ...prev, validation: { validation: value } }));
+  const setFile = (fileNew: FileArea) => {
+    setSettingsCustom((prev) => ({ ...prev, file: fileNew }));
   };
 
   return (
@@ -44,8 +53,9 @@ const Custom = ({ onSubmit, setSettingsCustom, settingsCustom: { validation, dim
           { value: Dimension.D3, text: '3' },
         ]}
       />
-      <FileDropArea setFile={setFile} setValidation={setValidation} validation={validation} />
+      <FileDropArea setFile={setFile} file={file} acceptedType={acceptedType} />
       <Button text="Submit" onClick={() => onSubmit()} active={false} customClass={classes.submit} />
+      {error && <Error text={error} />}
     </div>
   );
 };
