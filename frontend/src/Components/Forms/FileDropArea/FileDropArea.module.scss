@@ -17,6 +17,11 @@
   border-radius: calc(var(--border-radius-filearea));
 }
 
+// we overwrite style in the code with !important
+.Wrapper div:hover {
+  border-color: var(--color-action) !important;
+}
+
 .Container {
   flex: 1;
   display: flex;

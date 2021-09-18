@@ -3,27 +3,6 @@ import { useDropzone } from 'react-dropzone';
 import Error from '../Error';
 import classes from './FileDropArea.module.scss';
 
-const getcolor = ({
-  isDragActive,
-  isDragAccept,
-  isDragReject,
-}: {
-  isDragActive: boolean;
-  isDragAccept: boolean;
-  isDragReject: boolean;
-}) => {
-  if (isDragAccept) {
-    return 'var(--color-action)';
-  }
-  if (isDragReject) {
-    return 'var(--color-error)';
-  }
-  if (isDragActive) {
-    return '#2196f3';
-  }
-  return '#bbb';
-};
-
 export interface FileArea {
   file: File | null;
   error: string | null;
@@ -42,7 +21,7 @@ const FileDropArea = ({ setFile, file: { error, file }, acceptedType }: FileDrop
     if (acceptedFiles.length === 0) return;
     setFile({ file: acceptedFiles[0], error: null });
   }, []);
-  const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     maxFiles: 1,
     onDrop,
     accept: acceptedType,
@@ -54,7 +33,7 @@ const FileDropArea = ({ setFile, file: { error, file }, acceptedType }: FileDrop
       <div className={classes.Wrapper}>
         <div
           style={{
-            borderColor: getcolor({ isDragActive, isDragAccept, isDragReject }), // stylelint-disable-line
+            borderColor: isDragActive ? 'var(--color-action)' : '#bbb', // stylelint-disable-line
           }}
           {...getRootProps({ className: classes.Container })}
         >
