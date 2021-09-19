@@ -29,6 +29,7 @@ export const FILE_NULL = 'Please, provide a .mat file.';
 const Custom = () => {
   const [data, setData] = useState<DataPerseveranceColored | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [settingsCommon, setSettingsCommon] = useState(defaultSettingsCommon);
   const [settingsCOVA, setSettingsCOVA] = useState(defaultSettingsCOVA);
@@ -76,11 +77,17 @@ const Custom = () => {
       };
       let res = await getCovaDynamicInit(params, file, settingsCustom.dimension);
       let [newData] = res;
-      if (!isActive.current || !updateData(res)) return;
+      if (!isActive.current || !updateData(res)) {
+        setIsLoading(false);
+        return;
+      }
       while (newData!.iteration < newData!.maxIteration) {
         res = await getCovaDynamic(newData!); // eslint-disable-line
         [newData] = res;
-        if (!isActive.current || !updateData(res)) return;
+        if (!isActive.current || !updateData(res)) {
+          setIsLoading(false);
+          return;
+        }
       }
     } else {
       const params: ParamsANGEL = {
@@ -89,14 +96,22 @@ const Custom = () => {
         epsilon: settingsANGEL.epsilon,
         isAnchorModification: settingsANGEL.anchorModification === AnchorModification.ON,
       };
+      setIsLoading(true);
       let res = await getAngelDynamicInit(params, file, settingsCustom.dimension);
       let [newData] = res;
-      if (!isActive.current || !updateData(res)) return;
+      if (!isActive.current || !updateData(res)) {
+        setIsLoading(false);
+        return;
+      }
       while (newData!.iteration < newData!.maxIteration) {
         res = await getAngelDynamic(newData!); // eslint-disable-line
         [newData] = res;
-        if (!isActive.current || !updateData(res)) return;
+        if (!isActive.current || !updateData(res)) {
+          setIsLoading(false);
+          return;
+        }
       }
+      setIsLoading(false);
     }
   };
 
@@ -120,6 +135,7 @@ const Custom = () => {
           },
           reviewer: false,
           name: 'Custom Data',
+          isLoading,
         }}
       />
       {data && (

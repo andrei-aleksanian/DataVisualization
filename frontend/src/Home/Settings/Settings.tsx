@@ -41,6 +41,7 @@ export interface SettingsProps {
   customDataPage?: CustomProps | null;
   reviewer: boolean;
   name: string;
+  isLoading?: boolean;
 }
 
 const Settings = ({
@@ -54,6 +55,7 @@ const Settings = ({
   customDataPage,
   reviewer,
   name,
+  isLoading,
 }: SettingsProps) => {
   const onChangeAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
     event.preventDefault();
@@ -104,12 +106,14 @@ const Settings = ({
         ]}
       />
       {customDataPage && <Custom {...customDataPage} />}
+      {isLoading && <div>loading</div>} {/* display a modal over settings with a loader and that's it */}
     </div>
   );
 };
 
 Settings.defaultProps = {
   settingsCustom: null,
+  isLoading: false,
 };
 
 export default Settings;
