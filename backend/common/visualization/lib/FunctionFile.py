@@ -226,7 +226,7 @@ def postProcessing(result, dim):
   scaler = preprocessing.MinMaxScaler()
   scaler.fit(result)
   result = scaler.transform(result)
-  pca = PCA(n_components=2)
+  pca = PCA(n_components=dim)
   pca.fit(result)
   result = pca.transform(result)
   center = np.mean(result, axis=0)
