@@ -68,6 +68,7 @@ const Custom = () => {
     if (!validateFile(settingsCustom.file.file)) return;
     const file = settingsCustom.file.file as File;
     setError(null);
+    setIsLoading(true);
 
     if (settingsCommon.algorithm === Algorithm.COVA) {
       const params: ParamsCOVA = {
@@ -96,7 +97,6 @@ const Custom = () => {
         epsilon: settingsANGEL.epsilon,
         isAnchorModification: settingsANGEL.anchorModification === AnchorModification.ON,
       };
-      setIsLoading(true);
       let res = await getAngelDynamicInit(params, file, settingsCustom.dimension);
       let [newData] = res;
       if (!isActive.current || !updateData(res)) {
@@ -111,8 +111,8 @@ const Custom = () => {
           return;
         }
       }
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (

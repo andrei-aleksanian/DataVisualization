@@ -3,7 +3,7 @@
 import numpy as np
 from sklearn import preprocessing
 
-from .lib.FunctionFile import funInit, AdjacencyMatrix
+from .lib.FunctionFile import funInit, AdjacencyMatrix, postProcessing
 from .lib.evaluation import neighbor_prev_disturb
 from .lib.COVA import ProtoGeneration,\
     CohortConfidence, COVAembedding, PrototypeEmbedding
@@ -55,6 +55,7 @@ def getCovaResult(params: ParamsCOVA,
       params.alpha,
       iterations,
   )
+  resultData = postProcessing(resultData, dimension)
 
   return relation, adjacencyMatrix, vParam, resultData
 
@@ -131,6 +132,7 @@ def dynamicCOVA(previousData: DataDynamic,
       data["alpha"],
       iterationsPerRequest
   )
+  resultData = postProcessing(resultData, dimension)
   # only run on the last iteration
   if previousData.iteration + 1 == previousData.maxIteration:
     *_, prevWrongInHigh, prevWrongInLow, prevPartsave = neighbor_prev_disturb(

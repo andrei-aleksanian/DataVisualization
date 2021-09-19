@@ -24,7 +24,6 @@ async def onStartup():
 @app.on_event("shutdown")
 async def onShutdown():
   """Stop the 'event loop'"""
-  print("Hiiiii")
   app.state.executor.shutdown()
 
 

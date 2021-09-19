@@ -20,6 +20,7 @@ from scipy.sparse import csr_matrix
 import os
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
@@ -173,7 +174,7 @@ def k_nearest_neighbor_disturb(disgraph, k=10, weight=1, direction=0):
     if delta > 0:
       disminus = 0
       count = 1
-      while(disminus <= delta):
+      while (disminus <= delta):
         temp_disturb = dis_ascend[k + 1 + count]
         largest_dis = dis_ascend[k + 1]
         disminus = abs(temp_disturb - largest_dis)
@@ -219,3 +220,15 @@ def funInit(label, anchor, dim=2):
   initanchor = np.random.random_sample((lanchor, dim))
   initc = np.random.random_sample((lc, dim))
   return initdata, initanchor, initc
+
+
+def postProcessing(result, dim):
+  scaler = preprocessing.MinMaxScaler()
+  scaler.fit(result)
+  result = scaler.transform(result)
+  pca = PCA(n_components=2)
+  pca.fit(result)
+  result = pca.transform(result)
+  center = np.mean(result, axis=0)
+  result = result - center
+  return result

@@ -3,7 +3,7 @@ My angel functions
 """
 import numpy as np
 from sklearn import preprocessing
-from .lib.FunctionFile import AdjacencyMatrix, funInit
+from .lib.FunctionFile import AdjacencyMatrix, funInit, postProcessing
 from .lib.evaluation import neighbor_prev_disturb
 from .lib.ANGEL import AnchorPointGeneration, AnchorEmbedding, ANGEL_embedding
 
@@ -60,6 +60,8 @@ def getAngelResult(params: ParamsANGEL,
       T=iterations,
       eps=params.epsilon,
       optType="fast" if fast else "constrained")
+
+  resultData = postProcessing(resultData, dimension)
 
   return anchorPoint, zParam, wParam, resultData
 
@@ -131,6 +133,7 @@ def dynamicANGEL(previousData: DataDynamicANGEL,
       data["paramEps"],
       T=iterationsPerRequest,
   )
+  resultData = postProcessing(resultData, dimension)
 
   # only run on the last iteration
   if previousData.iteration + 1 == previousData.maxIteration:
