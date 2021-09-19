@@ -106,7 +106,7 @@ const Settings = ({
         ]}
       />
       {customDataPage && <Custom {...customDataPage} />}
-      {isLoading && <div>loading</div>} {/* display a modal over settings with a loader and that's it */}
+      {isLoading && <div>loading</div>}
     </div>
   );
 };

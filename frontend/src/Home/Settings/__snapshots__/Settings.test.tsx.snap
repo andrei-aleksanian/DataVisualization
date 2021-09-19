@@ -340,7 +340,6 @@ exports[`Settings matches snapshot 1`] = `
         </label>
       </div>
     </div>
-
   </div>
 </DocumentFragment>
 `;
