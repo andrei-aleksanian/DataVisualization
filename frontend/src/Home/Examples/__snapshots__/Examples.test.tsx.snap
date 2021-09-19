@@ -345,6 +345,7 @@ exports[`Examples matches snapshot 1`] = `
           </label>
         </div>
       </div>
+
     </div>
     <div
       class="Canvas"
