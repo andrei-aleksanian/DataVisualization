@@ -1,6 +1,6 @@
 export type Response<T> = [T, null] | [null, string];
 
-export const NETWORK_ERROR = "For some reason, we can't access teh server at this time. Please, try again later.";
+export const NETWORK_ERROR = "For some reason we can't access the server at this time. Please, try again later.";
 export default async function tryPromise<T>(fun: () => Promise<T>): Promise<Response<T>> {
   try {
     const data = await fun();
