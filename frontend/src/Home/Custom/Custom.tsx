@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { DataPerseveranceLabelled, DataPerseveranceColored } from 'types/Data/DataPerseverance';
-import { Popup } from 'Components/UI';
 import { ParamsANGEL, ParamsCOVA } from 'types/Data/Params';
 import { Algorithm } from 'types/Settings';
 import { Point2D, Point3D } from 'types/Data';
 import getColors from 'utils/getColors';
+import { Response } from 'utils/tryPromise';
 import Settings, {
   defaultSettingsCOVA,
   defaultSettingsANGEL,
@@ -35,17 +34,20 @@ const Custom = () => {
   const [settingsANGEL, setSettingsANGEL] = useState(defaultSettingsANGEL);
   const [settingsCustom, setSettingsCustom] = useState(defaultSettingsCustom);
 
-  const history = useHistory();
-
-  const updateData = (newData: DataPerseveranceLabelled) => {
+  const updateData = ([newData, newError]: Response<DataPerseveranceLabelled>): boolean => {
+    setError(newError);
+    if (!newData && newError) {
+      return false;
+    }
     setData(() => {
-      const colors = getColors(newData.labels);
+      const colors = getColors(newData!.labels);
       return {
-        ...newData,
-        points: newData.points.map((p) => p.map((p2) => p2 * 100) as Point2D | Point3D),
+        ...newData!,
+        points: newData!.points.map((p) => p.map((p2) => p2 * 100) as Point2D | Point3D),
         colors,
       };
     });
+    return true;
   };
 
   const validateFile = (file: File | null) => {
@@ -61,19 +63,21 @@ const Custom = () => {
   const onSubmit = async () => {
     if (!validateFile(settingsCustom.file.file)) return;
     const file = settingsCustom.file.file as File;
+    setError(null);
 
-    let newData: DataPerseveranceLabelled;
     if (settingsCommon.algorithm === Algorithm.COVA) {
       const params: ParamsCOVA = {
         neighbourNumber: NEIGHBOUR_MARKS_ARR[settingsCommon.neighbour],
         alpha: settingsCOVA.alpha,
         isCohortNumberOriginal: settingsCOVA.cohortNumber === CohortNumber.ORIGINAL,
       };
-      newData = await getCovaDynamicInit(params, file, settingsCustom.dimension);
-      updateData(newData);
-      while (newData.iteration < newData.maxIteration) {
-        newData = await getCovaDynamic(newData); // eslint-disable-line
-        updateData(newData);
+      let res = await getCovaDynamicInit(params, file, settingsCustom.dimension);
+      let [newData] = res;
+      if (!updateData(res)) return;
+      while (newData!.iteration < newData!.maxIteration) {
+        res = await getCovaDynamic(newData!); // eslint-disable-line
+        [newData] = res;
+        if (!updateData(res)) return;
       }
     } else {
       const params: ParamsANGEL = {
@@ -82,11 +86,13 @@ const Custom = () => {
         epsilon: settingsANGEL.epsilon,
         isAnchorModification: settingsANGEL.anchorModification === AnchorModification.ON,
       };
-      newData = await getAngelDynamicInit(params, file, settingsCustom.dimension);
-      updateData(newData);
-      while (newData.iteration < newData.maxIteration) {
-        newData = await getAngelDynamic(newData); // eslint-disable-line
-        updateData(newData);
+      let res = await getAngelDynamicInit(params, file, settingsCustom.dimension);
+      let [newData] = res;
+      if (!updateData(res)) return;
+      while (newData!.iteration < newData!.maxIteration) {
+        res = await getAngelDynamic(newData!); // eslint-disable-line
+        [newData] = res;
+        if (!updateData(res)) return;
       }
     }
   };
@@ -115,14 +121,6 @@ const Custom = () => {
       />
       {data && (
         <Visualization2D data={data} showPreservation={settingsCommon.dataPreservation === DataPreservation.ON} />
-      )}
-      {error && (
-        <Popup
-          onClick={() => {
-            setError(null);
-            history.push('/examples');
-          }}
-        />
       )}
     </div>
   );
