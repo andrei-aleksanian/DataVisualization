@@ -5,6 +5,7 @@ import { Algorithm } from 'types/Settings';
 import { Point2D, Point3D } from 'types/Data';
 import getColors from 'utils/getColors';
 import { Response } from 'utils/tryPromise';
+import useIsMounted from 'hooks/useIsMounted';
 import Settings, {
   defaultSettingsCOVA,
   defaultSettingsANGEL,
@@ -33,6 +34,8 @@ const Custom = () => {
   const [settingsCOVA, setSettingsCOVA] = useState(defaultSettingsCOVA);
   const [settingsANGEL, setSettingsANGEL] = useState(defaultSettingsANGEL);
   const [settingsCustom, setSettingsCustom] = useState(defaultSettingsCustom);
+
+  const isActive = useIsMounted();
 
   const updateData = ([newData, newError]: Response<DataPerseveranceLabelled>): boolean => {
     setError(newError);
@@ -73,11 +76,11 @@ const Custom = () => {
       };
       let res = await getCovaDynamicInit(params, file, settingsCustom.dimension);
       let [newData] = res;
-      if (!updateData(res)) return;
+      if (!isActive.current || !updateData(res)) return;
       while (newData!.iteration < newData!.maxIteration) {
         res = await getCovaDynamic(newData!); // eslint-disable-line
         [newData] = res;
-        if (!updateData(res)) return;
+        if (!isActive.current || !updateData(res)) return;
       }
     } else {
       const params: ParamsANGEL = {
@@ -88,11 +91,11 @@ const Custom = () => {
       };
       let res = await getAngelDynamicInit(params, file, settingsCustom.dimension);
       let [newData] = res;
-      if (!updateData(res)) return;
+      if (!isActive.current || !updateData(res)) return;
       while (newData!.iteration < newData!.maxIteration) {
         res = await getAngelDynamic(newData!); // eslint-disable-line
         [newData] = res;
-        if (!updateData(res)) return;
+        if (!isActive.current || !updateData(res)) return;
       }
     }
   };
