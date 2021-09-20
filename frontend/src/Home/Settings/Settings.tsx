@@ -1,13 +1,19 @@
-import Slider from 'Components/Forms/Slider';
+import { useState, useEffect, useRef } from 'react';
+
+import cx from 'classnames';
 
 import { Algorithm } from 'types/Settings';
-import CheckBoxes from 'Components/Forms/CheckBoxes';
 
+import CheckBoxes from 'Components/Forms/CheckBoxes';
+import Slider from 'Components/Forms/Slider';
 import { LinkBack } from 'Components/Link';
-import classes from './Settings.module.scss';
+import Loader from 'Components/UI/Loader';
+
 import COVA, { SettingsCOVA } from './components/COVA';
 import ANGEL, { SettingsANGEL } from './components/ANGEL';
 import Custom, { CustomProps } from './components/Custom';
+
+import classes from './Settings.module.scss';
 
 export const TEXT_CHECKBOX_COVA = 'COVA';
 export const TEXT_CHECKBOX_ANGEL = 'ANGEL';
@@ -67,8 +73,15 @@ const Settings = ({
     setSettingsCommon((prev) => ({ ...prev, dataPreservation: value }));
   };
 
+  const [height, setHeight] = useState(0);
+  const ref = useRef() as React.MutableRefObject<HTMLDivElement>;
+
+  useEffect(() => {
+    setHeight(ref.current.scrollHeight);
+  });
+
   return (
-    <div className={classes.index}>
+    <div className={cx(classes.index, { [classes.loading]: isLoading })} ref={ref}>
       <LinkBack link={backLink} />
       <h1>{name}</h1>
       {!reviewer && (
@@ -106,7 +119,7 @@ const Settings = ({
         ]}
       />
       {customDataPage && <Custom {...customDataPage} />}
-      {isLoading && <div>loading</div>}
+      {isLoading && <Loader height={height} />}
     </div>
   );
 };
