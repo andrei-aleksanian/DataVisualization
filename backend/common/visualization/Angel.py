@@ -24,7 +24,8 @@ def getAngelResult(params: ParamsANGEL,
                    originalData: np.ndarray,
                    labels: np.ndarray,
                    scaler: preprocessing.MinMaxScaler,
-                   fast: bool = False
+                   fast: bool = False,
+                   init: bool = False
                    ) -> DataGenerated:
   """Used for running ANGEL on every possible parameter"""
   [anchorPoint, anchorLabel, zParam] = AnchorPointGeneration(
@@ -50,6 +51,10 @@ def getAngelResult(params: ParamsANGEL,
       weight=0,
       metric='euclidean'
   )
+
+  if init:  # return initdata for nicer initial display
+    return anchorPoint, zParam, wParam, initdata
+
   resultData = ANGEL_embedding(
       originalData,
       anchorPoint,
@@ -91,7 +96,7 @@ def initANGEL(params: ParamsANGEL,
   originalData, labels, scaler = loadData(filePath)
 
   anchorPoint, zParam, wParam, resultData = getAngelResult(
-      params, dimension, 0, originalData, labels, scaler, fast=True)
+      params, dimension, 0, originalData, labels, scaler, fast=True, init=True)
 
   initData = DataNumpyANGEL(**{
       "anchorPoint": anchorPoint,
@@ -107,7 +112,7 @@ def initANGEL(params: ParamsANGEL,
 
 
 def dynamicANGEL(previousData: DataDynamicANGEL,
-                 iterationsPerRequest: int) -> DataDynamicANGEL:
+                 iterations: int) -> DataDynamicANGEL:
   """
   Iterates through the COVA algorithm.
 
@@ -129,7 +134,7 @@ def dynamicANGEL(previousData: DataDynamicANGEL,
       dimension,
       data["points"],
       data["paramEps"],
-      T=iterationsPerRequest,
+      T=iterations,
   )
 
   # only run on the last iteration

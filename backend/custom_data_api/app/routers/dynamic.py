@@ -30,15 +30,19 @@ router = APIRouter(
 
 MAX_ITERATIONS = 10
 ITERATIONS_PER_REQUEST = 2
-INIT_DATA = {
-    # init empty perseverance data
-    "prevPartsave": [],
-    "prevWrongInHigh": [[]],
-    "prevWrongInLow": [[]],
-    # init maxiterations and iteration = 0 by default
-    "maxIteration": MAX_ITERATIONS,
-    "iteration": 0
-}
+
+
+def getInitData(angel: bool = False):
+  """Return initial data."""
+  return {
+      # init empty perseverance data
+      "prevPartsave": [],
+      "prevWrongInHigh": [[]],
+      "prevWrongInLow": [[]],
+      # init maxiterations and iteration = 0 by default
+      "maxIteration": 1 if angel else MAX_ITERATIONS,
+      "iteration": 0
+  }
 
 
 @router.post("/cova-init",
@@ -81,7 +85,7 @@ async def covaDynamicInit(
 
   dataDynamic = DataDynamic(**{
       **initData.dict(),
-      **INIT_DATA
+      **getInitData()
   })
 
   return dataDynamic
@@ -150,7 +154,7 @@ async def angelDynamicInit(
 
   dataDynamic = DataDynamicANGEL(**{
       **initData.dict(),
-      **INIT_DATA
+      **getInitData(True)
   })
 
   return dataDynamic
@@ -167,7 +171,7 @@ async def angelDynamic(data: DataDynamicANGEL):
   """
   dataNew: DataDynamicANGEL = None
   try:
-    dataNew = await runWithAsync(dynamicANGEL, data, ITERATIONS_PER_REQUEST)
+    dataNew = await runWithAsync(dynamicANGEL, data, MAX_ITERATIONS * ITERATIONS_PER_REQUEST)
     dataNew.iteration += 1
   except RuntimeAlgorithmError as error:
     print(traceback.format_exc())
