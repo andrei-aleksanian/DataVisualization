@@ -102,17 +102,17 @@ dataGeneratedMock3D = DataGeneratedNumpy({
 
 def testCheckDimension2D():
   """Test checkDimension appends 0's column to 2D data"""
-  data = checkDimension(dataGeneratedMock2D)
+  resultData = checkDimension(dataGeneratedMock2D["resultData"], 2)
 
-  for point in data["resultData"]:
+  for point in resultData:
     assert point[2] == 0
 
 
 def testCheckDimension3D():
   """Test checkDimension doesn't append 0's column to 3D data"""
-  data = checkDimension(dataGeneratedMock3D)
+  resultData = checkDimension(dataGeneratedMock3D["resultData"], 3)
 
-  assert np.array_equal(data["resultData"], dataGeneratedMock3D["resultData"])
+  assert np.array_equal(resultData, dataGeneratedMock3D["resultData"])
 
 
 def testGetNeighbourNumber():

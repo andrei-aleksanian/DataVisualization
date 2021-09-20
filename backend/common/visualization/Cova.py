@@ -14,7 +14,7 @@ from ..types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
 
 from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData
 from .utils.dataDynamic import formatDataIn, formatDataOut,\
-    childrenToList, formatDimension, preserveOrientation
+    childrenToList, formatDimension
 
 # pylint: disable=R0913, R0914
 
@@ -68,8 +68,6 @@ def runCOVA(params: ParamsCOVA,
   """Used for running COVA on every possible parameter"""
   *_, resultData = getCovaResult(
       params, dimension, 20, originalData, labels, scaler)
-
-  resultData = preserveOrientation(resultData, dimension)
 
   return toDataGenerated(
       DataGeneratedNumpy({
@@ -141,7 +139,7 @@ def dynamicCOVA(previousData: DataDynamic,
     previousData.prevWrongInLow = childrenToList(prevWrongInLow)
     previousData.prevPartsave = prevPartsave
 
-    resultData = preserveOrientation(resultData, dimension)
+    resultData = postProcessing(resultData, dimension)
 
   resultData, _ = formatDimension(resultData)
   previousData.points = resultData.tolist()

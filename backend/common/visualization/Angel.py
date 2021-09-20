@@ -13,7 +13,7 @@ from ..types.Custom import Dimension
 
 from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData
 from .utils.dataDynamic import formatDataOutANGEL, childrenToList, \
-    preserveOrientation, formatDimension, formatDataInANGEL
+    formatDimension, formatDataInANGEL
 
 # pylint: disable=R0913, R0914
 
@@ -143,7 +143,7 @@ def dynamicANGEL(previousData: DataDynamicANGEL,
     previousData.prevWrongInLow = childrenToList(prevWrongInLow)
     previousData.prevPartsave = prevPartsave
 
-    resultData = preserveOrientation(resultData, dimension)
+    resultData = postProcessing(resultData, dimension)
 
   resultData, _ = formatDimension(resultData)
   previousData.points = resultData.tolist()

@@ -9,7 +9,7 @@ from common.types.dataGenerated import ParamsANGEL,\
     CONSTRAINED_ANCHOR_DENSITY,\
     CONSTRAINED_EPSILON,\
     CONSTRAINED_NEIGHBOUR,\
-    CONSTRAINED_ANCHOR_DENSITY_CUSTOM
+    CONSTRAINED_IS_ANCHOR_MODIFICATION
 from common.types.exceptions import RuntimeAlgorithmError
 from common.types.Custom import Dimension
 from common.environment import Env
@@ -22,7 +22,7 @@ from ..database.schemas import DataCreateANGEL
 neighbourNumber = CONSTRAINED_NEIGHBOUR
 anchorDensity = CONSTRAINED_ANCHOR_DENSITY
 epsilon = CONSTRAINED_EPSILON
-isAnchorModification = CONSTRAINED_ANCHOR_DENSITY_CUSTOM
+isAnchorModification = CONSTRAINED_IS_ANCHOR_MODIFICATION
 
 
 if os.environ.get("ENVIRONMENT") in [Env.TEST.value, Env.DEV.value]:

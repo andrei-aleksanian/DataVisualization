@@ -8,10 +8,12 @@ from sklearn import preprocessing
 
 from common.types.exceptions import RuntimeAlgorithmError, FileConstraintsError
 from common.types.dataGenerated import DataGenerated, DataGeneratedNumpy
+from common.types.Custom import Dimension
 from common.environment import Env
 from .dataDynamic import childrenToList
 
 from ..lib.evaluation import neighbor_prev_disturb
+from ..lib.FunctionFile import postProcessing
 
 
 env = os.environ.get("ENVIRONMENT")
@@ -23,9 +25,11 @@ def getNeighbours(data: DataGeneratedNumpy):
   """
   *_, prevWrongInHigh, prevWrongInLow, prevPartsave = neighbor_prev_disturb(
       data["originalData"], data["resultData"], data["labels"], 10)
+  resultData = postProcessing(data["resultData"], data["dimension"])
+  resultData = checkDimension(resultData, data["dimension"])
 
   return DataGenerated(
-      points=data["resultData"].tolist(),
+      points=resultData.tolist(),
       labels=data["labels"].ravel().tolist(),
       prevPartsave=prevPartsave,
       prevWrongInLow=childrenToList(prevWrongInLow),
@@ -34,20 +38,19 @@ def getNeighbours(data: DataGeneratedNumpy):
   )
 
 
-def checkDimension(data: DataGeneratedNumpy):
+def checkDimension(resultData: np.ndarray, dimension: Dimension):
   """
   Check and format target dimension of the data.
   Add 0's column to data if it is 2D (required for frontend)
   """
-  if data["dimension"] == 2:
-    zeros = np.zeros((data["resultData"].shape[0], 1))
-    data["resultData"] = np.hstack((data["resultData"], zeros))
-  return data
+  if dimension == 2:
+    zeros = np.zeros((resultData.shape[0], 1))
+    resultData = np.hstack((resultData, zeros))
+  return resultData
 
 
 def toDataGenerated(data: DataGeneratedNumpy) -> DataGenerated:
   """Convert data to api friendly format"""
-  data = checkDimension(data)
   return getNeighbours(data)
 
 
