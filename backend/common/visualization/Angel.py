@@ -61,8 +61,6 @@ def getAngelResult(params: ParamsANGEL,
       eps=params.epsilon,
       optType="fast" if fast else "constrained")
 
-  resultData = postProcessing(resultData, dimension)
-
   return anchorPoint, zParam, wParam, resultData
 
 
@@ -133,7 +131,6 @@ def dynamicANGEL(previousData: DataDynamicANGEL,
       data["paramEps"],
       T=iterationsPerRequest,
   )
-  resultData = postProcessing(resultData, dimension)
 
   # only run on the last iteration
   if previousData.iteration + 1 == previousData.maxIteration:
