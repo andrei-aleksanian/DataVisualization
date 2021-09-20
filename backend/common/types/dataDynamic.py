@@ -44,6 +44,8 @@ class DataCore(BaseModel):
   """
   dimension2D: bool
   points: Points
+  originalData: List
+  resultData: List
   labels: List[int]
 
 
@@ -51,7 +53,6 @@ class DataFormatted(DataCore):
   """
   Data that gets processed in COVA
   """
-  originalData: List
   paramRelation: List
   paramAd: List
   paramV: List
@@ -62,7 +63,6 @@ class DataFormattedANGEL(DataCore):
   """
   Data that gets processed in COVA
   """
-  originalData: List
   anchorPoint: List
   zParam: List
   wParam: List

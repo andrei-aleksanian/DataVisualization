@@ -17,7 +17,7 @@ def getInputData(points):
   Auxilary function that produces dummy data
   """
   npArray = np.array([0])
-  labels = np.array([[0]])
+  labels = np.array([[0, 1, 2]])
 
   return DataNumpy(**{
       "points": points,
@@ -35,7 +35,7 @@ def testFormatDataOut3D():
   Check the function counts the 3D dimensions correctly,
   """
 
-  points = np.array([[0, 0, 0]])
+  points = np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
   inputData = getInputData(points)
 
   data = formatDataOut(inputData)
@@ -49,7 +49,7 @@ def testFormatDataOut2D():
   adds 0 column
   """
 
-  points = np.array([[0, 0]])
+  points = np.array([[0, 0], [0, 0], [0, 0]])
   inputData = getInputData(points)
 
   data = formatDataOut(inputData)

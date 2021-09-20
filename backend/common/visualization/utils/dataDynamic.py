@@ -6,6 +6,8 @@ import numpy as np
 from sklearn.decomposition import PCA
 from common.types.dataDynamic import DataDynamic, DataNumpy, DataFormatted,\
     DataNumpyANGEL, DataFormattedANGEL, DataDynamicANGEL
+from common.types.Custom import Dimension
+from common.visualization.lib.FunctionFile import postProcessing
 
 
 def preserveOrientation(points: np.ndarray, dimension) -> np.ndarray:
@@ -29,7 +31,7 @@ def formatDataInANGEL(previousData: DataDynamicANGEL) -> DataNumpyANGEL:
       "wParam": np.array(previousData.wParam),
       "originalData": np.array(previousData.originalData),
       "labels": np.array([previousData.labels]),
-      "points": np.array(previousData.points)
+      "points": np.array(previousData.resultData)
   })
 
 
@@ -42,7 +44,7 @@ def formatDataIn(previousData: DataDynamic) -> DataNumpy:
 
   return DataNumpy(**{
       "alpha": previousData.alpha,
-      "points": np.array(previousData.points),
+      "points": np.array(previousData.resultData),
       "originalData": np.array(previousData.originalData),
       "labels": np.array([previousData.labels]),
       "paramRelation": np.array(previousData.paramRelation),
@@ -51,15 +53,30 @@ def formatDataIn(previousData: DataDynamic) -> DataNumpy:
   })
 
 
-def formatDimension(points: np.ndarray):
+def getDimension(points: np.ndarray) -> Dimension:
+  """Return dimension of a data set."""
+  return 2 if points.shape[1] == 2 else 3
+
+
+def formatDimension(points: np.ndarray, dimension: Dimension):
   """Format and return points array."""
-  dimension2D = False
-  if points.shape[1] == 2:
+  if dimension == 2:
     zeros = np.zeros((points.shape[0], 1))
     points = np.hstack((points, zeros))
-    dimension2D = True
 
-  return points, dimension2D
+  return points
+
+
+def splitData(data: np.ndarray):
+  """Split the data into post processed and reusable."""
+  resultData: np.ndarray = np.copy(data)
+
+  dimension = getDimension(data)
+  print(dimension)
+  data = postProcessing(data, dimension)
+  data = formatDimension(data, dimension)
+
+  return resultData, data, dimension
 
 
 def formatDataOutANGEL(initData: DataNumpyANGEL) -> DataFormattedANGEL:
@@ -68,16 +85,18 @@ def formatDataOutANGEL(initData: DataNumpyANGEL) -> DataFormattedANGEL:
   Computes wether dimension is 2D or 3D and adds a column of 0s to it if needed.
   Only runs once when a request is intialised for ANGEL.
   """
-  initData["points"], dimension2D = formatDimension(initData["points"])
+  resultData, initData["points"], dimension = splitData(initData["points"])
+
   return DataFormattedANGEL(**{
       **initData,
       "anchorPoint": initData["anchorPoint"].tolist(),
       "zParam": initData["zParam"].tolist(),
       "wParam": initData["wParam"].tolist(),
       "originalData": initData["originalData"].tolist(),
+      "resultData": resultData.tolist(),
       "labels": initData["labels"].ravel().tolist(),
       "points": initData["points"].tolist(),
-      "dimension2D": dimension2D,
+      "dimension2D": dimension == 2,
   })
 
 
@@ -87,16 +106,18 @@ def formatDataOut(initData: DataNumpy) -> DataFormatted:
   Computes wether dimension is 2D or 3D and adds a column of 0s to it if needed.
   Only runs once when a request is intialised.
   """
-  initData["points"], dimension2D = formatDimension(initData["points"])
+  resultData, initData["points"], dimension = splitData(initData["points"])
+
   return DataFormatted(**{
       **initData,
       "originalData": initData["originalData"].tolist(),
+      "resultData": resultData.tolist(),
+      "points": initData["points"].tolist(),
+      "labels": initData["labels"].ravel().tolist(),
+      "dimension2D": dimension == 2,
       "paramRelation": initData["paramRelation"].tolist(),
       "paramAd": initData["paramAd"].tolist(),
       "paramV": initData["paramV"].tolist(),
-      "labels": initData["labels"].ravel().tolist(),
-      "points": initData["points"].tolist(),
-      "dimension2D": dimension2D,
   })
 
 

@@ -3,7 +3,7 @@
 import numpy as np
 from sklearn import preprocessing
 
-from .lib.FunctionFile import funInit, AdjacencyMatrix, postProcessing
+from .lib.FunctionFile import funInit, AdjacencyMatrix
 from .lib.evaluation import neighbor_prev_disturb
 from .lib.COVA import ProtoGeneration,\
     CohortConfidence, COVAembedding, PrototypeEmbedding
@@ -14,7 +14,7 @@ from ..types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
 
 from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData
 from .utils.dataDynamic import formatDataIn, formatDataOut,\
-    childrenToList, formatDimension
+    childrenToList, splitData
 
 # pylint: disable=R0913, R0914
 
@@ -119,7 +119,7 @@ def dynamicCOVA(previousData: DataDynamic,
   data = formatDataIn(previousData)
   dimension = 2 if previousData.dimension2D else 3
 
-  resultData = COVAembedding(
+  resultData: np.ndarray = COVAembedding(
       data["originalData"],
       data["paramRelation"],
       data["paramAd"],
@@ -138,9 +138,9 @@ def dynamicCOVA(previousData: DataDynamic,
     previousData.prevWrongInLow = childrenToList(prevWrongInLow)
     previousData.prevPartsave = prevPartsave
 
-    resultData = postProcessing(resultData, dimension)
-
-  resultData, _ = formatDimension(resultData)
-  previousData.points = resultData.tolist()
+  # mirror the format logic here
+  resultData, points, _ = splitData(resultData)
+  previousData.points = points.tolist()
+  previousData.resultData = resultData.tolist()
 
   return previousData

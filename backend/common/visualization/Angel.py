@@ -3,7 +3,7 @@ My angel functions
 """
 import numpy as np
 from sklearn import preprocessing
-from .lib.FunctionFile import AdjacencyMatrix, funInit, postProcessing
+from .lib.FunctionFile import AdjacencyMatrix, funInit
 from .lib.evaluation import neighbor_prev_disturb
 from .lib.ANGEL import AnchorPointGeneration, AnchorEmbedding, ANGEL_embedding
 
@@ -13,7 +13,7 @@ from ..types.Custom import Dimension
 
 from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData
 from .utils.dataDynamic import formatDataOutANGEL, childrenToList, \
-    formatDimension, formatDataInANGEL
+    splitData, formatDataInANGEL
 
 # pylint: disable=R0913, R0914
 
@@ -125,7 +125,7 @@ def dynamicANGEL(previousData: DataDynamicANGEL,
   data = formatDataInANGEL(previousData)
   dimension = 2 if previousData.dimension2D else 3
 
-  resultData = ANGEL_embedding(
+  resultData: np.ndarray = ANGEL_embedding(
       data["originalData"],
       data["anchorPoint"],
       data["zParam"],
@@ -145,9 +145,9 @@ def dynamicANGEL(previousData: DataDynamicANGEL,
     previousData.prevWrongInLow = childrenToList(prevWrongInLow)
     previousData.prevPartsave = prevPartsave
 
-    resultData = postProcessing(resultData, dimension)
-
-  resultData, _ = formatDimension(resultData)
-  previousData.points = resultData.tolist()
+  # mirror the format logic here
+  resultData, points, _ = splitData(resultData)
+  previousData.points = points.tolist()
+  previousData.resultData = resultData.tolist()
 
   return previousData
