@@ -5,7 +5,7 @@ import axios from 'utils/axios';
 
 import { DATA_PERSEVERANCE } from 'types/Data/DataPerseverance';
 
-import { TEXT_LABEL } from 'Components/Forms/FileDropArea';
+import { TEST_ID } from 'Components/Forms/FileDropArea';
 import { TEXT_BUTTON } from 'Home/Settings';
 import Custom, { TEXT_FILE_NULL } from '.';
 
@@ -26,7 +26,7 @@ describe('Examples fetches data correctly', () => {
     render(<Custom />, { wrapper: MemoryRouter });
 
     const file = new File(['hello'], 'hello.mat', { type: '.mat' });
-    const fileArea = screen.getByLabelText(TEXT_LABEL) as HTMLInputElement;
+    const fileArea = screen.getByTestId(TEST_ID) as HTMLInputElement;
     await waitFor(() => userEvent.upload(fileArea, file));
 
     const submit = screen.getByText(TEXT_BUTTON);
@@ -64,7 +64,7 @@ describe('Examples fetches data correctly', () => {
     render(<Custom />, { wrapper: MemoryRouter });
 
     const file = new File(['hello'], 'hello.jpg', { type: '.jpg' });
-    const fileArea = screen.getByLabelText(TEXT_LABEL) as HTMLInputElement;
+    const fileArea = screen.getByTestId(TEST_ID) as HTMLInputElement;
     await waitFor(() => userEvent.upload(fileArea, file));
 
     const submit = screen.getByText(TEXT_BUTTON);
@@ -90,7 +90,7 @@ describe('Examples fetches data correctly', () => {
     render(<Custom />, { wrapper: MemoryRouter });
 
     const file = new File(['hello'], 'hello.mat', { type: '.mat' });
-    const fileArea = screen.getByLabelText(TEXT_LABEL) as HTMLInputElement;
+    const fileArea = screen.getByTestId(TEST_ID) as HTMLInputElement;
     await waitFor(() => userEvent.upload(fileArea, file));
 
     const submit = screen.getByText(TEXT_BUTTON);

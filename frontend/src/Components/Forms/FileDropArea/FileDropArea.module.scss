@@ -40,6 +40,10 @@
   cursor: pointer;
 }
 
+.Container label {
+  cursor: inherit;
+}
+
 :root {
   --color-bg-filearea: #fff;
   --border-radius-filearea: 1rem;

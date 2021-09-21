@@ -390,15 +390,13 @@ exports[`Examples matches snapshot 1`] = `
             <input
               accept=".mat"
               autocomplete="off"
-              id="filearea-0"
+              data-testid="filearea"
               multiple=""
               style="display: none;"
               tabindex="-1"
               type="file"
             />
-            <label
-              for="filearea-0"
-            >
+            <label>
               Drag and Drop or Click HERE to choose file
             </label>
           </div>
