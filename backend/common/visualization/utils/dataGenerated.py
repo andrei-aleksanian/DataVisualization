@@ -19,6 +19,16 @@ from ..lib.FunctionFile import postProcessing
 env = os.environ.get("ENVIRONMENT")
 
 
+def runAlgorithm(algorithmCallback, *args):
+  """wrap algorithm functions in try and catch"""
+  try:
+    returnArgs: tuple = algorithmCallback(*args)
+    return returnArgs
+  except Exception as error:
+    raise RuntimeAlgorithmError(
+        "failed to run. Please, make sure your file is correct") from error
+
+
 def getNeighbours(data: DataGeneratedNumpy):
   """
   Returns neighbours and packs data into a typed class
@@ -71,7 +81,11 @@ def validateData(data: np.ndarray, labels: np.ndarray):
 
 def loadData(filePath: str):
   """Load data for an eaxmple"""
-  fullData = loadmat(filePath)
+  try:
+    fullData = loadmat(filePath)
+  except Exception as error:
+    raise FileConstraintsError(
+        "This file can't be processed as a mat file. Please, choose a different one.") from error
   originalData: np.ndarray = fullData.get('g')
   labels: np.ndarray = fullData.get('label')
   scaler = preprocessing.MinMaxScaler()

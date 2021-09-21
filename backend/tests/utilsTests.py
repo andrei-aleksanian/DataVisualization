@@ -40,6 +40,13 @@ def getMat():
   return open(os.getcwd() + '/tests/files/test.mat', 'rb')
 
 
+def getBadMat():
+  """
+  Get bad test imahge as bytes
+  """
+  return open(os.getcwd() + '/tests/files/testBad.mat', 'rb')
+
+
 def postMockExample(client: TestClient):
   """
   POSTing an example and hence generating test data for ANGEL and COVA

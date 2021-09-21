@@ -5,7 +5,7 @@ Tests for dynamic.py
 import pytest
 from fastapi.testclient import TestClient
 from custom_data_api.app.api import app
-from ..utilsTests import getMat
+from ..utilsTests import getImage, getMat, getBadMat
 
 mockData = {
     "neighbourNumber": 10,
@@ -27,7 +27,7 @@ with TestClient(app) as mockClient:
                              files={"file": ("test.mat", getMat())}).json()
 
 
-def testCovaDemoDynamicInitSuccess(client):
+def testCovaDemoDynamicInitSuccess(client: TestClient):
   """
   Test the function initialises a cycle for future iterations.
   """
@@ -42,7 +42,43 @@ def testCovaDemoDynamicInitSuccess(client):
   assert data["iteration"] == 0
 
 
-def testCovaDemoDynamicSuccess(client):
+def testCovaDemoDynamicInitFileFailiure(client: TestClient):
+  """
+  Test the function rejects a bad file. (no g vector and over 500 points limit)
+  """
+  response = client.post("/api/dynamic/cova-init", mockData,
+                         files={"file": ("test.mat", getBadMat())})
+
+  print(response.json())
+
+  assert response.status_code == 422
+
+
+def testCovaDemoDynamicInitImageFailiure(client: TestClient):
+  """
+  Test the function rejects a non .mat file.
+  """
+  response = client.post("/api/dynamic/cova-init", mockData,
+                         files={"file": ("test.jpg", getImage())})
+
+  print(response.json())
+
+  assert response.status_code == 422
+
+
+def testCovaDemoDynamicInitImageAsMatFailiure(client: TestClient):
+  """
+  Test the function rejects an image pretending to be a .mat file.
+  """
+  response = client.post("/api/dynamic/cova-init", mockData,
+                         files={"file": ("test.mat", getImage())})
+
+  print(response.json())
+
+  assert response.status_code == 422
+
+
+def testCovaDemoDynamicSuccess(client: TestClient):
   """
   Test the function can use data from get to perform a cycle.
   """
@@ -52,7 +88,7 @@ def testCovaDemoDynamicSuccess(client):
   assert initData["iteration"] + 1 == responseData["iteration"]
 
 
-def testCovaDemoDynamic422Partial(client):
+def testCovaDemoDynamic422Partial(client: TestClient):
   """
   Test partially incorrect data throws an error
   """
@@ -64,7 +100,7 @@ def testCovaDemoDynamic422Partial(client):
   assert response.status_code == 422
 
 
-def testCovaDemoDynamic422Full(client):
+def testCovaDemoDynamic422Full(client: TestClient):
   """
   Test empty data throws an error
   """
@@ -72,7 +108,7 @@ def testCovaDemoDynamic422Full(client):
   assert response.status_code == 422
 
 
-def testCovaDemoDynamicPreservance(client):
+def testCovaDemoDynamicPreservance(client: TestClient):
   """Test returns perseverance data on last iteration"""
   initData["iteration"] = initData["maxIteration"] - 1
   response = client.post("/api/dynamic/cova", json=initData)

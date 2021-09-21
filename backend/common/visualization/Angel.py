@@ -11,7 +11,7 @@ from ..types.dataGenerated import ParamsANGEL, DataGenerated, DataGeneratedNumpy
 from ..types.dataDynamic import DataNumpyANGEL, DataFormattedANGEL, DataDynamicANGEL
 from ..types.Custom import Dimension
 
-from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData
+from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData, runAlgorithm
 from .utils.dataDynamic import formatDataOutANGEL, childrenToList, \
     splitData, formatDataInANGEL
 
@@ -76,8 +76,15 @@ def runANGEL(params: ParamsANGEL,
              scaler: preprocessing.MinMaxScaler) -> DataGenerated:
   """Used for running ANGEL on every possible parameter"""
 
-  *_, resultData = getAngelResult(
-      params, dimension, 15, originalData, labels, scaler)
+  *_, resultData = runAlgorithm(
+      getAngelResult,
+      params,
+      dimension,
+      15,
+      originalData,
+      labels,
+      scaler
+  )
 
   return toDataGenerated(
       DataGeneratedNumpy({
@@ -95,8 +102,17 @@ def initANGEL(params: ParamsANGEL,
   """Used for running ANGEL on every possible parameter"""
   originalData, labels, scaler = loadData(filePath)
 
-  anchorPoint, zParam, wParam, resultData = getAngelResult(
-      params, dimension, 0, originalData, labels, scaler, fast=True, init=True)
+  anchorPoint, zParam, wParam, resultData = runAlgorithm(
+      getAngelResult,
+      params,
+      dimension,
+      0,
+      originalData,
+      labels,
+      scaler,
+      True,  # fast
+      True  # return initialisation only
+  )
 
   initData = DataNumpyANGEL(**{
       "anchorPoint": anchorPoint,
@@ -125,7 +141,8 @@ def dynamicANGEL(previousData: DataDynamicANGEL,
   data = formatDataInANGEL(previousData)
   dimension = 2 if previousData.dimension2D else 3
 
-  resultData: np.ndarray = ANGEL_embedding(
+  resultData: np.ndarray = runAlgorithm(
+      ANGEL_embedding,
       data["originalData"],
       data["anchorPoint"],
       data["zParam"],
@@ -134,13 +151,19 @@ def dynamicANGEL(previousData: DataDynamicANGEL,
       dimension,
       data["points"],
       data["paramEps"],
-      T=iterations,
+      'euclidean',
+      iterations,
   )
 
   # only run on the last iteration
   if previousData.iteration + 1 == previousData.maxIteration:
-    *_, prevWrongInHigh, prevWrongInLow, prevPartsave = neighbor_prev_disturb(
-        data["originalData"], resultData, data["labels"], 10)
+    *_, prevWrongInHigh, prevWrongInLow, prevPartsave = runAlgorithm(
+        neighbor_prev_disturb,
+        data["originalData"],
+        resultData,
+        data["labels"],
+        10
+    )
     previousData.prevWrongInHigh = childrenToList(prevWrongInHigh)
     previousData.prevWrongInLow = childrenToList(prevWrongInLow)
     previousData.prevPartsave = prevPartsave

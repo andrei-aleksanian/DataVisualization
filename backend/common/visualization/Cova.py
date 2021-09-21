@@ -8,11 +8,11 @@ from .lib.evaluation import neighbor_prev_disturb
 from .lib.COVA import ProtoGeneration,\
     CohortConfidence, COVAembedding, PrototypeEmbedding
 
-from ..types.Custom import Dimension
 from ..types.dataGenerated import DataGenerated, ParamsCOVA, DataGeneratedNumpy
 from ..types.dataDynamic import DataDynamic, DataFormatted, DataNumpy
+from ..types.Custom import Dimension
 
-from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData
+from .utils.dataGenerated import getNeighbourNumber, toDataGenerated, loadData, runAlgorithm
 from .utils.dataDynamic import formatDataIn, formatDataOut,\
     childrenToList, splitData
 
@@ -26,7 +26,6 @@ def getCovaResult(params: ParamsCOVA,
                   labels: np.ndarray,
                   scaler: preprocessing.MinMaxScaler):
   """Functoin that runs COVA"""
-
   dcParam, protolabel, clabel = ProtoGeneration(
       originalData,
       labels,
@@ -65,8 +64,15 @@ def runCOVA(params: ParamsCOVA,
             labels: np.ndarray,
             scaler: preprocessing.MinMaxScaler) -> DataGenerated:
   """Used for running COVA on every possible parameter"""
-  *_, resultData = getCovaResult(
-      params, dimension, 20, originalData, labels, scaler)
+  *_, resultData = runAlgorithm(
+      getCovaResult,
+      params,
+      dimension,
+      20,
+      originalData,
+      labels,
+      scaler
+  )
 
   return toDataGenerated(
       DataGeneratedNumpy({
@@ -88,8 +94,15 @@ def initCOVA(params: ParamsCOVA,
   """
   originalData, labels, scaler = loadData(filePath)
 
-  relation, adjacencyMatrix, vParam, resultData = getCovaResult(
-      params, dimension, 0, originalData, labels, scaler)
+  relation, adjacencyMatrix, vParam, resultData = runAlgorithm(
+      getCovaResult,
+      params,
+      dimension,
+      0,
+      originalData,
+      labels,
+      scaler
+  )
 
   # formatting the data to be api friendly
   initData = DataNumpy({
@@ -119,7 +132,8 @@ def dynamicCOVA(previousData: DataDynamic,
   data = formatDataIn(previousData)
   dimension = 2 if previousData.dimension2D else 3
 
-  resultData: np.ndarray = COVAembedding(
+  resultData: np.ndarray = runAlgorithm(
+      COVAembedding,
       data["originalData"],
       data["paramRelation"],
       data["paramAd"],
@@ -132,8 +146,13 @@ def dynamicCOVA(previousData: DataDynamic,
 
   # only run on the last iteration
   if previousData.iteration + 1 == previousData.maxIteration:
-    *_, prevWrongInHigh, prevWrongInLow, prevPartsave = neighbor_prev_disturb(
-        data["originalData"], resultData, data["labels"], 10)
+    *_, prevWrongInHigh, prevWrongInLow, prevPartsave = runAlgorithm(
+        neighbor_prev_disturb,
+        data["originalData"],
+        resultData,
+        data["labels"],
+        10
+    )
     previousData.prevWrongInHigh = childrenToList(prevWrongInHigh)
     previousData.prevWrongInLow = childrenToList(prevWrongInLow)
     previousData.prevPartsave = prevPartsave
