@@ -24,7 +24,7 @@ import classes from './Custom.module.scss';
 
 // .mat files accepted only for this page
 const ACCEPTED_TYPE = '.mat';
-export const FILE_NULL = 'Please, provide a .mat file.';
+export const TEXT_FILE_NULL = 'Please, provide a .mat file.';
 
 const Custom = () => {
   const [data, setData] = useState<DataPerseveranceColored | null>(null);
@@ -59,7 +59,7 @@ const Custom = () => {
      * Validates file:
      * False - file invalid, True - valid.
      */
-    const errorNew = file === null ? FILE_NULL : null;
+    const errorNew = file === null ? TEXT_FILE_NULL : null;
     setSettingsCustom((prev) => ({ ...prev, file: { ...prev.file, error: errorNew } }));
     return !errorNew;
   };

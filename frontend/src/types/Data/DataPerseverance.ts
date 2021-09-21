@@ -29,7 +29,7 @@ export const DATA_PERSEVERANCE: DataPerseveranceLabelled = {
   prevWrongInHigh: [[]],
   prevWrongInLow: [[]],
   iteration: 0,
-  maxIteration: 0,
+  maxIteration: 1,
   // todo: double check
   points: [
     [0, 0, 0],

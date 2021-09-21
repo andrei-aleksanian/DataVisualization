@@ -6,7 +6,11 @@ export interface ErrorProps {
   customClass?: string;
 }
 
-const Error = ({ text, customClass }: ErrorProps) => <p className={cx(classes.index, customClass)}>{text}</p>;
+const Error = ({ text, customClass }: ErrorProps) => (
+  <p className={cx(classes.index, customClass)} data-testid="custom-error">
+    {text}
+  </p>
+);
 
 Error.defaultProps = {
   customClass: '',

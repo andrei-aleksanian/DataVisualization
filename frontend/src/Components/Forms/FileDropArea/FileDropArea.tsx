@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import getId from 'utils/getId';
 import Error from '../Error';
 import classes from './FileDropArea.module.scss';
 
@@ -15,6 +16,7 @@ export interface FileDropAreaProps {
 }
 
 export const TEXT_FILEDROP_AREA = 'Choose a File:';
+export const TEXT_LABEL = 'Drag and Drop or Click HERE to choose file';
 
 const FileDropArea = ({ setFile, file: { error, file }, acceptedType }: FileDropAreaProps): React.ReactElement => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -26,6 +28,7 @@ const FileDropArea = ({ setFile, file: { error, file }, acceptedType }: FileDrop
     onDrop,
     accept: acceptedType,
   });
+  const id = getId('filearea');
 
   return (
     <>
@@ -37,8 +40,8 @@ const FileDropArea = ({ setFile, file: { error, file }, acceptedType }: FileDrop
           }}
           {...getRootProps({ className: classes.Container })}
         >
-          <input {...getInputProps()} />
-          <p>Drag and Drop or Click HERE to choose file</p>
+          <input id={id} {...getInputProps()} />
+          <label htmlFor={id}>{TEXT_LABEL}</label>
         </div>
       </div>
       {file && <p className={classes.fileName}>Submitted file: {file.name}</p>}

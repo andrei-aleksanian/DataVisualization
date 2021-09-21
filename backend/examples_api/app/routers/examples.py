@@ -91,7 +91,7 @@ def createExample(
   def generateData(example: schemas.ExampleCrud, imagePath: str):
     try:
       originalData, labels, scaler = loadData(
-          "./common/visualization/Data/bicycle_sample.mat")
+          "./common/visualization/Data/flower.mat")
       generateCOVA(example.id, example.dimension, originalData, labels, scaler)
       generateANGEL(example.id, example.dimension,
                     originalData, labels, scaler)

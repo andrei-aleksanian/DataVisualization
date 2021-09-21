@@ -26,6 +26,7 @@ export interface CustomProps {
 }
 
 export const TEXT_CHECKBOX_DIMENSION = 'Dimension:';
+export const TEXT_BUTTON = 'Submit';
 
 const Custom = ({
   onSubmit,
@@ -54,7 +55,7 @@ const Custom = ({
         ]}
       />
       <FileDropArea setFile={setFile} file={file} acceptedType={acceptedType} />
-      <Button text="Submit" onClick={() => onSubmit()} active={false} customClass={classes.submit} />
+      <Button text={TEXT_BUTTON} onClick={() => onSubmit()} active={false} customClass={classes.submit} />
       {error && <Error text={error} />}
     </div>
   );
