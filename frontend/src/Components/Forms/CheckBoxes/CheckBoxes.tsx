@@ -7,22 +7,23 @@
  * @param entries - array of checkboxes to be generated
  * @param currentValue - current value of the state from parent component
  * @param onChange - function that handles a ckick on any checkbox
- * @param heading - text to describe the group of checkboxes. e.g. 'Checkboxes:'
+ * @param labelText - text to describe the group of checkboxes. e.g. 'Checkboxes:'
  */
 
 import getId from 'utils/getId';
+import Label from '../Label';
 import classes from './CheckBoxes.module.scss';
 
 export interface CheckBoxesProps {
   entries: { value: number; text: string }[];
   currentValue: number;
   onChange: (event: React.ChangeEvent, currentValue: number) => void;
-  heading: string;
+  labelText: string;
 }
 
-const CheckBoxes = ({ currentValue, onChange, entries, heading }: CheckBoxesProps) => (
+const CheckBoxes = ({ currentValue, onChange, entries, labelText }: CheckBoxesProps) => (
   <div className={classes.index}>
-    <p>{heading}</p>
+    <Label text={labelText} />
     <div className={classes.CheckBoxes}>
       {entries.map((e) => (
         <label key={getId('checkbox')}>

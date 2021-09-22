@@ -56,7 +56,7 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL, isCustomDataPage }: SettingsAN
         value={settingsANGEL.epsilon}
       />
       <CheckBoxes
-        heading={TEXT_CHECKBOX_ANCHOR_MODIFICATION}
+        labelText={TEXT_CHECKBOX_ANCHOR_MODIFICATION}
         currentValue={settingsANGEL.anchorModification}
         onChange={onChangeAnchorModification}
         entries={[

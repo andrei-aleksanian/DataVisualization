@@ -17,7 +17,11 @@
 
 .Back {
   border-radius: 0 0 0.5rem 0;
-  padding: 0.5em 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 35px;
   position: absolute;
   top: 0;
   left: 0;
@@ -26,4 +30,8 @@
 
 .Back img {
   height: 15px;
+}
+
+.Block {
+  position: relative;
 }

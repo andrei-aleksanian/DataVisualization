@@ -46,7 +46,7 @@ const Custom = ({
   return (
     <div>
       <CheckBoxes
-        heading={TEXT_CHECKBOX_DIMENSION}
+        labelText={TEXT_CHECKBOX_DIMENSION}
         currentValue={dimension}
         onChange={onChangeDimension}
         entries={[

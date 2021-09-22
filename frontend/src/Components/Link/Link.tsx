@@ -8,12 +8,21 @@ interface LinkProps {
   customClass?: string;
 }
 
+interface LinkBackProps extends LinkProps {
+  block?: boolean;
+}
+
 interface LinkHeroProps extends LinkProps {
   text: string;
 }
 
 export const defaultPropsLink = {
   customClass: '',
+};
+
+export const defaultPropsLinkBack = {
+  ...defaultPropsLink,
+  block: false,
 };
 
 /*
@@ -32,9 +41,9 @@ LinkHero.defaultProps = defaultPropsLink;
 Small link back with an arrow. Used to come back to a page of your choice.
 Intended use is to go back but can accept any link.
 */
-export const LinkBack = ({ link, customClass }: LinkProps) => (
-  <Link to={link} className={cx(classes.index, classes.Back, customClass)}>
+export const LinkBack = ({ link, customClass, block }: LinkBackProps) => (
+  <Link to={link} className={cx(classes.index, classes.Back, { [classes.Block]: block }, customClass)}>
     <img src={arrow} alt="back" />
   </Link>
 );
-LinkBack.defaultProps = defaultPropsLink;
+LinkBack.defaultProps = defaultPropsLinkBack;

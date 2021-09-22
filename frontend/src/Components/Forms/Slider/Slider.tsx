@@ -8,10 +8,11 @@ Unfortunately, this library doesn't support css modules very well,
 so all css is hardcoded inside style elements.
 */
 import { CSSProperties } from 'react';
-
 import SliderRC from 'rc-slider';
-import classes from './Slider.module.scss';
+
 import toMarks from './utils';
+import Label from '../Label';
+import classes from './Slider.module.scss';
 
 export interface SliderProps {
   onChange: (value: number) => void;
@@ -44,7 +45,7 @@ const Slider = ({ marksArr, text, ...restProps }: SliderProps) => {
 
   return (
     <div className={classes.index}>
-      <p>{text}</p>
+      <Label text={text} />
       <SliderRC
         {...restProps}
         marks={toMarks(marksArr, marksStyle)}

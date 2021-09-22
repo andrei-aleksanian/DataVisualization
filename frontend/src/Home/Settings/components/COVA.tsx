@@ -42,7 +42,7 @@ const COVA = ({ settingsCOVA, setSettingsCOVA }: SettingsCOVAProps) => {
         value={settingsCOVA.alpha}
       />
       <CheckBoxes
-        heading={TEXT_CHECKBOX_COHORT_NUMBER}
+        labelText={TEXT_CHECKBOX_COHORT_NUMBER}
         currentValue={settingsCOVA.cohortNumber}
         onChange={onChangeCohortNumber}
         entries={[
