@@ -2,6 +2,7 @@ import Slider from 'Components/Forms/Slider';
 
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
+const TEXT_TOOLTIP = 'Example tooltip COVA';
 export const TEXT_SLIDER_ALPHA = 'Alpha:';
 export const TEXT_CHECKBOX_COHORT_NUMBER = 'Cohort number:';
 
@@ -38,11 +39,13 @@ const COVA = ({ settingsCOVA, setSettingsCOVA }: SettingsCOVAProps) => {
         step={0.2}
         marksArr={[0, 0.2, 0.4, 0.6, 0.8, 1]}
         onChange={onChangeAlpha}
-        text={TEXT_SLIDER_ALPHA}
+        labelText={TEXT_SLIDER_ALPHA}
+        tooltipText={TEXT_TOOLTIP}
         value={settingsCOVA.alpha}
       />
       <CheckBoxes
         labelText={TEXT_CHECKBOX_COHORT_NUMBER}
+        tooltipText={TEXT_TOOLTIP}
         currentValue={settingsCOVA.cohortNumber}
         onChange={onChangeCohortNumber}
         entries={[

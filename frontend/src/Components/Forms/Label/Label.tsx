@@ -8,10 +8,11 @@ import classes from './Label.module.scss';
 
 export interface LabelProps {
   text: string;
+  tooltipText: string;
   customCalss?: string;
 }
 
-const Label = ({ text, customCalss }: LabelProps) => {
+const Label = ({ text, customCalss, tooltipText }: LabelProps) => {
   const Tooltip = () => {
     const [top, setTop] = useState(0);
     const [left, setLeft] = useState(0);
@@ -25,9 +26,7 @@ const Label = ({ text, customCalss }: LabelProps) => {
     return (
       <div className={classes.Tooltip}>
         <img src={info} alt={getId('info')} ref={ref} />
-        <div style={{ top: top + 20, left: left - 120 }}>
-          Choose how many points should the algorithm assume to have for neighbour separation
-        </div>
+        <div style={{ top: top + 20, left: left - 120 }}>{tooltipText}</div>
       </div>
     );
   };

@@ -20,11 +20,12 @@ export interface SliderProps {
   max: number;
   step: number | null;
   marksArr: (number | string)[];
-  text: string;
+  labelText: string;
+  tooltipText: string;
   value: number;
 }
 
-const Slider = ({ marksArr, text, ...restProps }: SliderProps) => {
+const Slider = ({ marksArr, labelText, tooltipText, ...restProps }: SliderProps) => {
   const marksStyle = {
     fontSize: '0.85rem',
     color: '#ccc',
@@ -45,7 +46,7 @@ const Slider = ({ marksArr, text, ...restProps }: SliderProps) => {
 
   return (
     <div className={classes.index}>
-      <Label text={text} />
+      <Label text={labelText} tooltipText={tooltipText} />
       <SliderRC
         {...restProps}
         marks={toMarks(marksArr, marksStyle)}

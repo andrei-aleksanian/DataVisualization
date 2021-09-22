@@ -13,13 +13,20 @@ export interface FileDropAreaProps {
   setFile: (file: FileArea) => void;
   file: FileArea;
   acceptedType: string;
+  labelText: string;
+  tooltipText: string;
 }
 
-export const TEXT_FILEDROP_AREA = 'Choose a File:';
 export const TEXT_LABEL = 'Drag and Drop or Click HERE to choose file';
 export const TEST_ID = 'filearea';
 
-const FileDropArea = ({ setFile, file: { error, file }, acceptedType }: FileDropAreaProps): React.ReactElement => {
+const FileDropArea = ({
+  setFile,
+  file: { error, file },
+  acceptedType,
+  labelText,
+  tooltipText,
+}: FileDropAreaProps): React.ReactElement => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
     setFile({ file: acceptedFiles[0], error: null });
@@ -32,7 +39,7 @@ const FileDropArea = ({ setFile, file: { error, file }, acceptedType }: FileDrop
 
   return (
     <>
-      <Label text={TEXT_FILEDROP_AREA} customCalss={classes.label} />
+      <Label text={labelText} tooltipText={tooltipText} customCalss={classes.label} />
       <div className={classes.Wrapper}>
         <div
           style={{

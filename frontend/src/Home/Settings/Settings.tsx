@@ -34,6 +34,7 @@ export const defaultSettingsCommon: SettingsCommon = {
   neighbour: 0, // stands for index in NEIGHBOUR_MARKS_ARR, not value
 };
 export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%'];
+const TEXT_TOOLTIP = 'Tooltip example common settigns.';
 export interface SettingsProps {
   settingsCommon: SettingsCommon;
   setSettingsCommon: React.Dispatch<React.SetStateAction<SettingsCommon>>;
@@ -86,6 +87,7 @@ const Settings = ({
         {!reviewer && (
           <CheckBoxes
             labelText={TEXT_CHECKBOX_ALGORITHM}
+            tooltipText={TEXT_TOOLTIP}
             currentValue={settingsCommon.algorithm}
             onChange={onChangeAlgorithm}
             entries={[
@@ -100,7 +102,8 @@ const Settings = ({
           step={1}
           marksArr={NEIGHBOUR_MARKS_ARR}
           onChange={onChangeNeighbour}
-          text={TEXT_SLIDER_NEIGHBOUR}
+          labelText={TEXT_SLIDER_NEIGHBOUR}
+          tooltipText={TEXT_TOOLTIP}
           value={settingsCommon.neighbour}
         />
         {settingsCommon.algorithm === Algorithm.COVA ? (
@@ -110,6 +113,7 @@ const Settings = ({
         )}
         <CheckBoxes
           labelText={TEXT_CHECKBOX_PRESERVATION}
+          tooltipText={TEXT_TOOLTIP}
           currentValue={settingsCommon.dataPreservation}
           onChange={onChangeDataPreservation}
           entries={[

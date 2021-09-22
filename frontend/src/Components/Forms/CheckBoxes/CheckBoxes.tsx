@@ -19,11 +19,12 @@ export interface CheckBoxesProps {
   currentValue: number;
   onChange: (event: React.ChangeEvent, currentValue: number) => void;
   labelText: string;
+  tooltipText: string;
 }
 
-const CheckBoxes = ({ currentValue, onChange, entries, labelText }: CheckBoxesProps) => (
+const CheckBoxes = ({ currentValue, onChange, entries, labelText, tooltipText }: CheckBoxesProps) => (
   <div className={classes.index}>
-    <Label text={labelText} />
+    <Label text={labelText} tooltipText={tooltipText} />
     <div className={classes.CheckBoxes}>
       {entries.map((e) => (
         <label key={getId('checkbox')}>

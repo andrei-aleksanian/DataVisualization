@@ -2,6 +2,7 @@ import Slider from 'Components/Forms/Slider';
 
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
+const TEXT_TOOLTIP = 'Example tooltip ANGEL';
 export const TEXT_SLIDER_ANCHOR_DENSITY = 'Anchor density:';
 export const TEXT_SLIDER_EPSILON = 'Epsilon:';
 export const TEXT_CHECKBOX_ANCHOR_MODIFICATION = 'Anchor modification:';
@@ -43,7 +44,8 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL, isCustomDataPage }: SettingsAN
         step={null}
         marksArr={isCustomDataPage ? [0.1, 0.2] : [0.05, 0.1, 0.2]}
         onChange={onChangeAnchorDensity}
-        text={TEXT_SLIDER_ANCHOR_DENSITY}
+        labelText={TEXT_SLIDER_ANCHOR_DENSITY}
+        tooltipText={TEXT_TOOLTIP}
         value={settingsANGEL.anchorDensity}
       />
       <Slider
@@ -52,11 +54,13 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL, isCustomDataPage }: SettingsAN
         step={null}
         marksArr={[0.1, 5]}
         onChange={onChangeEpsilon}
-        text={TEXT_SLIDER_EPSILON}
+        labelText={TEXT_SLIDER_EPSILON}
+        tooltipText={TEXT_TOOLTIP}
         value={settingsANGEL.epsilon}
       />
       <CheckBoxes
         labelText={TEXT_CHECKBOX_ANCHOR_MODIFICATION}
+        tooltipText={TEXT_TOOLTIP}
         currentValue={settingsANGEL.anchorModification}
         onChange={onChangeAnchorModification}
         entries={[
