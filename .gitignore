@@ -31,7 +31,8 @@ backend/images
 
 # env files
 *.env
-dump*.sql
 
-# env related files
+# production related files
 *.sh
+dump*
+production/images
