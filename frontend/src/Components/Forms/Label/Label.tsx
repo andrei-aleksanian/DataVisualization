@@ -23,7 +23,7 @@ const Label = ({ text }: LabelProps) => {
     return (
       <div className={classes.Tooltip}>
         <img src={info} alt={getId('info')} ref={ref} />
-        <div style={{ top, left: left + 30 }}>
+        <div style={{ top: top + 20, left: left - 120 }}>
           Choose how many points should the algorithm assume to have for neighbour separation
         </div>
       </div>

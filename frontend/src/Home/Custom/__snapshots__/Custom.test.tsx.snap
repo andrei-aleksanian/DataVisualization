@@ -40,7 +40,7 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 0px; left: 30px;"
+                style="top: 20px; left: -120px;"
               >
                 Choose how many points should the algorithm assume to have for neighbour separation
               </div>
@@ -95,7 +95,7 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 0px; left: 30px;"
+                style="top: 20px; left: -120px;"
               >
                 Choose how many points should the algorithm assume to have for neighbour separation
               </div>
@@ -199,7 +199,7 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 0px; left: 30px;"
+                style="top: 20px; left: -120px;"
               >
                 Choose how many points should the algorithm assume to have for neighbour separation
               </div>
@@ -273,7 +273,7 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 0px; left: 30px;"
+                style="top: 20px; left: -120px;"
               >
                 Choose how many points should the algorithm assume to have for neighbour separation
               </div>
@@ -347,7 +347,7 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 0px; left: 30px;"
+                style="top: 20px; left: -120px;"
               >
                 Choose how many points should the algorithm assume to have for neighbour separation
               </div>
@@ -402,7 +402,7 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 0px; left: 30px;"
+                style="top: 20px; left: -120px;"
               >
                 Choose how many points should the algorithm assume to have for neighbour separation
               </div>
@@ -458,7 +458,7 @@ exports[`Examples matches snapshot 1`] = `
                   src="info.svg"
                 />
                 <div
-                  style="top: 0px; left: 30px;"
+                  style="top: 20px; left: -120px;"
                 >
                   Choose how many points should the algorithm assume to have for neighbour separation
                 </div>

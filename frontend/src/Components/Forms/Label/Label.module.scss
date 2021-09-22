@@ -8,6 +8,10 @@
   overflow: hidden;
 }
 
+.Tooltip {
+  position: relative;
+}
+
 .Tooltip img {
   height: 18px;
   width: 18px;
@@ -16,8 +20,6 @@
 .Tooltip div {
   display: none; // change to none
   position: absolute;
-  top: 0;
-  left: 25px;
   background-color: var(--color-tooltip-bg);
   width: 120px;
   padding: 0.5rem;
