@@ -45,6 +45,7 @@ services:
     volumes:
       - ./backend/common:/app/common
       - ./backend/examples_api:/app/api
+      - ./backend/images:/app/images
     env_file:
       - backend.env
       - db.env

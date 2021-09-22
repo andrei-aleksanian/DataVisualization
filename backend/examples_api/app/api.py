@@ -18,7 +18,8 @@ app = getApp()
 
 createStaticDirectory()
 createTempDirectory()
-app.mount("/images", StaticFiles(directory="images"), name="images")
+app.mount("/api/images", StaticFiles(
+    directory="images"), name="images")
 
 
 @app.on_event("startup")

@@ -27,16 +27,25 @@
 }
 
 .Example img {
-  border-radius: 1rem 1rem 0 0;
   cursor: pointer;
   width: 350px;
   height: 200px;
+  min-height: 200px;
+  min-width: 350px;
 }
 
-.ExampleInfo h3 {
-  margin: 1rem;
+.ExampleInfo {
+  padding: 1rem;
 }
 
-.ExampleInfo p {
-  margin: 1rem;
+.ExampleInfo * {
+  margin-bottom: 1rem;
+}
+
+.Button {
+  font-size: 1rem;
+  padding: 0.5rem 0.9rem;
+  height: auto;
+  margin: 0 0 0 -3px;
+  border-radius: 0.5rem;
 }

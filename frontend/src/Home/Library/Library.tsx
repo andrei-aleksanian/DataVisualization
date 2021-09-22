@@ -6,6 +6,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import getId from 'utils/getId';
 import hostLink from 'utils/hostLink';
 import { Popup } from 'Components/UI';
+import Button from 'Components/Forms/Button';
 import fetchExamples from './services';
 
 import classes from './Library.module.scss';
@@ -21,19 +22,19 @@ const Library = ({ reviewer }: LibraryProps) => {
   const history = useHistory();
   const location = useLocation();
 
-  const Example = ({ name, description, id, imagePath }: ExampleProps) => (
-    <div className={classes.Example}>
-      <img
-        src={`${hostLink}/images/${imagePath}`}
-        alt={`example ${name} image`}
-        onClick={() => history.push(`${location.pathname}/${id}`)}
-      />
-      <div className={classes.ExampleInfo}>
-        <h3>{name}</h3>
-        <p>{description}</p>
+  const Example = ({ name, description, id, imagePath }: ExampleProps) => {
+    const onClickExample = () => history.push(`${location.pathname}/${id}`);
+    return (
+      <div className={classes.Example}>
+        <img src={`${hostLink}/api/images/${imagePath}`} alt={`example ${name} image`} onClick={onClickExample} />
+        <div className={classes.ExampleInfo}>
+          <h3>{name}</h3>
+          <p>{description}</p>
+          <Button text="See Example" onClick={onClickExample} active customClass={classes.Button} />
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   useEffect(() => {
     let isActive = true;
