@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import cx from 'classnames';
 
 import info from 'Components/assets/info.svg';
 
@@ -7,9 +8,10 @@ import classes from './Label.module.scss';
 
 export interface LabelProps {
   text: string;
+  customCalss?: string;
 }
 
-const Label = ({ text }: LabelProps) => {
+const Label = ({ text, customCalss }: LabelProps) => {
   const Tooltip = () => {
     const [top, setTop] = useState(0);
     const [left, setLeft] = useState(0);
@@ -31,11 +33,15 @@ const Label = ({ text }: LabelProps) => {
   };
 
   return (
-    <div className={classes.index}>
+    <div className={cx(classes.index, customCalss)}>
       <p>{text}</p>
       <Tooltip />
     </div>
   );
+};
+
+Label.defaultProps = {
+  customClass: '',
 };
 
 export default Label;

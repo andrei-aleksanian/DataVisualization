@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Error from '../Error';
+import Label from '../Label';
 import classes from './FileDropArea.module.scss';
 
 export interface FileArea {
@@ -31,7 +32,7 @@ const FileDropArea = ({ setFile, file: { error, file }, acceptedType }: FileDrop
 
   return (
     <>
-      <p className={classes.p}>{TEXT_FILEDROP_AREA}</p>
+      <Label text={TEXT_FILEDROP_AREA} customCalss={classes.label} />
       <div className={classes.Wrapper}>
         <div
           style={{

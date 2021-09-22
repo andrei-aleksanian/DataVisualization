@@ -496,11 +496,26 @@ exports[`Examples matches snapshot 1`] = `
               </label>
             </div>
           </div>
-          <p
-            class="p"
+          <div
+            class="index label"
           >
-            Choose a File:
-          </p>
+            <p>
+              Choose a File:
+            </p>
+            <div
+              class="Tooltip"
+            >
+              <img
+                alt="info-7"
+                src="info.svg"
+              />
+              <div
+                style="top: 20px; left: -120px;"
+              >
+                Choose how many points should the algorithm assume to have for neighbour separation
+              </div>
+            </div>
+          </div>
           <div
             class="Wrapper"
           >
