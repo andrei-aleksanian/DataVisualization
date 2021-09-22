@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 
 import info from 'Components/assets/info.svg';
 
+import getId from 'utils/getId';
 import classes from './Label.module.scss';
 
 export interface LabelProps {
@@ -21,13 +22,14 @@ const Label = ({ text }: LabelProps) => {
 
     return (
       <div className={classes.Tooltip}>
-        <img src={info} alt="back" ref={ref} />
+        <img src={info} alt={getId('info')} ref={ref} />
         <div style={{ top, left: left + 30 }}>
           Choose how many points should the algorithm assume to have for neighbour separation
         </div>
       </div>
     );
   };
+
   return (
     <div className={classes.index}>
       <p>{text}</p>

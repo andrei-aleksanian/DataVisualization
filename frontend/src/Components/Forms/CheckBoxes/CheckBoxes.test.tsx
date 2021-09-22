@@ -19,7 +19,7 @@ const testCheckBoxesProps: CheckBoxesProps = {
   ],
   currentValue: state,
   onChange: setState,
-  heading: 'Test Checkboxes',
+  labelText: 'Test Checkboxes',
 };
 
 const cleanupState = () => {
@@ -38,7 +38,7 @@ describe('Test UI renders', () => {
 
   test('Heading is rendered', () => {
     init();
-    expect(screen.getByText(testCheckBoxesProps.heading)).toBeInTheDocument();
+    expect(screen.getByText(testCheckBoxesProps.labelText)).toBeInTheDocument();
   });
 
   test('Test all entries from entries array render', () => {

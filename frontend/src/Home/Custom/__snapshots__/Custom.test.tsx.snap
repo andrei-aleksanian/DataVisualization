@@ -9,7 +9,7 @@ exports[`Examples matches snapshot 1`] = `
       class="index"
     >
       <a
-        class="index Back"
+        class="index Back Block"
         href="/"
       >
         <img
@@ -17,331 +17,342 @@ exports[`Examples matches snapshot 1`] = `
           src="arrow.svg"
         />
       </a>
-      <h1>
-        Custom Data
-      </h1>
       <div
-        class="index"
+        class="Settings"
       >
-        <p>
-          Algorithm:
-        </p>
-        <div
-          class="CheckBoxes"
-        >
-          <label>
-            <input
-              type="radio"
-            />
-            <span
-              class="text"
-            >
-              COVA
-            </span>
-            <span
-              class="checkmark"
-            />
-          </label>
-          <label>
-            <input
-              checked=""
-              type="radio"
-            />
-            <span
-              class="text"
-            >
-              ANGEL
-            </span>
-            <span
-              class="checkmark"
-            />
-          </label>
-        </div>
-      </div>
-      <div
-        class="index"
-      >
-        <p>
-          Neighbour number:
-        </p>
-        <div
-          class="rc-slider rc-slider-with-marks"
-        >
-          <div
-            class="rc-slider-rail"
-            style="height: 4px;"
-          />
-          <div
-            class="rc-slider-track"
-            style="height: 4px; left: 0%; width: 0%;"
-          />
-          <div
-            class="rc-slider-step"
-          >
-            <span
-              class="rc-slider-dot rc-slider-dot-active"
-              style="height: 10px; width: 10px; bottom: -3px; left: 0%;"
-            />
-            <span
-              class="rc-slider-dot"
-              style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 25%;"
-            />
-            <span
-              class="rc-slider-dot"
-              style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 50%;"
-            />
-            <span
-              class="rc-slider-dot"
-              style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 75%;"
-            />
-            <span
-              class="rc-slider-dot"
-              style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 100%;"
-            />
-          </div>
-          <div
-            aria-disabled="false"
-            aria-valuemax="4"
-            aria-valuemin="0"
-            aria-valuenow="0"
-            class="rc-slider-handle"
-            role="slider"
-            style="height: 20px; width: 20px; margin-top: -9px; box-shadow: none; left: 0%; transform: translateX(-50%);"
-            tabindex="0"
-          />
-          <div
-            class="rc-slider-mark"
-          >
-            <span
-              class="rc-slider-mark-text rc-slider-mark-text-active"
-              style="transform: translateX(-50%); left: 0%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-            >
-              10
-            </span>
-            <span
-              class="rc-slider-mark-text"
-              style="transform: translateX(-50%); left: 25%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-            >
-              20
-            </span>
-            <span
-              class="rc-slider-mark-text"
-              style="transform: translateX(-50%); left: 50%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-            >
-              30
-            </span>
-            <span
-              class="rc-slider-mark-text"
-              style="transform: translateX(-50%); left: 75%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-            >
-              10%
-            </span>
-            <span
-              class="rc-slider-mark-text"
-              style="transform: translateX(-50%); left: 100%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-            >
-              30%
-            </span>
-          </div>
-        </div>
-      </div>
-      <div
-        class="index"
-      >
-        <p>
-          Anchor density:
-        </p>
-        <div
-          class="rc-slider rc-slider-with-marks"
-        >
-          <div
-            class="rc-slider-rail"
-            style="height: 4px;"
-          />
-          <div
-            class="rc-slider-track"
-            style="height: 4px; left: 0%; width: 0%;"
-          />
-          <div
-            class="rc-slider-step"
-          >
-            <span
-              class="rc-slider-dot rc-slider-dot-active"
-              style="height: 10px; width: 10px; bottom: -3px; left: 0%;"
-            />
-            <span
-              class="rc-slider-dot"
-              style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 100%;"
-            />
-          </div>
-          <div
-            aria-disabled="false"
-            aria-valuemax="0.2"
-            aria-valuemin="0.1"
-            aria-valuenow="0.1"
-            class="rc-slider-handle"
-            role="slider"
-            style="height: 20px; width: 20px; margin-top: -9px; box-shadow: none; left: 0%; transform: translateX(-50%);"
-            tabindex="0"
-          />
-          <div
-            class="rc-slider-mark"
-          >
-            <span
-              class="rc-slider-mark-text rc-slider-mark-text-active"
-              style="transform: translateX(-50%); left: 0%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-            >
-              0.1
-            </span>
-            <span
-              class="rc-slider-mark-text"
-              style="transform: translateX(-50%); left: 100%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-            >
-              0.2
-            </span>
-          </div>
-        </div>
-      </div>
-      <div
-        class="index"
-      >
-        <p>
-          Epsilon:
-        </p>
-        <div
-          class="rc-slider rc-slider-with-marks"
-        >
-          <div
-            class="rc-slider-rail"
-            style="height: 4px;"
-          />
-          <div
-            class="rc-slider-track"
-            style="height: 4px; left: 0%; width: 0%;"
-          />
-          <div
-            class="rc-slider-step"
-          >
-            <span
-              class="rc-slider-dot rc-slider-dot-active"
-              style="height: 10px; width: 10px; bottom: -3px; left: 0%;"
-            />
-            <span
-              class="rc-slider-dot"
-              style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 100%;"
-            />
-          </div>
-          <div
-            aria-disabled="false"
-            aria-valuemax="5"
-            aria-valuemin="0.1"
-            aria-valuenow="0.1"
-            class="rc-slider-handle"
-            role="slider"
-            style="height: 20px; width: 20px; margin-top: -9px; box-shadow: none; left: 0%; transform: translateX(-50%);"
-            tabindex="0"
-          />
-          <div
-            class="rc-slider-mark"
-          >
-            <span
-              class="rc-slider-mark-text rc-slider-mark-text-active"
-              style="transform: translateX(-50%); left: 0%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-            >
-              0.1
-            </span>
-            <span
-              class="rc-slider-mark-text"
-              style="transform: translateX(-50%); left: 100%; font-size: 0.85rem; color: rgb(204, 204, 204);"
-            >
-              5
-            </span>
-          </div>
-        </div>
-      </div>
-      <div
-        class="index"
-      >
-        <p>
-          Anchor modification:
-        </p>
-        <div
-          class="CheckBoxes"
-        >
-          <label>
-            <input
-              checked=""
-              type="radio"
-            />
-            <span
-              class="text"
-            >
-              0
-            </span>
-            <span
-              class="checkmark"
-            />
-          </label>
-          <label>
-            <input
-              type="radio"
-            />
-            <span
-              class="text"
-            >
-              1
-            </span>
-            <span
-              class="checkmark"
-            />
-          </label>
-        </div>
-      </div>
-      <div
-        class="index"
-      >
-        <p>
-          Show Data Preservation Error:
-        </p>
-        <div
-          class="CheckBoxes"
-        >
-          <label>
-            <input
-              type="radio"
-            />
-            <span
-              class="text"
-            >
-              Yes
-            </span>
-            <span
-              class="checkmark"
-            />
-          </label>
-          <label>
-            <input
-              checked=""
-              type="radio"
-            />
-            <span
-              class="text"
-            >
-              No
-            </span>
-            <span
-              class="checkmark"
-            />
-          </label>
-        </div>
-      </div>
-      <div>
+        <h1>
+          Custom Data
+        </h1>
         <div
           class="index"
         >
-          <p>
-            Dimension:
-          </p>
+          <div
+            class="index"
+          >
+            <p>
+              Algorithm:
+            </p>
+            <div
+              class="Tooltip"
+            >
+              <img
+                alt="info-0"
+                src="info.svg"
+              />
+              <div
+                style="top: 0px; left: 30px;"
+              >
+                Choose how many points should the algorithm assume to have for neighbour separation
+              </div>
+            </div>
+          </div>
+          <div
+            class="CheckBoxes"
+          >
+            <label>
+              <input
+                type="radio"
+              />
+              <span
+                class="text"
+              >
+                COVA
+              </span>
+              <span
+                class="checkmark"
+              />
+            </label>
+            <label>
+              <input
+                checked=""
+                type="radio"
+              />
+              <span
+                class="text"
+              >
+                ANGEL
+              </span>
+              <span
+                class="checkmark"
+              />
+            </label>
+          </div>
+        </div>
+        <div
+          class="index"
+        >
+          <div
+            class="index"
+          >
+            <p>
+              Neighbour number:
+            </p>
+            <div
+              class="Tooltip"
+            >
+              <img
+                alt="info-1"
+                src="info.svg"
+              />
+              <div
+                style="top: 0px; left: 30px;"
+              >
+                Choose how many points should the algorithm assume to have for neighbour separation
+              </div>
+            </div>
+          </div>
+          <div
+            class="rc-slider rc-slider-with-marks"
+          >
+            <div
+              class="rc-slider-rail"
+              style="height: 4px;"
+            />
+            <div
+              class="rc-slider-track"
+              style="height: 4px; left: 0%; width: 0%;"
+            />
+            <div
+              class="rc-slider-step"
+            >
+              <span
+                class="rc-slider-dot rc-slider-dot-active"
+                style="height: 10px; width: 10px; bottom: -3px; left: 0%;"
+              />
+              <span
+                class="rc-slider-dot"
+                style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 25%;"
+              />
+              <span
+                class="rc-slider-dot"
+                style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 50%;"
+              />
+              <span
+                class="rc-slider-dot"
+                style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 75%;"
+              />
+              <span
+                class="rc-slider-dot"
+                style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 100%;"
+              />
+            </div>
+            <div
+              aria-disabled="false"
+              aria-valuemax="4"
+              aria-valuemin="0"
+              aria-valuenow="0"
+              class="rc-slider-handle"
+              role="slider"
+              style="height: 20px; width: 20px; margin-top: -9px; box-shadow: none; left: 0%; transform: translateX(-50%);"
+              tabindex="0"
+            />
+            <div
+              class="rc-slider-mark"
+            >
+              <span
+                class="rc-slider-mark-text rc-slider-mark-text-active"
+                style="transform: translateX(-50%); left: 0%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+              >
+                10
+              </span>
+              <span
+                class="rc-slider-mark-text"
+                style="transform: translateX(-50%); left: 25%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+              >
+                20
+              </span>
+              <span
+                class="rc-slider-mark-text"
+                style="transform: translateX(-50%); left: 50%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+              >
+                30
+              </span>
+              <span
+                class="rc-slider-mark-text"
+                style="transform: translateX(-50%); left: 75%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+              >
+                10%
+              </span>
+              <span
+                class="rc-slider-mark-text"
+                style="transform: translateX(-50%); left: 100%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+              >
+                30%
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="index"
+        >
+          <div
+            class="index"
+          >
+            <p>
+              Anchor density:
+            </p>
+            <div
+              class="Tooltip"
+            >
+              <img
+                alt="info-2"
+                src="info.svg"
+              />
+              <div
+                style="top: 0px; left: 30px;"
+              >
+                Choose how many points should the algorithm assume to have for neighbour separation
+              </div>
+            </div>
+          </div>
+          <div
+            class="rc-slider rc-slider-with-marks"
+          >
+            <div
+              class="rc-slider-rail"
+              style="height: 4px;"
+            />
+            <div
+              class="rc-slider-track"
+              style="height: 4px; left: 0%; width: 0%;"
+            />
+            <div
+              class="rc-slider-step"
+            >
+              <span
+                class="rc-slider-dot rc-slider-dot-active"
+                style="height: 10px; width: 10px; bottom: -3px; left: 0%;"
+              />
+              <span
+                class="rc-slider-dot"
+                style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 100%;"
+              />
+            </div>
+            <div
+              aria-disabled="false"
+              aria-valuemax="0.2"
+              aria-valuemin="0.1"
+              aria-valuenow="0.1"
+              class="rc-slider-handle"
+              role="slider"
+              style="height: 20px; width: 20px; margin-top: -9px; box-shadow: none; left: 0%; transform: translateX(-50%);"
+              tabindex="0"
+            />
+            <div
+              class="rc-slider-mark"
+            >
+              <span
+                class="rc-slider-mark-text rc-slider-mark-text-active"
+                style="transform: translateX(-50%); left: 0%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+              >
+                0.1
+              </span>
+              <span
+                class="rc-slider-mark-text"
+                style="transform: translateX(-50%); left: 100%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+              >
+                0.2
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="index"
+        >
+          <div
+            class="index"
+          >
+            <p>
+              Epsilon:
+            </p>
+            <div
+              class="Tooltip"
+            >
+              <img
+                alt="info-3"
+                src="info.svg"
+              />
+              <div
+                style="top: 0px; left: 30px;"
+              >
+                Choose how many points should the algorithm assume to have for neighbour separation
+              </div>
+            </div>
+          </div>
+          <div
+            class="rc-slider rc-slider-with-marks"
+          >
+            <div
+              class="rc-slider-rail"
+              style="height: 4px;"
+            />
+            <div
+              class="rc-slider-track"
+              style="height: 4px; left: 0%; width: 0%;"
+            />
+            <div
+              class="rc-slider-step"
+            >
+              <span
+                class="rc-slider-dot rc-slider-dot-active"
+                style="height: 10px; width: 10px; bottom: -3px; left: 0%;"
+              />
+              <span
+                class="rc-slider-dot"
+                style="border: 2px solid #fff; height: 10px; width: 10px; bottom: -3px; left: 100%;"
+              />
+            </div>
+            <div
+              aria-disabled="false"
+              aria-valuemax="5"
+              aria-valuemin="0.1"
+              aria-valuenow="0.1"
+              class="rc-slider-handle"
+              role="slider"
+              style="height: 20px; width: 20px; margin-top: -9px; box-shadow: none; left: 0%; transform: translateX(-50%);"
+              tabindex="0"
+            />
+            <div
+              class="rc-slider-mark"
+            >
+              <span
+                class="rc-slider-mark-text rc-slider-mark-text-active"
+                style="transform: translateX(-50%); left: 0%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+              >
+                0.1
+              </span>
+              <span
+                class="rc-slider-mark-text"
+                style="transform: translateX(-50%); left: 100%; font-size: 0.85rem; color: rgb(204, 204, 204);"
+              >
+                5
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="index"
+        >
+          <div
+            class="index"
+          >
+            <p>
+              Anchor modification:
+            </p>
+            <div
+              class="Tooltip"
+            >
+              <img
+                alt="info-4"
+                src="info.svg"
+              />
+              <div
+                style="top: 0px; left: 30px;"
+              >
+                Choose how many points should the algorithm assume to have for neighbour separation
+              </div>
+            </div>
+          </div>
           <div
             class="CheckBoxes"
           >
@@ -353,7 +364,7 @@ exports[`Examples matches snapshot 1`] = `
               <span
                 class="text"
               >
-                2
+                0
               </span>
               <span
                 class="checkmark"
@@ -366,7 +377,7 @@ exports[`Examples matches snapshot 1`] = `
               <span
                 class="text"
               >
-                3
+                1
               </span>
               <span
                 class="checkmark"
@@ -374,39 +385,151 @@ exports[`Examples matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <p
-          class="p"
-        >
-          Choose a File:
-        </p>
         <div
-          class="Wrapper"
+          class="index"
         >
           <div
-            class="Container"
-            style="border-color: #bbb;"
-            tabindex="0"
+            class="index"
           >
-            <input
-              accept=".mat"
-              autocomplete="off"
-              data-testid="filearea"
-              multiple=""
-              style="display: none;"
-              tabindex="-1"
-              type="file"
-            />
+            <p>
+              Show Data Preservation Error:
+            </p>
+            <div
+              class="Tooltip"
+            >
+              <img
+                alt="info-5"
+                src="info.svg"
+              />
+              <div
+                style="top: 0px; left: 30px;"
+              >
+                Choose how many points should the algorithm assume to have for neighbour separation
+              </div>
+            </div>
+          </div>
+          <div
+            class="CheckBoxes"
+          >
             <label>
-              Drag and Drop or Click HERE to choose file
+              <input
+                type="radio"
+              />
+              <span
+                class="text"
+              >
+                Yes
+              </span>
+              <span
+                class="checkmark"
+              />
+            </label>
+            <label>
+              <input
+                checked=""
+                type="radio"
+              />
+              <span
+                class="text"
+              >
+                No
+              </span>
+              <span
+                class="checkmark"
+              />
             </label>
           </div>
         </div>
-        <button
-          class="Button submit"
-          type="button"
-        >
-          Submit
-        </button>
+        <div>
+          <div
+            class="index"
+          >
+            <div
+              class="index"
+            >
+              <p>
+                Dimension:
+              </p>
+              <div
+                class="Tooltip"
+              >
+                <img
+                  alt="info-6"
+                  src="info.svg"
+                />
+                <div
+                  style="top: 0px; left: 30px;"
+                >
+                  Choose how many points should the algorithm assume to have for neighbour separation
+                </div>
+              </div>
+            </div>
+            <div
+              class="CheckBoxes"
+            >
+              <label>
+                <input
+                  checked=""
+                  type="radio"
+                />
+                <span
+                  class="text"
+                >
+                  2
+                </span>
+                <span
+                  class="checkmark"
+                />
+              </label>
+              <label>
+                <input
+                  type="radio"
+                />
+                <span
+                  class="text"
+                >
+                  3
+                </span>
+                <span
+                  class="checkmark"
+                />
+              </label>
+            </div>
+          </div>
+          <p
+            class="p"
+          >
+            Choose a File:
+          </p>
+          <div
+            class="Wrapper"
+          >
+            <div
+              class="Container"
+              style="border-color: #bbb;"
+              tabindex="0"
+            >
+              <input
+                accept=".mat"
+                autocomplete="off"
+                data-testid="filearea"
+                multiple=""
+                style="display: none;"
+                tabindex="-1"
+                type="file"
+              />
+              <label>
+                Drag and Drop or Click HERE to choose file
+              </label>
+            </div>
+          </div>
+          <button
+            class="Button submit"
+            type="button"
+          >
+            Submit
+          </button>
+        </div>
       </div>
     </div>
   </div>

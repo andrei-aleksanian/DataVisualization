@@ -5,9 +5,26 @@ exports[`Test UI renders Settings matches snapshot 1`] = `
   <div
     class="index"
   >
-    <p>
-      Test Checkboxes
-    </p>
+    <div
+      class="index"
+    >
+      <p>
+        Test Checkboxes
+      </p>
+      <div
+        class="Tooltip"
+      >
+        <img
+          alt="info-0"
+          src="info.svg"
+        />
+        <div
+          style="top: 0px; left: 30px;"
+        >
+          Choose how many points should the algorithm assume to have for neighbour separation
+        </div>
+      </div>
+    </div>
     <div
       class="CheckBoxes"
     >
