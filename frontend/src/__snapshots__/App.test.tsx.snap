@@ -77,7 +77,7 @@ exports[`Examples matches snapshot 1`] = `
               <div
                 style="top: 20px; left: -120px;"
               >
-                Choose how many points should the algorithm assume to have for neighbour separation
+                Tooltip example common settigns.
               </div>
             </div>
           </div>
@@ -132,7 +132,7 @@ exports[`Examples matches snapshot 1`] = `
               <div
                 style="top: 20px; left: -120px;"
               >
-                Choose how many points should the algorithm assume to have for neighbour separation
+                Tooltip example common settigns.
               </div>
             </div>
           </div>
@@ -236,7 +236,7 @@ exports[`Examples matches snapshot 1`] = `
               <div
                 style="top: 20px; left: -120px;"
               >
-                Choose how many points should the algorithm assume to have for neighbour separation
+                Example tooltip ANGEL
               </div>
             </div>
           </div>
@@ -320,7 +320,7 @@ exports[`Examples matches snapshot 1`] = `
               <div
                 style="top: 20px; left: -120px;"
               >
-                Choose how many points should the algorithm assume to have for neighbour separation
+                Example tooltip ANGEL
               </div>
             </div>
           </div>
@@ -394,7 +394,7 @@ exports[`Examples matches snapshot 1`] = `
               <div
                 style="top: 20px; left: -120px;"
               >
-                Choose how many points should the algorithm assume to have for neighbour separation
+                Example tooltip ANGEL
               </div>
             </div>
           </div>
@@ -449,7 +449,7 @@ exports[`Examples matches snapshot 1`] = `
               <div
                 style="top: 20px; left: -120px;"
               >
-                Choose how many points should the algorithm assume to have for neighbour separation
+                Tooltip example common settigns.
               </div>
             </div>
           </div>
