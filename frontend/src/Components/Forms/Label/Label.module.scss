@@ -1,0 +1,40 @@
+.index {
+  display: flex;
+  justify-content: space-between;
+}
+
+.index p {
+  font-size: 1.1rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.Tooltip {
+  position: relative;
+}
+
+.Tooltip img {
+  height: 18px;
+  width: 18px;
+}
+
+.Tooltip div {
+  display: none; // change to none
+  position: absolute;
+  background-color: var(--color-tooltip-bg);
+  width: 120px;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.1rem;
+  z-index: var(--z-index-10);
+}
+
+.Tooltip div:hover,
+.Tooltip img:hover + div {
+  display: block;
+}
+
+:root {
+  --color-tooltip-bg: #3d3f4b;
+}

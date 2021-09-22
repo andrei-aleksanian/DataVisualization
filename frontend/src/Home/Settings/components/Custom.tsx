@@ -25,7 +25,9 @@ export interface CustomProps {
   acceptedType: string;
 }
 
+const TEXT_TOOLTIP = 'Example tooltip.';
 export const TEXT_CHECKBOX_DIMENSION = 'Dimension:';
+export const TEXT_FILEDROP_AREA = 'Choose a File:';
 export const TEXT_BUTTON = 'Submit';
 
 const Custom = ({
@@ -46,7 +48,8 @@ const Custom = ({
   return (
     <div>
       <CheckBoxes
-        heading={TEXT_CHECKBOX_DIMENSION}
+        labelText={TEXT_CHECKBOX_DIMENSION}
+        tooltipText={TEXT_TOOLTIP}
         currentValue={dimension}
         onChange={onChangeDimension}
         entries={[
@@ -54,7 +57,13 @@ const Custom = ({
           { value: Dimension.D3, text: '3' },
         ]}
       />
-      <FileDropArea setFile={setFile} file={file} acceptedType={acceptedType} />
+      <FileDropArea
+        setFile={setFile}
+        file={file}
+        acceptedType={acceptedType}
+        tooltipText={TEXT_TOOLTIP}
+        labelText={TEXT_FILEDROP_AREA}
+      />
       <Button text={TEXT_BUTTON} onClick={() => onSubmit()} active={false} customClass={classes.submit} />
       {error && <Error text={error} />}
     </div>

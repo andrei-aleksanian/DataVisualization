@@ -1,10 +1,12 @@
 .index {
   grid-area: settings;
-  padding: 5rem 2rem;
   background-color: var(--color-background);
+  overflow-y: scroll;
+}
+
+.Settings {
+  padding: 3rem 2rem;
   color: var(--color-text);
-  overflow: scroll;
-  position: relative;
 }
 
 .index h1 {

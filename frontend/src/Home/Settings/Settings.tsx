@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 
-import cx from 'classnames';
-
 import { Algorithm } from 'types/Settings';
 
 import CheckBoxes from 'Components/Forms/CheckBoxes';
@@ -36,6 +34,7 @@ export const defaultSettingsCommon: SettingsCommon = {
   neighbour: 0, // stands for index in NEIGHBOUR_MARKS_ARR, not value
 };
 export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%'];
+const TEXT_TOOLTIP = 'Tooltip example common settigns.';
 export interface SettingsProps {
   settingsCommon: SettingsCommon;
   setSettingsCommon: React.Dispatch<React.SetStateAction<SettingsCommon>>;
@@ -81,45 +80,50 @@ const Settings = ({
   });
 
   return (
-    <div className={cx(classes.index, { [classes.loading]: isLoading })} ref={ref}>
-      <LinkBack link={backLink} />
-      <h1>{name}</h1>
-      {!reviewer && (
+    <div className={classes.index} ref={ref}>
+      <LinkBack link={backLink} block />
+      <div className={classes.Settings}>
+        <h1>{name}</h1>
+        {!reviewer && (
+          <CheckBoxes
+            labelText={TEXT_CHECKBOX_ALGORITHM}
+            tooltipText={TEXT_TOOLTIP}
+            currentValue={settingsCommon.algorithm}
+            onChange={onChangeAlgorithm}
+            entries={[
+              { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
+              { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
+            ]}
+          />
+        )}
+        <Slider
+          min={0}
+          max={NEIGHBOUR_MARKS_ARR.length - 1}
+          step={1}
+          marksArr={NEIGHBOUR_MARKS_ARR}
+          onChange={onChangeNeighbour}
+          labelText={TEXT_SLIDER_NEIGHBOUR}
+          tooltipText={TEXT_TOOLTIP}
+          value={settingsCommon.neighbour}
+        />
+        {settingsCommon.algorithm === Algorithm.COVA ? (
+          <COVA {...{ settingsCOVA, setSettingsCOVA }} />
+        ) : (
+          <ANGEL {...{ settingsANGEL, setSettingsANGEL, isCustomDataPage: !!customDataPage }} />
+        )}
         <CheckBoxes
-          heading={TEXT_CHECKBOX_ALGORITHM}
-          currentValue={settingsCommon.algorithm}
-          onChange={onChangeAlgorithm}
+          labelText={TEXT_CHECKBOX_PRESERVATION}
+          tooltipText={TEXT_TOOLTIP}
+          currentValue={settingsCommon.dataPreservation}
+          onChange={onChangeDataPreservation}
           entries={[
-            { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
-            { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
+            { value: DataPreservation.ON, text: 'Yes' },
+            { value: DataPreservation.OFF, text: 'No' },
           ]}
         />
-      )}
-      <Slider
-        min={0}
-        max={NEIGHBOUR_MARKS_ARR.length - 1}
-        step={1}
-        marksArr={NEIGHBOUR_MARKS_ARR}
-        onChange={onChangeNeighbour}
-        text={TEXT_SLIDER_NEIGHBOUR}
-        value={settingsCommon.neighbour}
-      />
-      {settingsCommon.algorithm === Algorithm.COVA ? (
-        <COVA {...{ settingsCOVA, setSettingsCOVA }} />
-      ) : (
-        <ANGEL {...{ settingsANGEL, setSettingsANGEL, isCustomDataPage: !!customDataPage }} />
-      )}
-      <CheckBoxes
-        heading={TEXT_CHECKBOX_PRESERVATION}
-        currentValue={settingsCommon.dataPreservation}
-        onChange={onChangeDataPreservation}
-        entries={[
-          { value: DataPreservation.ON, text: 'Yes' },
-          { value: DataPreservation.OFF, text: 'No' },
-        ]}
-      />
-      {customDataPage && <Custom {...customDataPage} />}
-      {isLoading && <Loader height={height} />}
+        {customDataPage && <Custom {...customDataPage} />}
+        {isLoading && <Loader height={height} />}
+      </div>
     </div>
   );
 };

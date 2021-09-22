@@ -5,9 +5,24 @@ exports[`Test UI renders Settings matches snapshot 1`] = `
   <div
     class="index"
   >
-    <p>
-      Test Checkboxes
-    </p>
+    <div
+      class="index"
+    >
+      <p>
+        Test Checkboxes
+      </p>
+      <div
+        class="Tooltip"
+      >
+        <img
+          alt="info-0"
+          src="info.svg"
+        />
+        <div
+          style="top: 20px; left: -120px;"
+        />
+      </div>
+    </div>
     <div
       class="CheckBoxes"
     >

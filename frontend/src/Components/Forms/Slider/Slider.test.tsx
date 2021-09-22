@@ -16,7 +16,8 @@ const getSliderProps = (num: boolean = true): SliderProps => {
     max: 0.3,
     step: 0.1,
     marksArr: [],
-    text: 'Test Description',
+    labelText: 'Test Description',
+    tooltipText: 'Example',
     value: state,
   };
   if (num) {
@@ -42,7 +43,7 @@ describe('Test Slider Component with marks number inputs', () => {
 
   test('Description is rendered', () => {
     init();
-    expect(screen.getByText(getSliderProps().text)).toBeInTheDocument();
+    expect(screen.getByText(getSliderProps().labelText)).toBeInTheDocument();
   });
 
   test('Change state on click', () => {
