@@ -72,7 +72,6 @@ def splitData(data: np.ndarray):
   resultData: np.ndarray = np.copy(data)
 
   dimension = getDimension(data)
-  print(dimension)
   data = postProcessing(data, dimension)
   data = formatDimension(data, dimension)
 

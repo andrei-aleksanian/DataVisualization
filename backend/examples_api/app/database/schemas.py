@@ -62,6 +62,7 @@ class ExampleCreate(ExampleBase):
   """
   dimension: Dimension
   originalData: JSONType
+  filePath: str
   labels: JSONType
 
 

@@ -17,6 +17,7 @@ class Examples(Base):
   id = Column(Integer, primary_key=True, index=True)
   name = Column(String(64), unique=True, nullable=False)
   imagePath = Column(String(256), unique=True, nullable=False)
+  filePath = Column(String(256), unique=True, nullable=False)
   dimension = Column(Integer, nullable=False)
   description = Column(String(512))
   originalData = Column(JSON)

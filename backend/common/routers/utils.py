@@ -24,24 +24,6 @@ FILE_COULD_NOT_BE_READ = "Your file can't be read. Please make sure it's in the 
 FILE_NOT_MAT = "Your file must have the .mat extension."
 
 
-def getFile(exampleNumber: int):
-  """
-  DELETE ME - I am a helper method and should not be in production.
-  See trello for more details.
-  """
-  file: str = None
-  if exampleNumber == 1:
-    file = 'bicycle_sample'
-  elif exampleNumber == 2:
-    file = 'cylinder_sample'
-  elif exampleNumber == 3:
-    file = 'flower'
-  else:
-    raise HTTPException(
-        status_code=400, detail="Only 1,2,3 are accepted as exampleNumber")
-  return file
-
-
 def saveFile(file: UploadFile, folderPath: str, image: bool = False):
   """Writing the .mat file to a folder"""
   _, extension = os.path.splitext(file.filename)

@@ -4,6 +4,7 @@ Utils functions for tests.
 To be reused in other tests.
 """
 import os
+import json
 from pathlib import Path
 from fastapi.testclient import TestClient
 from sqlalchemy_utils.functions import drop_database as dropDatabase, database_exists
@@ -11,7 +12,7 @@ from examples_api.app.database.database import engine, SessionLocal
 from examples_api.app.database.schemas import ExampleCreate
 from examples_api.app.database.crud import createExample
 from examples_api.app.database import models
-from common.static import staticFolderPath
+from common.static import staticFolderPath, generatedDataFolderPath
 
 
 mockExample = {
@@ -22,7 +23,10 @@ mockExample = {
 
 mockExampleWithImage = {
     **mockExample,
-    "imagePath": "test.jpg"
+    "imagePath": "test.jpg",
+    "filePath": "test.mat",
+    "originalData": json.dumps([0]),
+    "labels": json.dumps([0])
 }
 
 
@@ -42,7 +46,7 @@ def getMat():
 
 def getBadMat():
   """
-  Get bad test imahge as bytes
+  Get bad test image as bytes
   """
   return open(os.getcwd() + '/tests/files/testBad.mat', 'rb')
 
@@ -52,7 +56,10 @@ def postMockExample(client: TestClient):
   POSTing an example and hence generating test data for ANGEL and COVA
   """
   response = client.post("/api/examples/", data=mockExample,
-                         files={"image": ("test.jpg", getImage(), "image/jpeg")})
+                         files={
+                             "image": ("test.jpg", getImage(), "image/jpeg"),
+                             "file": ("test.mat", getMat(), ".mat")
+                         })
 
   return response
 
@@ -74,6 +81,9 @@ def cleanupDB(start: bool):
     dropDatabase(engine.url)
 
   for path in Path(staticFolderPath + '.').glob("*test.jpg"):
+    path.unlink()
+
+  for path in Path(generatedDataFolderPath + '.').glob("*test.mat"):
     path.unlink()
 
   if start:

@@ -85,6 +85,9 @@ def testGetAllExamplesSuccessNotEmpty():
 
   mockResponseNoDimension = {**mockExampleWithImage}
   del mockResponseNoDimension["dimension"]
+  del mockResponseNoDimension["filePath"]
+  del mockResponseNoDimension["originalData"]
+  del mockResponseNoDimension["labels"]
   mockResponseNoDimension["id"] = 1
 
   assert response.json() == [mockResponseNoDimension]

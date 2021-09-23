@@ -1,7 +1,7 @@
 """
 Endpoints for Examples.
 """
-# pylint: disable=R0801, too-many-arguments
+# pylint: disable=R0801, too-many-arguments, too-many-locals
 import os
 import json
 import traceback
@@ -14,9 +14,9 @@ from sklearn.preprocessing import MinMaxScaler
 
 from common.visualization.utils.dataGenerated import loadData
 from common.types.Custom import DimensionIn
-from common.routers.utils import saveFile, getFile
+from common.routers.utils import saveFile
 from common.types.exceptions import RuntimeAlgorithmError, FileConstraintsError
-from common.static import staticFolderPath
+from common.static import staticFolderPath, generatedDataFolderPath
 from common.environment import Env
 from ..visualization.generateCOVA import generateCOVA
 from ..visualization.generateANGEL import generateANGEL
@@ -55,10 +55,10 @@ def deleteExampleData(database: Session, exampleId: int):
 @router.post("/", summary="Add a new example to the database")
 def createExample(
         name: str = Form(...),
-        exampleNumber: int = Form(...),
         description: Optional[str] = Form(...),
         dimension: DimensionIn = Form(...),
         image: UploadFile = File(...),
+        file: UploadFile = File(...),
         database: Session = Depends(getDB)
 ):
   """
@@ -66,13 +66,21 @@ def createExample(
   Adds the example to the database.
   """
 
-  def cleanSession(exampleId: int = None, imagePath: str = None, error: Exception = None):
+  def cleanSession(
+      exampleId: int = None,
+      imagePath: str = None,
+      filePath: str = None,
+      error: Exception = None
+  ):
     # in case something goes horribly wrong, delete all entries related to example
     if exampleId:
       deleteExampleData(database, exampleId)
 
     if imagePath:
       os.remove(imagePath)
+
+    if filePath:
+      os.remove(filePath)
 
     raise HTTPException(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -95,6 +103,7 @@ def createExample(
   def generateData(
           example: schemas.ExampleCrud,
           imagePath: str,
+          filePath: str,
           originalData: ndarray,
           labels: ndarray,
           scaler: MinMaxScaler
@@ -104,32 +113,36 @@ def createExample(
       generateANGEL(example.id, example.dimension,
                     originalData, labels, scaler)
     except RuntimeAlgorithmError:
-      cleanSession(example.id, imagePath)
+      cleanSession(example.id, imagePath=imagePath, filePath=filePath)
+    finally:
+      print(traceback.format_exc())
+
+  def readData(filePath: str, imagePath: str):
+    try:
+      return loadData(filePath)
     except FileConstraintsError as error:
-      cleanSession(example.id, imagePath, error)
+      return cleanSession(example.id, imagePath, filePath, error)
     except FileNotFoundError as error:
-      cleanSession(example.id, imagePath, error)
+      return cleanSession(example.id, imagePath, filePath, error)
     finally:
       print(traceback.format_exc())
 
   checkExists(database, name)
+  filePath = saveFile(file, generatedDataFolderPath)
   imagePath = saveImage(image)
-  file = getFile(exampleNumber)
-  originalData, \
-      labels, \
-      scaler = loadData(
-          f"./common/visualization/Data/{file}.mat")
+  originalData, labels, scaler = readData(filePath, imagePath)
   example = crud.createExample(
       database, schemas.ExampleCreate(**{
           "name": name,
           "description": description,
           "dimension": int(dimension),
           "imagePath": image.filename,
+          "filePath": file.filename,
           "originalData": json.dumps(originalData.tolist()),
           "labels": json.dumps(labels.ravel().tolist())
       })
   )
-  generateData(example, imagePath, originalData, labels, scaler)
+  generateData(example, imagePath, filePath, originalData, labels, scaler)
 
   return Response(status_code=status.HTTP_200_OK)
 
