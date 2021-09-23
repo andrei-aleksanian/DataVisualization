@@ -171,10 +171,15 @@ def getExample(exampleId: int, database: Session = Depends(getDB)):
   example = crud.getExample(database, exampleId)
   if not example:
     raise HTTPException(status_code=404)
+
+  dimension2D = True
+  for point in json.loads(example.originalData):
+    if not point[2] == 0:
+      dimension2D = False
   return schemas.ExampleData(**{
       "originalData": example.originalData,
       "labels": example.labels,
-      "dimension2D": example.dimension == 2,
+      "dimension2D": dimension2D,
       "exampleName": example.name
   })
 

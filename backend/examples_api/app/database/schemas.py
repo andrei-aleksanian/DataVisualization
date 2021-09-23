@@ -76,6 +76,8 @@ class Example(ExampleBase):
 class ExampleData(BaseModel):
   originalData: JSONType
   labels: JSONType
+  exampleName: str
+  dimension2D: bool
 
 
 class ExampleCrud(Example):
