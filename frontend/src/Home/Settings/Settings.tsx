@@ -34,7 +34,10 @@ export const defaultSettingsCommon: SettingsCommon = {
   neighbour: 0, // stands for index in NEIGHBOUR_MARKS_ARR, not value
 };
 export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%'];
-const TEXT_TOOLTIP = 'Tooltip example common settigns.';
+const TEXT_TOOLTIP_ALGORITHM = 'Choose between different embedding algrotihms.';
+const TEXT_TOOLTIP_NEIGHBOURS = 'The k-nearest neighborhood selection, used to construct an adjacency matrix.';
+const TEXT_TOOLTIP_DATA_PRESERVATION = 'The red lines link the wrongly preserved local neighbourhood errors.';
+
 export interface SettingsProps {
   settingsCommon: SettingsCommon;
   setSettingsCommon: React.Dispatch<React.SetStateAction<SettingsCommon>>;
@@ -87,7 +90,7 @@ const Settings = ({
         {!reviewer && (
           <CheckBoxes
             labelText={TEXT_CHECKBOX_ALGORITHM}
-            tooltipText={TEXT_TOOLTIP}
+            tooltipText={TEXT_TOOLTIP_ALGORITHM}
             currentValue={settingsCommon.algorithm}
             onChange={onChangeAlgorithm}
             entries={[
@@ -103,7 +106,7 @@ const Settings = ({
           marksArr={NEIGHBOUR_MARKS_ARR}
           onChange={onChangeNeighbour}
           labelText={TEXT_SLIDER_NEIGHBOUR}
-          tooltipText={TEXT_TOOLTIP}
+          tooltipText={TEXT_TOOLTIP_NEIGHBOURS}
           value={settingsCommon.neighbour}
         />
         {settingsCommon.algorithm === Algorithm.COVA ? (
@@ -113,7 +116,7 @@ const Settings = ({
         )}
         <CheckBoxes
           labelText={TEXT_CHECKBOX_PRESERVATION}
-          tooltipText={TEXT_TOOLTIP}
+          tooltipText={TEXT_TOOLTIP_DATA_PRESERVATION}
           currentValue={settingsCommon.dataPreservation}
           onChange={onChangeDataPreservation}
           entries={[

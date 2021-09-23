@@ -2,10 +2,16 @@ import Slider from 'Components/Forms/Slider';
 
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
-const TEXT_TOOLTIP = 'Example tooltip ANGEL';
 export const TEXT_SLIDER_ANCHOR_DENSITY = 'Anchor density:';
+export const TEXT_TOOLTIP_ANCHOR_DENSITY =
+  'Determines the number of anchor points. E.g. 0.1 = nearest integer of (0.1 * number of data points)';
+
 export const TEXT_SLIDER_EPSILON = 'Epsilon:';
+export const TEXT_TOOLTIP_EPSILON = 'Controls the balance between local and global preservation performance.';
+
 export const TEXT_CHECKBOX_ANCHOR_MODIFICATION = 'Anchor modification:';
+export const TEXT_TOOLTIP_ANCHOR_MODIFICATION =
+  "Whether to relocate anchor points' position according to the cohort distance relations. If 0: keep the original anchor position.";
 
 export enum AnchorModification {
   ON,
@@ -45,7 +51,7 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL, isCustomDataPage }: SettingsAN
         marksArr={isCustomDataPage ? [0.1, 0.2] : [0.05, 0.1, 0.2]}
         onChange={onChangeAnchorDensity}
         labelText={TEXT_SLIDER_ANCHOR_DENSITY}
-        tooltipText={TEXT_TOOLTIP}
+        tooltipText={TEXT_TOOLTIP_ANCHOR_DENSITY}
         value={settingsANGEL.anchorDensity}
       />
       <Slider
@@ -55,12 +61,12 @@ const ANGEL = ({ settingsANGEL, setSettingsANGEL, isCustomDataPage }: SettingsAN
         marksArr={[0.1, 5]}
         onChange={onChangeEpsilon}
         labelText={TEXT_SLIDER_EPSILON}
-        tooltipText={TEXT_TOOLTIP}
+        tooltipText={TEXT_TOOLTIP_EPSILON}
         value={settingsANGEL.epsilon}
       />
       <CheckBoxes
         labelText={TEXT_CHECKBOX_ANCHOR_MODIFICATION}
-        tooltipText={TEXT_TOOLTIP}
+        tooltipText={TEXT_TOOLTIP_ANCHOR_MODIFICATION}
         currentValue={settingsANGEL.anchorModification}
         onChange={onChangeAnchorModification}
         entries={[

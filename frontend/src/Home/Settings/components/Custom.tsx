@@ -25,9 +25,11 @@ export interface CustomProps {
   acceptedType: string;
 }
 
-const TEXT_TOOLTIP = 'Example tooltip.';
 export const TEXT_CHECKBOX_DIMENSION = 'Dimension:';
+export const TEXT_TOOLTIP_CHECKBOX_DIMENSION = 'Choose the target dimension of your visualization.';
 export const TEXT_FILEDROP_AREA = 'Choose a File:';
+export const TEXT_TOOLTIP_FILEDROP_AREA =
+  "Currently we only support .mat files. The format is: 'g': Data matrix, 'label': Cohort label column.";
 export const TEXT_BUTTON = 'Submit';
 
 const Custom = ({
@@ -49,7 +51,7 @@ const Custom = ({
     <div>
       <CheckBoxes
         labelText={TEXT_CHECKBOX_DIMENSION}
-        tooltipText={TEXT_TOOLTIP}
+        tooltipText={TEXT_TOOLTIP_CHECKBOX_DIMENSION}
         currentValue={dimension}
         onChange={onChangeDimension}
         entries={[
@@ -61,7 +63,7 @@ const Custom = ({
         setFile={setFile}
         file={file}
         acceptedType={acceptedType}
-        tooltipText={TEXT_TOOLTIP}
+        tooltipText={TEXT_TOOLTIP_FILEDROP_AREA}
         labelText={TEXT_FILEDROP_AREA}
       />
       <Button text={TEXT_BUTTON} onClick={() => onSubmit()} active={false} customClass={classes.submit} />

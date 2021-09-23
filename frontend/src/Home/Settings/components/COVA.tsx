@@ -2,9 +2,12 @@ import Slider from 'Components/Forms/Slider';
 
 import CheckBoxes from 'Components/Forms/CheckBoxes';
 
-const TEXT_TOOLTIP = 'Example tooltip COVA';
 export const TEXT_SLIDER_ALPHA = 'Alpha:';
+export const TEXT_TOOLTIP_ALPHA =
+  'Controls the balance between local and global preservation performance. From 0 to 1 is from local to global.';
 export const TEXT_CHECKBOX_COHORT_NUMBER = 'Cohort number:';
+export const TEXT_TOOLTIP_COHORT_NUMBER =
+  'The original cohort number keeps the same cohort as the original dataset. The 10% number of points re-cluster the original dataset into some smaller cohorts where the cohort number equals to 10% number of points.';
 
 export enum CohortNumber {
   ORIGINAL,
@@ -40,12 +43,12 @@ const COVA = ({ settingsCOVA, setSettingsCOVA }: SettingsCOVAProps) => {
         marksArr={[0, 0.2, 0.4, 0.6, 0.8, 1]}
         onChange={onChangeAlpha}
         labelText={TEXT_SLIDER_ALPHA}
-        tooltipText={TEXT_TOOLTIP}
+        tooltipText={TEXT_TOOLTIP_ALPHA}
         value={settingsCOVA.alpha}
       />
       <CheckBoxes
         labelText={TEXT_CHECKBOX_COHORT_NUMBER}
-        tooltipText={TEXT_TOOLTIP}
+        tooltipText={TEXT_TOOLTIP_COHORT_NUMBER}
         currentValue={settingsCOVA.cohortNumber}
         onChange={onChangeCohortNumber}
         entries={[
