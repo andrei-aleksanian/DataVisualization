@@ -19,6 +19,8 @@ class Examples(Base):
   imagePath = Column(String(256), unique=True, nullable=False)
   dimension = Column(Integer, nullable=False)
   description = Column(String(512))
+  originalData = Column(JSON)
+  labels = Column(JSON)
 
   dataSamplesCOVA = relationship(
       "ExamplesDataCOVA", back_populates="example")

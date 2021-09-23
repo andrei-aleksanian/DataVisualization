@@ -61,6 +61,8 @@ class ExampleCreate(ExampleBase):
   Used for creating example records
   """
   dimension: Dimension
+  originalData: JSONType
+  labels: JSONType
 
 
 class Example(ExampleBase):
@@ -68,6 +70,11 @@ class Example(ExampleBase):
 
   class Config:
     orm_mode = True
+
+
+class ExampleData(BaseModel):
+  originalData: JSONType
+  labels: JSONType
 
 
 class ExampleCrud(Example):

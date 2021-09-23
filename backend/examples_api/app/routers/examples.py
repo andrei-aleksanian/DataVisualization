@@ -1,17 +1,20 @@
 """
 Endpoints for Examples.
 """
-# pylint: disable=R0801
+# pylint: disable=R0801, too-many-arguments
 import os
+import json
 import traceback
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Response, status, File, Form, UploadFile
+from numpy import ndarray
 from sqlalchemy.orm import Session
 from PIL import Image
+from sklearn.preprocessing import MinMaxScaler
 
 from common.visualization.utils.dataGenerated import loadData
 from common.types.Custom import DimensionIn
-from common.routers.utils import saveFile
+from common.routers.utils import saveFile, getFile
 from common.types.exceptions import RuntimeAlgorithmError, FileConstraintsError
 from common.static import staticFolderPath
 from common.environment import Env
@@ -52,6 +55,7 @@ def deleteExampleData(database: Session, exampleId: int):
 @router.post("/", summary="Add a new example to the database")
 def createExample(
         name: str = Form(...),
+        exampleNumber: int = Form(...),
         description: Optional[str] = Form(...),
         dimension: DimensionIn = Form(...),
         image: UploadFile = File(...),
@@ -88,10 +92,14 @@ def createExample(
       print(traceback.format_exc())
       return cleanSession(imagePath=imagePath)
 
-  def generateData(example: schemas.ExampleCrud, imagePath: str):
+  def generateData(
+          example: schemas.ExampleCrud,
+          imagePath: str,
+          originalData: ndarray,
+          labels: ndarray,
+          scaler: MinMaxScaler
+  ):
     try:
-      originalData, labels, scaler = loadData(
-          "./common/visualization/Data/flower.mat")
       generateCOVA(example.id, example.dimension, originalData, labels, scaler)
       generateANGEL(example.id, example.dimension,
                     originalData, labels, scaler)
@@ -106,15 +114,22 @@ def createExample(
 
   checkExists(database, name)
   imagePath = saveImage(image)
+  file = getFile(exampleNumber)
+  originalData, \
+      labels, \
+      scaler = loadData(
+          f"./common/visualization/Data/{file}.mat")
   example = crud.createExample(
       database, schemas.ExampleCreate(**{
           "name": name,
           "description": description,
           "dimension": int(dimension),
-          "imagePath": image.filename
+          "imagePath": image.filename,
+          "originalData": json.dumps(originalData.tolist()),
+          "labels": json.dumps(labels.ravel().tolist())
       })
   )
-  generateData(example, imagePath)
+  generateData(example, imagePath, originalData, labels, scaler)
 
   return Response(status_code=status.HTTP_200_OK)
 
@@ -127,6 +142,19 @@ def getAllExamples(database: Session = Depends(getDB)):
   Returns all examples without the related data.
   """
   return crud.getExamples(database)
+
+
+@router.get("/{exampleId}",
+            summary="Get an available example originalData and labels stored in the database",
+            response_model=schemas.ExampleData)
+def getExample(exampleId: int, database: Session = Depends(getDB)):
+  """
+  Returns example originalData and labels
+  """
+  example = crud.getExample(database, exampleId)
+  if not example:
+    raise HTTPException(status_code=404)
+  return schemas.ExampleData(**{"originalData": example.originalData, "labels": example.labels})
 
 
 @router.delete("/{exampleId}",
