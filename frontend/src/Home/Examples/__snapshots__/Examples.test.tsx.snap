@@ -76,6 +76,19 @@ exports[`Examples matches snapshot 1`] = `
                 class="checkmark"
               />
             </label>
+            <label>
+              <input
+                type="radio"
+              />
+              <span
+                class="text"
+              >
+                Original Data Set
+              </span>
+              <span
+                class="checkmark"
+              />
+            </label>
           </div>
         </div>
         <div
