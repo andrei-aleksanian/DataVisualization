@@ -9,10 +9,13 @@ exports[`App matches snapshot 1`] = `
       class="Container"
     >
       <h1>
-        COVA/ANGEL Visualization
+        COVA / ANGEL
       </h1>
+      <h2>
+        Cohort Data Visualization
+      </h2>
       <p>
-        Dimensionality reduction for cohort data visualization is to plot a high-dimensional dataset in 2D,3D spaces to help analysts identify data properties and gain insights visually. COVA and ANGEL are two novel data visualization algorithms that provide a simple but effective way to improve cohort data visualization performance comprehensively. This demo website illustrates examples embedded by these two algorithms under different hyper-parameter settings and supports users in visualizing their datasets. In addition, the fast-ANGEL version is applied to the users' custom datasets. The current restriction of input data format is '.mat'.
+        Dimensionality reduction for cohort data visualization is to plot a high-dimensional dataset in 2D,3D spaces to help analysts identify data properties and gain insights visually. COVA and ANGEL are two novel data visualization algorithms that provide a simple but effective way to improve cohort data visualization performance comprehensively. This demo website illustrates examples embedded by these two algorithms under different hyper-parameter settings and supports users in visualizing their datasets.
       </p>
       <div
         class="LinkWrapper"
