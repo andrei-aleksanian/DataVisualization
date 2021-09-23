@@ -7,7 +7,7 @@ import { Point2D, Point3D } from 'types/Data';
 import { DataPerseveranceLabelled, DataPerseveranceColored } from 'types/Data/DataPerseverance';
 import { ParamsANGEL, ParamsCOVA } from 'types/Data/Params';
 import { Popup } from 'Components/UI';
-import { getDataANGEL, getDataCOVA } from './services';
+import { getDataANGEL, getDataCOVA, getDataOriginal } from './services';
 
 import Settings, {
   defaultSettingsCOVA,
@@ -60,7 +60,7 @@ const Examples = ({ reviewer, backLink }: ExampleProps) => {
         isCohortNumberOriginal: settingsCOVA.cohortNumber === CohortNumber.ORIGINAL,
       };
       newData = await getDataCOVA(id, params);
-    } else {
+    } else if (algorithm === Algorithm.ANGEL) {
       const params: ParamsANGEL = {
         neighbourNumber: NEIGHBOUR_MARKS_ARR[settingsCommon.neighbour],
         anchorDensity: settingsANGEL.anchorDensity,
@@ -68,6 +68,8 @@ const Examples = ({ reviewer, backLink }: ExampleProps) => {
         isAnchorModification: settingsANGEL.anchorModification === AnchorModification.ON,
       };
       newData = await getDataANGEL(id, params);
+    } else {
+      newData = await getDataOriginal(id);
     }
     return newData;
   };

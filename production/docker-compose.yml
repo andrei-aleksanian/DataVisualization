@@ -29,6 +29,7 @@ services:
       - "8081:8081"
     volumes:
       - images:/app/images
+      - generatedData:/app/generatedData
     env_file:
       - backend.prod.env
       - db.env
@@ -50,5 +51,6 @@ services:
 
 volumes:
   images:
+  generatedData:
   mysql:
   mysql_config:

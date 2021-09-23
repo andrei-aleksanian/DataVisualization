@@ -12,7 +12,8 @@ from sqlalchemy.orm import Session
 from PIL import Image
 from sklearn.preprocessing import MinMaxScaler
 
-from common.visualization.utils.dataGenerated import loadData
+from common.visualization.utils.dataGenerated import checkDimension, loadData
+from common.visualization.lib.FunctionFile import postProcessing
 from common.types.Custom import DimensionIn
 from common.routers.utils import saveFile
 from common.types.exceptions import RuntimeAlgorithmError, FileConstraintsError
@@ -131,6 +132,9 @@ def createExample(
   filePath = saveFile(file, generatedDataFolderPath)
   imagePath = saveImage(image)
   originalData, labels, scaler = readData(filePath, imagePath)
+  dimensionOriginal = originalData.shape[1]
+  originalData = postProcessing(originalData, dimensionOriginal)
+  originalData = checkDimension(originalData, dimensionOriginal)
   example = crud.createExample(
       database, schemas.ExampleCreate(**{
           "name": name,
@@ -167,7 +171,12 @@ def getExample(exampleId: int, database: Session = Depends(getDB)):
   example = crud.getExample(database, exampleId)
   if not example:
     raise HTTPException(status_code=404)
-  return schemas.ExampleData(**{"originalData": example.originalData, "labels": example.labels})
+  return schemas.ExampleData(**{
+      "originalData": example.originalData,
+      "labels": example.labels,
+      "dimension2D": example.dimension == 2,
+      "exampleName": example.name
+  })
 
 
 @router.delete("/{exampleId}",

@@ -15,6 +15,7 @@ import classes from './Settings.module.scss';
 
 export const TEXT_CHECKBOX_COVA = 'COVA';
 export const TEXT_CHECKBOX_ANGEL = 'ANGEL';
+export const TEXT_CHECKBOX_ORIGINAL = 'Original Data Set';
 export const TEXT_CHECKBOX_ALGORITHM = 'Algorithm:';
 export const TEXT_SLIDER_NEIGHBOUR = 'Neighbour number:';
 export const TEXT_CHECKBOX_PRESERVATION = 'Show Data Preservation Error:';
@@ -96,6 +97,7 @@ const Settings = ({
             entries={[
               { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
               { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
+              { value: Algorithm.ORIGINAL, text: TEXT_CHECKBOX_ORIGINAL },
             ]}
           />
         )}
