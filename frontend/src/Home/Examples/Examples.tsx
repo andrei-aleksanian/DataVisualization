@@ -106,7 +106,11 @@ const Examples = ({ reviewer, backLink }: ExampleProps) => {
         }}
       />
       {data && (
-        <Visualization2D data={data} showPreservation={settingsCommon.dataPreservation === DataPreservation.ON} />
+        <Visualization2D
+          data={data}
+          showPreservation={settingsCommon.dataPreservation === DataPreservation.ON}
+          isCameraUpdate={settingsCommon.algorithm !== Algorithm.ORIGINAL}
+        />
       )}
       {error && (
         <Popup

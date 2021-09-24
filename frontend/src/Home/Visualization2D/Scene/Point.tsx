@@ -15,12 +15,8 @@ export interface PointProps {
 const Point = ({ x, y, z, color, radius, dimension2D, isPreservation }: PointProps) => {
   const [hovered, setHover] = useState(false);
   const click = () => {
-    // e.stopPropagation();
     setHover((prev) => !prev);
   };
-  // const click2 = () => {
-  //   setHover((prev) => !prev);
-  // };
 
   return (
     <mesh position={[x, y, z]} rotation={[Math.PI / 2, 0, 0]} onPointerDown={click}>
@@ -35,7 +31,6 @@ const Point = ({ x, y, z, color, radius, dimension2D, isPreservation }: PointPro
               display: 'block',
               borderRadius: '5px',
               marginTop: '10px',
-              // pointerEvents: 'none',
             }}
           />
         </Html>

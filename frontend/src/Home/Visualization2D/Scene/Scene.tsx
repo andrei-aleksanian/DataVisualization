@@ -6,13 +6,11 @@ import { getRadius } from './utils';
 
 export interface SceneProps {
   data: DataPerseveranceColored;
-  dimension2D: boolean;
   showPreservation: boolean;
 }
 
 export default function Scene({
-  data: { colors, points, prevPartsave, prevWrongInLow },
-  dimension2D,
+  data: { colors, points, prevPartsave, prevWrongInLow, dimension2D },
   showPreservation,
 }: SceneProps) {
   return (

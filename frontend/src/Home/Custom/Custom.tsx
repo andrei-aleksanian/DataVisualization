@@ -139,7 +139,11 @@ const Custom = () => {
         }}
       />
       {data && (
-        <Visualization2D data={data} showPreservation={settingsCommon.dataPreservation === DataPreservation.ON} />
+        <Visualization2D
+          data={data}
+          showPreservation={settingsCommon.dataPreservation === DataPreservation.ON}
+          isCameraUpdate={false}
+        />
       )}
     </div>
   );
