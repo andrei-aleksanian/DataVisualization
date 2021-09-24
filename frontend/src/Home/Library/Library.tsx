@@ -52,16 +52,18 @@ const Library = ({ reviewer }: LibraryProps) => {
     };
   }, []);
 
+  let output;
+  if (examples.length) {
+    output = examples.map((e) => <Example {...e} key={getId('example')} />);
+  } else {
+    output = <div className={classes.Empty}>No examples found at the moment!</div>;
+  }
   return (
     <div className={classes.index}>
       {error && <Popup text={TEXT_POPUP} onClick={() => history.push('/')} />}
       {!reviewer && <LinkBack link="/" />}
       <h1>{TEXT_H1}</h1>
-      <div className={classes.ExamplesContainer}>
-        {examples.map((e) => (
-          <Example {...e} key={getId('example')} />
-        ))}
-      </div>
+      <div className={classes.ExamplesContainer}>{output}</div>
     </div>
   );
 };
