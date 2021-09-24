@@ -36,7 +36,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-0"
+                alt="info-8"
                 src="info.svg"
               />
               <div
@@ -76,19 +76,6 @@ exports[`Examples matches snapshot 1`] = `
                 class="checkmark"
               />
             </label>
-            <label>
-              <input
-                type="radio"
-              />
-              <span
-                class="text"
-              >
-                Original Data Set
-              </span>
-              <span
-                class="checkmark"
-              />
-            </label>
           </div>
         </div>
         <div
@@ -104,7 +91,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-1"
+                alt="info-9"
                 src="info.svg"
               />
               <div
@@ -208,7 +195,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-2"
+                alt="info-10"
                 src="info.svg"
               />
               <div
@@ -282,7 +269,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-3"
+                alt="info-11"
                 src="info.svg"
               />
               <div
@@ -356,7 +343,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-4"
+                alt="info-12"
                 src="info.svg"
               />
               <div
@@ -411,7 +398,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-5"
+                alt="info-13"
                 src="info.svg"
               />
               <div
@@ -467,7 +454,7 @@ exports[`Examples matches snapshot 1`] = `
                 class="Tooltip"
               >
                 <img
-                  alt="info-6"
+                  alt="info-14"
                   src="info.svg"
                 />
                 <div
@@ -519,7 +506,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-7"
+                alt="info-15"
                 src="info.svg"
               />
               <div
