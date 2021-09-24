@@ -23,9 +23,10 @@ export interface SliderProps {
   labelText: string;
   tooltipText: string;
   value: number;
+  refCustom?: React.MutableRefObject<HTMLDivElement> | 0;
 }
 
-const Slider = ({ marksArr, labelText, tooltipText, ...restProps }: SliderProps) => {
+const Slider = ({ marksArr, labelText, tooltipText, refCustom, ...restProps }: SliderProps) => {
   const marksStyle = {
     fontSize: '0.85rem',
     color: '#ccc',
@@ -45,7 +46,7 @@ const Slider = ({ marksArr, labelText, tooltipText, ...restProps }: SliderProps)
   const activeDotStyle = { border: '2px solid var(--color-action)', backgroundColor: 'var(--color-action)' };
 
   return (
-    <div className={classes.index}>
+    <div className={classes.index} ref={refCustom !== 0 ? refCustom : null}>
       <Label text={labelText} tooltipText={tooltipText} />
       <SliderRC
         {...restProps}
@@ -58,6 +59,10 @@ const Slider = ({ marksArr, labelText, tooltipText, ...restProps }: SliderProps)
       />
     </div>
   );
+};
+
+Slider.defaultProps = {
+  refCustom: 0,
 };
 
 export default Slider;

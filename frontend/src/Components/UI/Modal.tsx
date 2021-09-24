@@ -2,15 +2,30 @@ import cx from 'classnames';
 
 import classes from './UI.module.scss';
 
-export const ModalWithFit = ({ children, height }: { children: JSX.Element; height: number }) => {
+export const ModalWithFit = ({
+  children,
+  height,
+  customClass,
+  margin,
+}: {
+  children?: JSX.Element;
+  height: number;
+  customClass?: string;
+  margin?: number;
+}) => {
   return (
     <>
-      <div className={cx(classes.Modal, classes.ModalWithFit)} style={{ height }} />
-      <div className={classes.ModalWithFit} style={{ height }}>
+      <div className={cx(classes.Modal, classes.ModalWithFit, customClass)} style={{ height, marginTop: margin }} />
+      <div className={classes.ModalWithFit} style={{ height, marginTop: margin }}>
         {children}
       </div>
     </>
   );
+};
+ModalWithFit.defaultProps = {
+  children: <div />,
+  customClass: '',
+  margin: 0,
 };
 
 const Modal = ({ hide }: { hide: Function }) => {

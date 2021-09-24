@@ -7,6 +7,7 @@ import Slider from 'Components/Forms/Slider';
 import { LinkBack } from 'Components/Link';
 import Loader from 'Components/UI/Loader';
 
+import { ModalWithFit } from 'Components/UI';
 import COVA, { SettingsCOVA } from './components/COVA';
 import ANGEL, { SettingsANGEL } from './components/ANGEL';
 import Custom, { CustomProps } from './components/Custom';
@@ -77,14 +78,27 @@ const Settings = ({
   };
 
   const [height, setHeight] = useState(0);
-  const ref = useRef() as React.MutableRefObject<HTMLDivElement>;
+  const refIndex = useRef() as React.MutableRefObject<HTMLDivElement>;
+  const [margin, setMargin] = useState(0);
+  const refNeighbours = useRef() as React.MutableRefObject<HTMLDivElement>;
 
   useEffect(() => {
-    setHeight(ref.current.scrollHeight);
+    setHeight(refIndex.current.scrollHeight);
+    setMargin(refNeighbours.current.offsetTop - 10);
   });
 
+  const entriesAlgorithm = customDataPage
+    ? [
+        { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
+        { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
+      ]
+    : [
+        { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
+        { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
+        { value: Algorithm.ORIGINAL, text: TEXT_CHECKBOX_ORIGINAL },
+      ];
   return (
-    <div className={classes.index} ref={ref}>
+    <div className={classes.index} ref={refIndex}>
       <LinkBack link={backLink} block />
       <div className={classes.Settings}>
         <h1>{name}</h1>
@@ -94,11 +108,7 @@ const Settings = ({
             tooltipText={TEXT_TOOLTIP_ALGORITHM}
             currentValue={settingsCommon.algorithm}
             onChange={onChangeAlgorithm}
-            entries={[
-              { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
-              { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
-              { value: Algorithm.ORIGINAL, text: TEXT_CHECKBOX_ORIGINAL },
-            ]}
+            entries={entriesAlgorithm}
           />
         )}
         <Slider
@@ -110,6 +120,7 @@ const Settings = ({
           labelText={TEXT_SLIDER_NEIGHBOUR}
           tooltipText={TEXT_TOOLTIP_NEIGHBOURS}
           value={settingsCommon.neighbour}
+          refCustom={refNeighbours}
         />
         {settingsCommon.algorithm === Algorithm.COVA ? (
           <COVA {...{ settingsCOVA, setSettingsCOVA }} />
@@ -128,6 +139,7 @@ const Settings = ({
         />
         {customDataPage && <Custom {...customDataPage} />}
         {isLoading && <Loader height={height} />}
+        {settingsCommon.algorithm === Algorithm.ORIGINAL && <ModalWithFit height={height - margin} margin={margin} />}
       </div>
     </div>
   );
