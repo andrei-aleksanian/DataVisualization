@@ -30,7 +30,7 @@ def getAngelResult(params: ParamsANGEL,
   """Used for running ANGEL on every possible parameter"""
   [anchorPoint, anchorLabel, zParam] = AnchorPointGeneration(
       originalData, labels, sparsity=params.anchorDensity)
-  initdata, initanchor, cinit = funInit(labels, anchorPoint, dimension)
+  initdata, initanchor, cinit = funInit(labels, anchorLabel, dimension)
 
   anchorPoint, _, _ = AnchorEmbedding(
       anchorPoint,
@@ -39,21 +39,22 @@ def getAngelResult(params: ParamsANGEL,
       lamb=0,
       dim=dimension,
       init=initanchor,
-      cinit=cinit
+      cinit=cinit,
   )
   scaler.fit(anchorPoint)
   anchorPoint = scaler.transform(anchorPoint)
 
+  neighbourParam = getNeighbourNumber(
+      len(originalData), params.neighbourNumber)
   wParam = AdjacencyMatrix(
       originalData,
-      neighbor=getNeighbourNumber(
-          len(originalData), params.neighbourNumber),
+      neighbor=neighbourParam,
       weight=0,
       metric='euclidean'
   )
 
   if init:  # return initdata for nicer initial display
-    return anchorPoint, zParam, wParam, initdata
+    return neighbourParam, anchorPoint, zParam, wParam, initdata
 
   resultData = ANGEL_embedding(
       originalData,
@@ -64,9 +65,11 @@ def getAngelResult(params: ParamsANGEL,
       init=initdata,
       T=iterations,
       eps=params.epsilon,
-      optType="fast" if fast else "constrained")
+      optType="fast" if fast else "constrained",
+      neighbor=neighbourParam
+  )
 
-  return anchorPoint, zParam, wParam, resultData
+  return neighbourParam, anchorPoint, zParam, wParam, resultData
 
 
 def runANGEL(params: ParamsANGEL,
@@ -102,7 +105,7 @@ def initANGEL(params: ParamsANGEL,
   """Used for running ANGEL on every possible parameter"""
   originalData, labels, scaler = loadData(filePath)
 
-  anchorPoint, zParam, wParam, resultData = runAlgorithm(
+  neighbourParam, anchorPoint, zParam, wParam, resultData = runAlgorithm(
       getAngelResult,
       params,
       dimension,
@@ -115,13 +118,14 @@ def initANGEL(params: ParamsANGEL,
   )
 
   initData = DataNumpyANGEL(**{
+      "neighbourParam": neighbourParam,
       "anchorPoint": anchorPoint,
       "zParam": zParam,
       "wParam": wParam,
       "paramEps": params.epsilon,
       "originalData": originalData,
       "points": resultData,
-      "labels": labels
+      "labels": labels,
   })
 
   return formatDataOutANGEL(initData)
@@ -153,6 +157,7 @@ def dynamicANGEL(previousData: DataDynamicANGEL,
       data["paramEps"],
       'euclidean',
       iterations,
+      data["neighbourParam"]
   )
 
   # only run on the last iteration

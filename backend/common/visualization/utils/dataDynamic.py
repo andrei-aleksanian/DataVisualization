@@ -4,6 +4,7 @@ utils functions for dynamic data loading
 from typing import List, NewType
 import numpy as np
 from sklearn.decomposition import PCA
+from scipy.sparse.csr import csr_matrix
 from common.types.dataDynamic import DataDynamic, DataNumpy, DataFormatted,\
     DataNumpyANGEL, DataFormattedANGEL, DataDynamicANGEL
 from common.types.Custom import Dimension
@@ -25,10 +26,11 @@ def formatDataInANGEL(previousData: DataDynamicANGEL) -> DataNumpyANGEL:
     previousData.points = np.delete(previousData.points, 2, 1)
 
   return DataNumpyANGEL(**{
+      "neighbourParam": previousData.neighbourParam,
       "paramEps": previousData.paramEps,
       "anchorPoint": np.array(previousData.anchorPoint),
       "zParam": np.array(previousData.zParam),
-      "wParam": np.array(previousData.wParam),
+      "wParam": csr_matrix(previousData.wParam),
       "originalData": np.array(previousData.originalData),
       "labels": np.array([previousData.labels]),
       "points": np.array(previousData.resultData)
@@ -48,7 +50,7 @@ def formatDataIn(previousData: DataDynamic) -> DataNumpy:
       "originalData": np.array(previousData.originalData),
       "labels": np.array([previousData.labels]),
       "paramRelation": np.array(previousData.paramRelation),
-      "paramAd": np.array(previousData.paramAd),
+      "paramAd": csr_matrix(previousData.paramAd),
       "paramV": np.array(previousData.paramV),
   })
 
@@ -90,7 +92,7 @@ def formatDataOutANGEL(initData: DataNumpyANGEL) -> DataFormattedANGEL:
       **initData,
       "anchorPoint": initData["anchorPoint"].tolist(),
       "zParam": initData["zParam"].tolist(),
-      "wParam": initData["wParam"].tolist(),
+      "wParam": initData["wParam"].toarray().tolist(),
       "originalData": initData["originalData"].tolist(),
       "resultData": resultData.tolist(),
       "labels": initData["labels"].ravel().tolist(),
@@ -115,8 +117,8 @@ def formatDataOut(initData: DataNumpy) -> DataFormatted:
       "labels": initData["labels"].ravel().tolist(),
       "dimension2D": dimension == 2,
       "paramRelation": initData["paramRelation"].tolist(),
-      "paramAd": initData["paramAd"].tolist(),
-      "paramV": initData["paramV"].tolist(),
+      "paramAd": initData["paramAd"].toarray().tolist(),
+      "paramV": initData["paramV"].tolist()
   })
 
 

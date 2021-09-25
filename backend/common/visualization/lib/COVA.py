@@ -6,9 +6,8 @@ from scipy.spatial.distance import pdist, cdist, squareform
 from scipy.optimize import minimize
 # from sklearn.neighbors import NearestNeighbors
 from sklearn import preprocessing
-from sklearn.decomposition import PCA
 
-# from FunctionFile import AdjacencyMatrix
+from .FunctionFile import funInit, AdjacencyMatrix, postProcessing
 from sklearn.metrics import pairwise_distances
 from scipy.spatial.distance import directed_hausdorff
 from pymanopt.manifolds import FixedRankEmbedded
@@ -20,9 +19,8 @@ from sklearn.manifold import MDS
 from .SOEmbedding import SOE
 from .ANGEL import AnchorPointGeneration, AnchorEmbedding
 from sklearn.cluster import KMeans
-# import imagesc
-from .evaluation import plot_neighbor
-from .FunctionFile import funInit, AdjacencyMatrix
+from .evaluation import Prev, plot_neighbor
+from scipy.sparse import csr_matrix, isspmatrix_csr
 
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
@@ -155,6 +153,8 @@ def OjGlobalDist(x, R, V, opttype='GD_Euclidean'):
 
 
 def OjLocalDist(x, Ad, opttype='GD_Euclidean'):
+  if isspmatrix_csr(Ad):
+    Ad = Ad.toarray()
   L3 = np.diag(np.sum(Ad, axis=0)) - Ad
   if opttype == 'GD_Riemannian':
     x = x[0] @ np.diag(x[1]) @ x[2]
@@ -180,6 +180,8 @@ def OjGlobalSE(x, R, V, opttype='GD_Euclidean'):
 
 
 def OjLocalSE(x, Ad, opttype='GD_Euclidean'):
+  if isspmatrix_csr(Ad):
+    Ad = Ad.toarray()
   if opttype == 'GD_Riemannian':
     x = x[0] @ np.diag(x[1]) @ x[2]
   n = Ad.shape[0]
@@ -225,6 +227,8 @@ def GradGlobalSE(x, R, V, opttype='GD_Euclidean'):
 
 
 def GradLocalDist(x, Ad, opttype='GD_Euclidean'):
+  if isspmatrix_csr(Ad):
+    Ad = Ad.toarray()
   L3 = np.diag(np.sum(Ad, axis=0)) - Ad
   if opttype == 'GD_Euclidean':
     gd = 2 * L3 @ x
@@ -239,6 +243,8 @@ def GradLocalDist(x, Ad, opttype='GD_Euclidean'):
 
 
 def GradLocalSE(x, Ad, opttype='GD_Euclidean'):
+  if isspmatrix_csr(Ad):
+    Ad = Ad.toarray()
   n = Ad.shape[0]
   P = Ad / sum(sum(Ad))
   d2 = squareform(pdist(x, 'euclidean'))
@@ -424,7 +430,7 @@ def ProtoGeneration(data, label, C=1, metric='euclidean'):
 
 
 if __name__ == '__main__':
-  fullData = loadmat('bicycle_sample.mat')
+  fullData = loadmat('mnist_256_100sample.mat')
 
   # fullData = loadmat('../Data/cylinder_top.mat')
   # x = csr_matrix(fullData.get('newsdata')).toarray()
@@ -454,7 +460,8 @@ if __name__ == '__main__':
   V = PrototypeEmbedding(Dc, protolabel, dim=2,
                          Embedding='SOE', init=initanchor)
   scaler.fit(V)
-  Ad = AdjacencyMatrix(g, 10)
+  V = scaler.transform(V)
+  Ad = AdjacencyMatrix(g, 30)
 
   # fig = plt.figure()
   # ax = fig.add_subplot(projection='3d')
@@ -473,25 +480,27 @@ if __name__ == '__main__':
   # imagesc.plot(R_show, extent=[0, 1000, 0, 1000])
 
   # init1 = Result
-  Result = COVAembedding(g, Relation, Ad, V, Init=initdata, dim=2, alpha=0.6,
+  Result = COVAembedding(g, Relation, Ad, V, Init=initdata, dim=2, alpha=0.4,
                          T=100, COVAType='cova1', opttype='GD_Euclidean')
+
+  result = postProcessing(Result, dim=2)
+
   # fig = plt.figure()
   # ax = fig.add_subplot(projection='3d')
-  # ax.scatter(Result[:, 0], Result[:, 1], Result[:, 2], c=label, cmap='rainbow')
+  # ax.scatter(result[:, 0], result[:, 1], result[:, 2], c=label, cmap='rainbow')
   # plt.show()
 
-  plt.scatter(Result[:, 0], Result[:, 1], c=label, cmap='rainbow')
+  # plt.scatter(result[:, 0], result[:, 1], c=label, cmap='rainbow')
+  # plt.show()
+
+  plt.scatter(result[:, 0], result[:, 1], c=label, cmap='rainbow')
   plt.show()
 
-  # pca = PCA(n_components=3)
-  # pca.fit(Result)
-  # x = pca.transform(Result)
-  #
-  # fig = plt.figure()
-  # ax = fig.add_subplot(projection='3d')
-  # ax.scatter(x[:, 0], x[:, 1], x[:, 2], c=label, cmap='rainbow')
-  # plt.show()
+  plot_neighbor(g, result, label, k=10, part=0.5, choice='link')
 
-  # evaluation.plot_neighbor(g, Result, label, k=10, part=0.6, choice='link')
+  p, pl, pg, ps = Prev(g, result, label)
+  print(p)
+  print(pl)
+  print(ps)
 
   print(Ad)

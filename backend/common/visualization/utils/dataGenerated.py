@@ -8,7 +8,6 @@ from sklearn import preprocessing
 
 from common.types.exceptions import RuntimeAlgorithmError, FileConstraintsError
 from common.types.dataGenerated import DataGenerated, DataGeneratedNumpy
-from common.types.Custom import Dimension
 from common.environment import Env
 from .dataDynamic import childrenToList
 
@@ -36,7 +35,7 @@ def getNeighbours(data: DataGeneratedNumpy):
   *_, prevWrongInHigh, prevWrongInLow, prevPartsave = neighbor_prev_disturb(
       data["originalData"], data["resultData"], data["labels"], 10)
   resultData = postProcessing(data["resultData"], data["dimension"])
-  resultData = checkDimension(resultData, data["dimension"])
+  resultData = checkDimension(resultData)
 
   return DataGenerated(
       points=resultData.tolist(),
@@ -48,12 +47,12 @@ def getNeighbours(data: DataGeneratedNumpy):
   )
 
 
-def checkDimension(resultData: np.ndarray, dimension: Dimension):
+def checkDimension(resultData: np.ndarray):
   """
   Check and format target dimension of the data.
   Add 0's column to data if it is 2D (required for frontend)
   """
-  if dimension == 2:
+  if resultData.shape[1] == 2:
     zeros = np.zeros((resultData.shape[0], 1))
     resultData = np.hstack((resultData, zeros))
   return resultData
@@ -74,7 +73,7 @@ def validateData(data: np.ndarray, labels: np.ndarray):
         "The file must contain labels with the name label")
   if data.shape[0] > 500:
     raise FileConstraintsError("The file must contain no more than 500 points")
-  if data.shape[0] != labels.shape[0]:
+  if data.shape[0] not in [labels.shape[0], labels.shape[1]]:
     raise FileConstraintsError(
         "You should have a label exactly for each point in your dataset")
 

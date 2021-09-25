@@ -10,6 +10,7 @@ from common.visualization.utils.dataGenerated import checkDimension, getNeighbou
 from common.types.dataDynamic import DataNumpy
 from common.types.dataGenerated import DataGeneratedNumpy
 from common.types.exceptions import RuntimeAlgorithmError
+from scipy.sparse.csr import csr_matrix
 
 
 def getInputData(points):
@@ -17,14 +18,15 @@ def getInputData(points):
   Auxilary function that produces dummy data
   """
   npArray = np.array([0])
+  csrArray = csr_matrix(npArray)
   labels = np.array([[0, 1, 2]])
 
   return DataNumpy(**{
       "points": points,
-      "originalData": npArray,
+      "originalData": points,
       "labels": labels,
       "paramRelation": npArray,
-      "paramAd": npArray,
+      "paramAd": csrArray,
       "paramV": npArray,
       "alpha": 0
   })
@@ -102,7 +104,7 @@ dataGeneratedMock3D = DataGeneratedNumpy({
 
 def testCheckDimension2D():
   """Test checkDimension appends 0's column to 2D data"""
-  resultData = checkDimension(dataGeneratedMock2D["resultData"], 2)
+  resultData = checkDimension(dataGeneratedMock2D["resultData"])
 
   for point in resultData:
     assert point[2] == 0
@@ -110,7 +112,7 @@ def testCheckDimension2D():
 
 def testCheckDimension3D():
   """Test checkDimension doesn't append 0's column to 3D data"""
-  resultData = checkDimension(dataGeneratedMock3D["resultData"], 3)
+  resultData = checkDimension(dataGeneratedMock3D["resultData"])
 
   assert np.array_equal(resultData, dataGeneratedMock3D["resultData"])
 

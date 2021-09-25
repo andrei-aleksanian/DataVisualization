@@ -134,7 +134,7 @@ def createExample(
   originalData, labels, scaler = readData(filePath, imagePath)
   dimensionOriginal = originalData.shape[1]
   originalData = postProcessing(originalData, dimensionOriginal)
-  originalData = checkDimension(originalData, dimensionOriginal)
+  originalData = checkDimension(originalData)
   example = crud.createExample(
       database, schemas.ExampleCreate(**{
           "name": name,
