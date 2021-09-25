@@ -3,7 +3,8 @@ import { OrbitControls, MapControls } from '@react-three/drei';
 import { ResizeObserver } from '@juggle/resize-observer';
 
 import { DataPerseveranceColored } from 'types/Data/DataPerseverance';
-import Scene from './Scene';
+import { useRef } from 'react';
+import Scene, { DEFAULT_CAM_POSITION } from './Scene';
 
 import classes from './Visualization2D.module.scss';
 
@@ -13,10 +14,15 @@ export interface Visualization2DProps {
 }
 
 const Visualization2D = ({ data, ...props }: Visualization2DProps) => {
+  const controlsRef = useRef() as React.MutableRefObject<any>; // controls ref. Undocumented typing in r3f.
   return (
-    <Canvas camera={{ position: [0, 0, 100] }} resize={{ polyfill: ResizeObserver }}>
-      {data.dimension2D ? <MapControls enableRotate={false} zoomSpeed={0.3} /> : <OrbitControls zoomSpeed={0.3} />}
-      <Scene {...props} data={data} />
+    <Canvas camera={{ position: DEFAULT_CAM_POSITION }} resize={{ polyfill: ResizeObserver }}>
+      {data.dimension2D ? (
+        <MapControls enableRotate={false} zoomSpeed={0.3} ref={controlsRef} />
+      ) : (
+        <OrbitControls zoomSpeed={0.3} ref={controlsRef} />
+      )}
+      <Scene {...props} data={data} controlsRef={controlsRef} />
     </Canvas>
   );
 };

@@ -6,11 +6,14 @@ import getId from 'utils/getId';
 import Point from './Point';
 import { getRadius } from './utils';
 
-const Reset = ({ reset }: { reset: boolean }) => {
+export const DEFAULT_CAM_POSITION = [0, 0, 100] as [x: number, y: number, z: number];
+
+const Reset = ({ reset, controlsRef }: { reset: boolean; controlsRef: React.MutableRefObject<any> }) => {
   const { camera } = useThree();
   useEffect(() => {
     if (reset) {
-      camera.position.set(0, 0, 100);
+      controlsRef.current.reset();
+      camera.position.set(DEFAULT_CAM_POSITION[0], DEFAULT_CAM_POSITION[1], DEFAULT_CAM_POSITION[2]);
     }
   }, []);
 
@@ -19,11 +22,13 @@ const Reset = ({ reset }: { reset: boolean }) => {
 export interface SceneProps {
   data: DataPerseveranceColored;
   showPreservation: boolean;
+  controlsRef: React.MutableRefObject<any>;
 }
 
 export default function Scene({
   data: { colors, points, prevPartsave, prevWrongInLow, dimension2D },
   showPreservation,
+  controlsRef,
 }: SceneProps) {
   return (
     <>
@@ -40,7 +45,7 @@ export default function Scene({
           isPreservation={showPreservation}
         />
       ))}
-      <Reset key={getId(`reset-${points[0][0]}`)} reset={dimension2D} />
+      <Reset key={getId(`reset-${points[0][0]}`)} reset={dimension2D} controlsRef={controlsRef} />
       {showPreservation &&
         prevPartsave.map((i) => {
           const pointFrom = points[i];
