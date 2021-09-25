@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import { ThreeEvent } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 
 export interface PointProps {

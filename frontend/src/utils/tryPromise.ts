@@ -5,7 +5,7 @@ export default async function tryPromise<T>(fun: () => Promise<T>): Promise<Resp
   try {
     const data = await fun();
     return [data, null];
-  } catch (error) {
+  } catch (error: any) {
     let message = '';
     if (error.response) {
       // The request was made and the server responded with a status code

@@ -1,9 +1,21 @@
+import { useEffect } from 'react';
+import { useThree } from '@react-three/fiber';
 import { Line } from '@react-three/drei';
 import { DataPerseveranceColored } from 'types/Data/DataPerseverance';
 import getId from 'utils/getId';
 import Point from './Point';
 import { getRadius } from './utils';
 
+const Reset = ({ reset }: { reset: boolean }) => {
+  const { camera } = useThree();
+  useEffect(() => {
+    if (reset) {
+      camera.position.set(0, 0, 100);
+    }
+  }, []);
+
+  return null;
+};
 export interface SceneProps {
   data: DataPerseveranceColored;
   showPreservation: boolean;
@@ -23,11 +35,12 @@ export default function Scene({
           y={p[1]}
           z={p[2]}
           color={colors[i]}
-          key={getId('point')}
+          key={getId('point') + p[0]}
           radius={getRadius(prevPartsave.includes(i) && showPreservation)}
           isPreservation={showPreservation}
         />
       ))}
+      <Reset key={getId(`reset-${points[0][0]}`)} reset={dimension2D} />
       {showPreservation &&
         prevPartsave.map((i) => {
           const pointFrom = points[i];
