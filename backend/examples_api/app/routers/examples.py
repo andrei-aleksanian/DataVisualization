@@ -118,7 +118,7 @@ def createExample(
     finally:
       print(traceback.format_exc())
 
-  def readData(filePath: str, imagePath: str):
+  def readData(filePath: str):
     try:
       return loadData(filePath)
     except FileConstraintsError as error:
@@ -128,13 +128,16 @@ def createExample(
     finally:
       print(traceback.format_exc())
 
+  def processOriginalData(originalData: ndarray):
+    dimensionOriginal = originalData.shape[1]
+    originalData = postProcessing(originalData, dimensionOriginal)
+    return checkDimension(originalData)
+
   checkExists(database, name)
   filePath = saveFile(file, generatedDataFolderPath)
   imagePath = saveImage(image)
-  originalData, labels, scaler = readData(filePath, imagePath)
-  dimensionOriginal = originalData.shape[1]
-  originalData = postProcessing(originalData, dimensionOriginal)
-  originalData = checkDimension(originalData)
+  originalData, labels, scaler = readData(filePath)
+  originalData = processOriginalData(originalData)
   example = crud.createExample(
       database, schemas.ExampleCreate(**{
           "name": name,
