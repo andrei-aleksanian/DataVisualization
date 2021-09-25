@@ -8,7 +8,8 @@ from examples_api.app.api import app
 from examples_api.app.routers.examples import EXAMPLE_ALREADY_EXISTS
 from examples_api.app.database.crud import getAllExampleDataCOVA, getAllExampleDataANGEL
 from examples_api.app.database.database import SessionLocal
-from ..utilsTests import cleanupDB, mockExampleWithImage, createMockExample, postMockExample
+from ..utilsTests import cleanupDB, mockExample, \
+    mockExampleWithImage, createMockExample, postMockExample
 
 client = TestClient(app)
 
@@ -91,3 +92,24 @@ def testGetAllExamplesSuccessNotEmpty():
   mockResponseNoDimension["id"] = 1
 
   assert response.json() == [mockResponseNoDimension]
+
+
+def testGetExampleSuccessNotEmpty():
+  """Post an example and then fetch it with get"""
+  postMockExample(client)
+  response = client.get("/api/examples/1")
+
+  originalData = response.json()["originalData"]
+  dimension2D = response.json()["dimension2D"]
+
+  assert response.status_code == 200
+  assert originalData is not None
+  assert dimension2D is not None
+  assert dimension2D is (mockExample["dimension"] == 2)
+
+
+def testGetExampleSuccessEmpty():
+  """Fetch a non existing example with get"""
+  response = client.get("/api/examples/1")
+
+  assert response.status_code == 404
