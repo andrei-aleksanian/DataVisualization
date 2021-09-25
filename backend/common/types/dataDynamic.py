@@ -6,6 +6,7 @@ Different data types to be used accross the application
 from typing import List, TypedDict
 from numpy import ndarray
 from pydantic import BaseModel
+from scipy.sparse.csr import csr_matrix
 
 # from .Custom import Dimension, DimensionIn, Points
 from .Custom import Points
@@ -17,7 +18,7 @@ class DataNumpy(TypedDict):
   """
   originalData: ndarray
   paramRelation: ndarray
-  paramAd: ndarray
+  paramAd: csr_matrix
   alpha: int
   paramV: ndarray
   labels: ndarray
@@ -30,11 +31,12 @@ class DataNumpyANGEL(TypedDict):
   """
   anchorPoint: ndarray
   zParam: ndarray
-  wParam: ndarray
+  wParam: csr_matrix
   paramEps: float
   originalData: ndarray
   labels: ndarray
   points: ndarray
+  neighbourParam: int
 
 
 class DataCore(BaseModel):
@@ -67,6 +69,7 @@ class DataFormattedANGEL(DataCore):
   zParam: List
   wParam: List
   paramEps: float
+  neighbourParam: int
 
 
 class DataDynamic(DataFormatted):

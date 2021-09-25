@@ -1,31 +1,18 @@
 # pylint: disable-all
 
 import numpy as np
-import math
-from scipy.io import loadmat
+from scipy.io import loadmat, savemat
 from .localanchorembedding import AnchorGraph
-from sklearn.metrics import pairwise_distances
-from sklearn.neighbors import KNeighborsClassifier
-from scipy.spatial.distance import directed_hausdorff
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import pdist, cdist, squareform
 from scipy.optimize import minimize
-from sklearn.neighbors import NearestNeighbors
-from scipy.linalg import norm
 from sklearn import preprocessing
-
 from numba import jit
-import random
-
-from .FunctionFile import CohortDistance, Ad_cohort_order_chg, k_nearest_neighbor, AdjacencyMatrix
+from .FunctionFile import CohortDistance, Ad_cohort_order_chg, AdjacencyMatrix, funInit, postProcessing
 from .SOEmbedding import SOE, disForOE, Rtheta, Sscal
-
-from scipy.io import savemat
-from scipy.sparse import csr_matrix
-import os
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
-from .FunctionFile import funInit
+from scipy.sparse import csr_matrix, isspmatrix_csr
+from sklearn.neighbors import kneighbors_graph
 
 
 def AnchorPointGeneration(Data, DataLabel, sparsity=0.1, t=3, metric='euclidean', cn=10):
@@ -52,32 +39,48 @@ def AnchorPointGeneration(Data, DataLabel, sparsity=0.1, t=3, metric='euclidean'
   Zset = {}
   for i in range(num_label):
     num_point = len(np.where(DataLabel == diffLabel[i])[0])
-    numOfAnchor_temp = np.floor(num_point * sparsity)
-    if numOfAnchor_temp == 0:
-      numOfAnchor_temp = 1
-    while numOfAnchor_temp <= 3:
-      numOfAnchor_temp = numOfAnchor_temp * 2
-    numOfAnchor_temp = int(numOfAnchor_temp)
-    gtemp = Data[np.squeeze(DataLabel == diffLabel[i]), :]
-    temp_Index = KMeans(n_clusters=numOfAnchor_temp, n_init=5).fit(gtemp)
-    Anchortemp = temp_Index.cluster_centers_
-    AnchorLabeltemp = diffLabel[i] * np.ones([numOfAnchor_temp, 1])
-    AnchorPoint = np.concatenate((AnchorPoint, Anchortemp), axis=0)
-    AnchorLabel = np.concatenate((AnchorLabel, AnchorLabeltemp), axis=0)
-    Ztemp = AnchorGraph(gtemp, Anchortemp, 3, 10, metric)
-    Zset[str(i)] = Ztemp
+    if num_point == 1:
+      Anchortemp = Data[np.squeeze(DataLabel == diffLabel[i]), :]
+      if len(Anchortemp.shape) < 2:
+        Anchortemp = Anchortemp.reshape([1, Anchortemp.shape[0]])
+      AnchorLabeltemp = np.array([diffLabel[i]]).reshape((1, 1))
+      AnchorPoint = np.concatenate((AnchorPoint, Anchortemp), axis=0)
+      AnchorLabel = np.concatenate((AnchorLabel, AnchorLabeltemp), axis=0)
+      Zset[str(i)] = np.array([1])
+    else:
+      numOfAnchor_temp = np.floor(num_point * sparsity)
+      if numOfAnchor_temp == 0:
+        numOfAnchor_temp = 1
+      while numOfAnchor_temp <= 3:
+        numOfAnchor_temp = numOfAnchor_temp * 2
+      numOfAnchor_temp = int(numOfAnchor_temp)
+      gtemp = Data[np.squeeze(DataLabel == diffLabel[i]), :]
+      temp_Index = KMeans(n_clusters=numOfAnchor_temp, n_init=5).fit(gtemp)
+      Anchortemp = temp_Index.cluster_centers_
+      AnchorLabeltemp = diffLabel[i] * np.ones([numOfAnchor_temp, 1])
+      AnchorPoint = np.concatenate((AnchorPoint, Anchortemp), axis=0)
+      AnchorLabel = np.concatenate((AnchorLabel, AnchorLabeltemp), axis=0)
+      Ztemp = AnchorGraph(gtemp, Anchortemp, 3, 10, metric)
+      Zset[str(i)] = Ztemp
 
   # plt.scatter(AnchorPoint[:, 0], AnchorPoint[:, 1], c=AnchorLabel)
   # plt.show()
+  print('finish generation')
   Z = np.zeros([l, len(AnchorLabel)])
   for i in range(num_label):
-    if DataLabel.shape[1] == l:
-      DataLabel = DataLabel.transpose()
-    datalocation = np.argwhere(np.squeeze(DataLabel, axis=1) == diffLabel[i])
-    anchorlocation = np.argwhere(
-        np.squeeze(AnchorLabel, axis=1) == diffLabel[i])
+    if len(DataLabel.shape) > 1:
+      if DataLabel.shape[1] == l:
+        DataLabel = DataLabel.transpose()
+      DataLabel = np.squeeze(DataLabel)
+    if len(AnchorLabel.shape) > 1:
+      if AnchorLabel.shape[1] == l:
+        AnchorLabel = AnchorLabel.transpose()
+      AnchorLabel = np.squeeze(AnchorLabel)
+    datalocation = np.argwhere(DataLabel == diffLabel[i])
+    anchorlocation = np.argwhere(AnchorLabel == diffLabel[i])
     Z[np.ix_(np.squeeze(datalocation, axis=1), np.squeeze(
       anchorlocation, axis=1))] = Zset[str(i)]
+  print('finish Z')
   return AnchorPoint, AnchorLabel, Z
 
 
@@ -89,7 +92,7 @@ def AnchorEmbedding(
         dim=2,
         init=0,
         flagDistanceMatrix=0,
-        T=500,
+        T=200,
         metric="euclidean",
         cohortmetric="average",
         scale=1,
@@ -114,16 +117,21 @@ def AnchorEmbedding(
                 Init=init, T=T, scale=scale, dim=dim)
   # plt.scatter(anchor0[:, 0], anchor0[:, 1], c=anchorlabel)
   # plt.show()
+  scaler = preprocessing.MinMaxScaler()
+  scaler.fit(anchor0)
+  anchor0 = scaler.transform(anchor0)
 
   if flagMove != 0:
     d_cohort = CohortDistance(Anchor, anchorlabel)
     C_order = np.argsort(d_cohort, axis=-1).astype(int)
     C = SOE(C_order.astype(int), k, dim=dim, Init=cinit)
-    # plt.scatter(C[:, 0], C[:, 1], c=k)
-    # plt.show()
-    C = C / (np.max(np.max(C)) / np.max(np.max(anchor0)))
-    Param = SOE(A_order, anchorlabel, C=C, anchor=anchor0, flagMove=1, dim=dim)
-    # SOE(Matrix, DataLabel, C=0, anchor=0, dim=2, Init=0, metric='euclidean', flagMove=0, T=500, eps=1e-6, scale=1)
+    plt.scatter(C[:, 0], C[:, 1], c=k)
+    plt.show()
+    scaler.fit(C)
+    # C = C / (np.max(np.max(C)) / np.max(np.max(anchor0)))
+    C = scaler.transform(C) * 2
+    Param = SOE(A_order, anchorlabel, C=C,
+                anchor=anchor0, flagMove=1, dim=dim, T=20)
     anchor = np.zeros((l, dim))
     aDelta = np.zeros((l, dim))
     for i in range(k.shape[0]):
@@ -131,25 +139,13 @@ def AnchorEmbedding(
       aDelta[tempi, :] = anchor0[tempi, :] - np.mean(anchor0[tempi, :], axis=0)
       Theta = Rtheta(Param[i, 0], dim=dim, C=C[i, :])
       Scal = Sscal(Param[i, 1], dim=dim)
-      anchor[tempi, :] = (
-          Theta @ Scal @ aDelta[tempi, :].transpose()).transpose() + C[i, :]
-    # plt.scatter(anchor[:, 0], anchor[:, 1], c=anchorlabel)
-    # plt.show()
-    # print(anchor)
+      # anchor[tempi, :] = (Theta @ Scal @ aDelta[tempi, :].transpose()).transpose() + C[i, :]
+      anchor[tempi, :] = (Theta.dot(Scal).dot(
+          aDelta[tempi, :].transpose())).transpose() + C[i, :]
   else:
     anchor = anchor0
     C = 0
   return anchor, anchor0, C
-
-
-# def disForLOE(x):
-#     # n = int(x.shape[0] / 2)
-#     # x0 = np.reshape(x, (n, 2))
-#     n = x.shape[0]
-#     x0 = x
-#     Del = 0.01
-#     disgraph = squareform(pdist(x0, 'euclidean'))
-#     return n, x0, Del, disgraph
 
 
 def ErrLOE(x, *args):
@@ -230,12 +226,16 @@ def reformX(x, dim):
 def ErrTSNE(x, *args):
   A_order, dim = args[0], args[1]
   x0 = reformX(x, dim)
+  if isspmatrix_csr(A_order):
+    A_order = A_order.toarray()
   E = TSNEcost(x0, A_order)
   return E
 
 
 def GradTSNE(x, *args):
   A_order, dim = args[0], args[1]
+  if isspmatrix_csr(A_order):
+    A_order = A_order.toarray()
   x0 = reformX(x, dim)
   grad = TSNEgrad(x0, A_order)
   gradX0 = np.squeeze(np.reshape(grad, (x.shape[0], 1)))
@@ -244,7 +244,7 @@ def GradTSNE(x, *args):
 
 def TSNEcost(x, Ad):
   n = Ad.shape[0]
-  P = Ad / sum(sum(Ad))
+  P = Ad / Ad.sum()
   d2 = squareform(pdist(x, 'euclidean'))
   d2 = d2 * d2
   Q = 1 / (1 + d2)
@@ -259,7 +259,7 @@ def TSNEcost(x, Ad):
 
 def TSNEgrad(x, Ad):
   n = Ad.shape[0]
-  P = Ad / sum(sum(Ad))
+  P = Ad / Ad.sum()
   d2 = squareform(pdist(x, 'euclidean'))
   d2 = d2 * d2
   Q = 1 / (1 + d2)
@@ -267,7 +267,7 @@ def TSNEgrad(x, Ad):
   Q_n = Q / sum(Q)
   Q_n = np.maximum(Q_n, 1e-12)
   L = (P - Q_n) * Q
-  gd = 4 * (np.diag(np.sum(L, axis=0)) - L) @ x
+  gd = 4 * (np.diag(np.sum(L, axis=0)) - L).dot(x)
   return gd
 
 
@@ -290,7 +290,7 @@ def ANGEL_embedding(
   else:
     if len(init.shape) > 1:
       init = np.reshape(init, (l * dim, 1))
-  LAEstart = Z @ anchor
+  LAEstart = Z.dot(anchor)
   additional = (W, dim)
   initstart = np.reshape(LAEstart, (l * dim, 1))
   if dim == 2:
@@ -313,27 +313,32 @@ def ANGEL_embedding(
     print('error')
     return
   if optType == 'constrained':
-    x = minimize(ErrLOE, init, method='SLSQP', args=additional, jac=GradLOE,
+    x = minimize(ErrLOE, x0=init, method='SLSQP', args=additional, jac=GradLOE,
                  bounds=bnds, options={'disp': True, 'maxiter': T})
     x = np.reshape(x.x, (l, dim))
 
   elif optType == 'fast':
-    W0 = AdjacencyMatrix(Data, neighbor=neighbor, weight=1, metric='euclidean')
+    W0 = kneighbors_graph(Data, neighbor, mode='distance', include_self=False)
     additional = (W0, dim)
-    x = minimize(ErrTSNE, init, method='L-BFGS-B', args=additional, jac=GradTSNE,
+    x = minimize(ErrTSNE, x0=initstart, method='L-BFGS-B', args=additional, jac=GradTSNE,
                  bounds=bnds, options={'disp': True, 'maxiter': T})
     x = np.reshape(x.x, (l, dim))
   else:
     x = 0
     print('error')
-  pca = PCA(n_components=dim)
-  pca.fit(x)
-  x = pca.transform(x)
   return x
 
 
+def draw_vector(v0, v1, ax=None):
+  ax = ax or plt.gca()
+  arrowprops = dict(arrowstyle='->',
+                    linewidth=2,
+                    shrinkA=0, shrinkB=0)
+  ax.annotate('', v1, v0, arrowprops=arrowprops)
+
+
 if __name__ == '__main__':
-  fullData = loadmat('bicycle_sample.mat')
+  fullData = loadmat('mnist_256_100sample.mat')
   # fullData = loadmat('../Data/cylinder_top.mat')
   scaler = preprocessing.MinMaxScaler()
   # x = csr_matrix(fullData.get('newsdata')).toarray()
@@ -343,39 +348,51 @@ if __name__ == '__main__':
   label.astype(int)
   # np.random.seed(0)
 
-  [AnchorPoint, AnchorLabel, Z] = AnchorPointGeneration(
-      g, label, sparsity=0.05)
-  initdata, initanchor, initc = funInit(label, AnchorPoint, dim=2)
-
+  [AnchorPoint, AnchorLabel, Z] = AnchorPointGeneration(g, label, sparsity=0.1)
+  initdata, initanchor, initc = funInit(label, AnchorLabel, dim=2)
   anchorpoint, anchor0, C = AnchorEmbedding(
-      AnchorPoint, AnchorLabel, init=initanchor, flagMove=0, lamb=0, dim=2, cinit=initc)
+      AnchorPoint, AnchorLabel, init=initanchor, flagMove=1, lamb=0.8, dim=2, cinit=initc, T=30)
   scaler.fit(anchorpoint)
   anchorpoint = scaler.transform(anchorpoint)
-  # colorlabel = ['red','pink','green','blue','black','gray']
+
   # plt.scatter(anchorpoint[:, 0], anchorpoint[:, 1], c=AnchorLabel, cmap='rainbow')
   # plt.show()
+
   # fig = plt.figure()
   # ax = fig.add_subplot(projection='3d')
   # ax.scatter(anchorpoint[:, 0], anchorpoint[:, 1], anchorpoint[:, 2], c=AnchorLabel)
   # plt.show()
 
-  W = AdjacencyMatrix(g, neighbor=10, weight=0, metric='euclidean')
-  result = ANGEL_embedding(g, anchorpoint, Z, W, dim=2,
-                           T=10, eps=0.1, init=initdata, optType='constrained')
+  W = kneighbors_graph(g, 10, mode='connectivity', include_self=False)
+
+  for i in range(5):
+    result = ANGEL_embedding(g, anchorpoint, Z, W, dim=2, T=1,
+                             eps=0.1, init=initdata, optType='fast', neighbor=10)
+    initdata = result
+    plt.scatter(result[:, 0], result[:, 1], c=label, cmap='rainbow')
+    plt.show()
+  result = postProcessing(result, dim=2)
+
   # fig = plt.figure()
   # ax = fig.add_subplot(projection='3d')
   # ax.scatter(result[:, 0], result[:, 1], result[:, 2], c=label, cmap='rainbow')
   # plt.show()
-
   plt.scatter(result[:, 0], result[:, 1], c=label, cmap='rainbow')
   plt.show()
 
-  # fig = plt.figure()
-  # ax = fig.add_subplot(projection='3d')
-  # ax.scatter(x[:, 0], x[:, 1], x[:, 2], c=label, cmap='rainbow')
+  # plt.scatter(result[:, 0], result[:, 1])
+  # for length, vector in zip(pca.explained_variance_, pca.components_):
+  #     v = vector * 3 * np.sqrt(length)
+  #     draw_vector(pca.mean_, pca.mean_ + v)
+  # plt.axis('equal')
   # plt.show()
+  # result = pca.transform(result)
 
-  # plot_neighbor(g, result, label, k=10, part=0.5, choice='link')
+  plot_neighbor(g, result, label, k=10, part=0.5, choice='link')
+  p, pl, pg, ps = Prev(g, result, label)
+  print(p)
+  print(pl)
+  print(ps)
 
   print('finish')
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

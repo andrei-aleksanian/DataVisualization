@@ -10,7 +10,6 @@ from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
 from sklearn.model_selection import cross_val_score
 import matplotlib as mplt
-# import plotly as ply
 
 
 def neighbor_prev_disturb(high_d, low_d, label, k, metric='euclidean', part=0.5):
@@ -99,8 +98,9 @@ def neighbor_prev_disturb(high_d, low_d, label, k, metric='euclidean', part=0.5)
 
 
 def P_local(high_d, low_d, label, k, metric='euclidean'):
-  if k < 10:
-    k = 20
+  # if k < 10:
+  #     k = 15
+  k = 15
   save_prev = np.zeros([k, 1])
   sum_score = 0
   count = 0
@@ -166,7 +166,13 @@ def Prev(high_d, low_d, label, specific='all', metric='euclidean', CohortMetric=
     return P_g
   elif specific == 'separability':
     knn = KNeighborsClassifier(n_neighbors=1, weights='distance')
-    cv_scores = cross_val_score(knn, low_d, np.ravel(label), cv=5)
+    values, counts = np.unique(label, return_counts=True)
+    m = min(counts)
+    if m < 5:
+      cvc = m - 1
+    else:
+      cvc = 5
+    cv_scores = cross_val_score(knn, low_d, np.ravel(label), cv=cvc)
     P_s = np.mean(cv_scores)
     return P_s
   else:

@@ -16,15 +16,15 @@ def SOE(
         Init=0,
         metric='euclidean',
         flagMove=0,
-        T=500,
+        T=200,
         eps=1e-6,
         scale=1):
   [l, D] = Matrix.shape
   if isinstance(Init, int):
-    np.random.seed(0)
+    # np.random.seed(0)
     Init = np.random.random_sample((l, dim))
   if flagMove == 1:
-    np.random.seed(0)
+    # np.random.seed(0)
     Init = np.random.random_sample((C.shape[0], 2))
     bnds1 = [(-0.5 * np.pi, 0.5 * np.pi) for i in range(0, C.shape[0])]
     bnds2 = [(0, scale) for i in range(0, C.shape[0])]
@@ -63,12 +63,11 @@ def PreForRelocationOE(Param, anchor0, anchorC, label):
   scal = Param[c: Param.shape[0]]
   diffLabel = np.unique(label)
   for i in range(diffLabel.shape[0]):
-    templ = np.squeeze(label == diffLabel[i], axis=1)
+    templ = np.squeeze(label == diffLabel[i])
     delx[templ, :] = anchor0[templ, :] - np.mean(anchor0[templ, :], axis=0)
     Theta = Rtheta(theta[i], dim=p, C=anchorC[i, :])
     Scal = Sscal(scal[i], dim=p)
-    x[templ, :] = (Theta @ Scal @ delx[templ, :].transpose()
-                   ).transpose() + anchorC[i, :]
+    x[templ, :] = (Theta @ Scal @ delx[templ, :].transpose()).transpose() + anchorC[i, :]
   disgraph = squareform(pdist(x, 'euclidean'))
   return n, x, delx, disgraph, theta, scal, diffLabel, Del
 
@@ -77,8 +76,7 @@ def Rtheta(theta, dim, C):
   if C.shape[0] == 1:
     C = C.transpose()
   if dim == 2:
-    k = np.array([[np.cos(theta), - np.sin(theta)],
-                 [np.sin(theta), np.cos(theta)]])
+    k = np.array([[np.cos(theta), - np.sin(theta)], [np.sin(theta), np.cos(theta)]])
   elif dim == 3:
     k = np.array([[np.cos(theta) + C[0] * C[0] * (1 - np.cos(theta)),
                    C[0] * C[1] * (1 - np.cos(theta)) - C[2] * np.sin(theta),
@@ -98,8 +96,7 @@ def gradRtheta(theta, dim, C):
   if C.shape[0] == 1:
     C = C.transpose()
   if dim == 2:
-    k = np.array([[- np.sin(theta), -np.cos(theta)],
-                 [np.cos(theta), - np.sin(theta)]])
+    k = np.array([[- np.sin(theta), -np.cos(theta)], [np.cos(theta), - np.sin(theta)]])
   elif dim == 3:
     k = np.array([[-np.sin(theta) + C[0] * C[0] * (1 + np.sin(theta)),
                    C[0] * C[1] * (1 + np.sin(theta)) - C[2] * np.cos(theta),
@@ -150,7 +147,16 @@ def GradSOE_Relocate(Param, *args):
   n, x, delx, disgraph, theta, scal, diffLabel, Del = PreForRelocationOE(
       Param, anchor0, anchorC, labels)
   gradX = GradSOE_Relocate_loop(
-      delx, n, Del, A_order, disgraph, theta, scal, anchorC, diffLabel, labels)
+      delx,
+      n,
+      Del,
+      A_order,
+      disgraph,
+      theta,
+      scal,
+      anchorC,
+      diffLabel,
+      labels)
   gradX0 = np.squeeze(np.reshape(gradX, (Param.shape[0], 1)))
   return gradX0
 
@@ -231,12 +237,12 @@ def GradSOE_Relocate_loop(delx, n, Del, A_order, disgraph, theta, scal, C, diffL
               scal_lj = scal[lj]
               scal_lk = scal[lk]
 
-            x_i = (RS(theta_li, scal_li, dim,
-                   C[li, :]) @ delx[A_order[i, 0], :].transpose()).transpose() + C[li, :]
-            x_j = (RS(theta_lj, scal_lj, dim,
-                   C[li, :]) @ delx[A_order[i, j], :].transpose()).transpose() + C[lj, :]
-            x_k = (RS(theta_lk, scal_lk, dim,
-                   C[li, :]) @ delx[A_order[i, k], :].transpose()).transpose() + C[lk, :]
+            x_i = (RS(theta_li, scal_li, dim, C[li, :]) @
+                   delx[A_order[i, 0], :].transpose()).transpose() + C[li, :]
+            x_j = (RS(theta_lj, scal_lj, dim, C[li, :]) @
+                   delx[A_order[i, j], :].transpose()).transpose() + C[lj, :]
+            x_k = (RS(theta_lk, scal_lk, dim, C[li, :]) @
+                   delx[A_order[i, k], :].transpose()).transpose() + C[lk, :]
 
             if len(x_i) > 1:
               x_i = np.squeeze(x_i)
@@ -289,8 +295,7 @@ def ErrSOE_loop(n, Del, A_order, disgraph):
   for i in range(0, n):
     for j in range(1, n - 1):
       for k in range(j + 1, n):
-        temp = disgraph[A_order[i, 0], A_order[i, j]] + \
-            Del - disgraph[A_order[i, 0], A_order[i, k]]
+        temp = disgraph[A_order[i, 0], A_order[i, j]] + Del - disgraph[A_order[i, 0], A_order[i, k]]
         if temp > 0:
           E = E + temp * temp
   return E

@@ -12,7 +12,8 @@ from scipy.optimize import minimize
 from sklearn.neighbors import NearestNeighbors
 from scipy.linalg import norm
 from sklearn import preprocessing
-
+from sklearn.decomposition import PCA
+from scipy.sparse import csr_matrix
 from numba import jit
 
 from scipy.io import savemat
@@ -20,7 +21,6 @@ from scipy.sparse import csr_matrix
 import os
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
 
 
 def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
@@ -39,18 +39,24 @@ def CohortDistance(Data, DataLabel, linkC='average', metricC='euclidean'):
   for i in range(l_label):
     if len(DataLabel.shape) > 1:
       if DataLabel.shape[0] > DataLabel.shape[1]:
-        tempi = np.squeeze(np.argwhere(
-            np.squeeze(DataLabel, axis=1) == u_Label[i]))
+        tempi = np.argwhere(np.squeeze(DataLabel, axis=1) == u_Label[i])
       else:
-        tempi = np.squeeze(np.argwhere(
-            np.squeeze(DataLabel, axis=0) == u_Label[i]))
+        tempi = np.argwhere(np.squeeze(DataLabel, axis=0) == u_Label[i])
     else:
-      tempi = np.squeeze(np.argwhere(DataLabel == u_Label[i]))
+      tempi = np.argwhere(DataLabel == u_Label[i])
+    if len(tempi.shape) == 2 and tempi.shape[0] > 1:
+      tempi = np.squeeze(tempi)
+    elif len(tempi.shape) == 2 and tempi.shape[0] == 1:
+      tempi = np.squeeze(tempi, axis=0)
     for j in range(l_label):
       if i == j:
         dCluster[i, j] = 0
       else:
-        tempj = np.squeeze(np.argwhere(np.squeeze(DataLabel) == u_Label[j]))
+        tempj = np.argwhere(np.squeeze(DataLabel) == u_Label[j])
+        if len(tempj.shape) == 2 and tempj.shape[0] > 1:
+          tempj = np.squeeze(tempj)
+        elif len(tempj.shape) == 2 and tempj.shape[0] == 1:
+          tempj = np.squeeze(tempj, axis=0)
         Dist_ij = DistData[np.ix_(tempi, tempj)]
         if linkC == 'single':
           np.fill_diagonal(Dist_ij, float('inf'))
@@ -93,8 +99,7 @@ def Ad_cohort_order_chg(A_order, anchorlabel, linkage_order, k, param):
       i_same_location = np.where(label_order == temp_label)[0]
       temp_same_location = np.where(temp_labelorder == temp_label)[0]
       l_i_same_location = i_same_location.shape[0]
-      A_order_ad[i, count: count +
-                 l_i_same_location] = A_order[i, i_same_location]
+      A_order_ad[i, count: count + l_i_same_location] = A_order[i, i_same_location]
       temp_Ai = np.delete(temp_Ai, temp_same_location)
       temp_labelorder = np.delete(temp_labelorder, temp_same_location)
       count = count + l_i_same_location
@@ -106,6 +111,7 @@ def Ad_cohort_order_chg(A_order, anchorlabel, linkage_order, k, param):
 def AdjacencyMatrix(Data, neighbor=10, weight=1, metric='euclidean'):
   # nbrs = NearestNeighbors(n_neighbors=neighbor + 1).fit(Data)
   # Aj = nbrs.kneighbors_graph(Data).toarray()
+  Adis = pdist(Data, metric)
   Adis = squareform(pdist(Data, metric))
   # if metric == 'euclidean':
   # Adis = - (np.max(Adis) - Adis)
@@ -114,6 +120,7 @@ def AdjacencyMatrix(Data, neighbor=10, weight=1, metric='euclidean'):
   # n = Data.shape[0]
   # Aj[range(n), range(n)] = 0
   # Aj = Aj / sum(sum(Aj))
+  Aj = csr_matrix(Aj)
   return Aj
 
 
@@ -200,7 +207,7 @@ def k_nearest_neighbor_disturb(disgraph, k=10, weight=1, direction=0):
   return simgraph
 
 
-def funInit(label, anchor, dim=2):
+def funInit(label, anchorlabel, dim=2):
   if len(label.shape) > 1:
     if label.shape[0] > label.shape[1]:
       ldata = label.shape[0]
@@ -209,13 +216,13 @@ def funInit(label, anchor, dim=2):
   elif len(label.shape) == 1:
     ldata = label.shape[0]
   lc = len(np.unique(label))
-  if len(anchor.shape) > 1:
-    if anchor.shape[0] > anchor.shape[1]:
-      lanchor = anchor.shape[0]
+  if len(anchorlabel.shape) > 1:
+    if anchorlabel.shape[0] > anchorlabel.shape[1]:
+      lanchor = anchorlabel.shape[0]
     else:
-      lanchor = anchor.shape[1]
-  elif len(anchor.shape) == 1:
-    lanchor = anchor.shape[0]
+      lanchor = anchorlabel.shape[1]
+  elif len(anchorlabel.shape) == 1:
+    lanchor = anchorlabel.shape[0]
   initdata = np.random.random_sample((ldata, dim))
   initanchor = np.random.random_sample((lanchor, dim))
   initc = np.random.random_sample((lc, dim))
