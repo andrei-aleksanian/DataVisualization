@@ -7,6 +7,7 @@ import { Point2D, Point3D } from 'types/Data';
 import { DataPerseveranceLabelled, DataPerseveranceColored } from 'types/Data/DataPerseverance';
 import { ParamsANGEL, ParamsCOVA } from 'types/Data/Params';
 import { Popup } from 'Components/UI';
+import useDocumentTitle from 'hooks/useDocumentTitle';
 import { getDataANGEL, getDataCOVA, getDataOriginal } from './services';
 
 import Settings, {
@@ -22,6 +23,7 @@ import Visualization2D from '../Visualization2D';
 
 import classes from './Examples.module.scss';
 
+export const PAGE_TITLE = 'Example';
 export interface ExampleProps {
   reviewer: boolean;
   backLink: string;
@@ -90,6 +92,7 @@ const Examples = ({ reviewer, backLink }: ExampleProps) => {
     };
   }, [settingsCommon, settingsCOVA, settingsANGEL]);
 
+  useDocumentTitle(`${PAGE_TITLE} ${name}`);
   return (
     <div className={classes.index}>
       <Settings

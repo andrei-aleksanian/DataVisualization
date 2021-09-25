@@ -7,10 +7,12 @@ import getId from 'utils/getId';
 import hostLink from 'utils/hostLink';
 import { Popup } from 'Components/UI';
 import Button from 'Components/Forms/Button';
+import useDocumentTitle from 'hooks/useDocumentTitle';
 import fetchExamples from './services';
 
 import classes from './Library.module.scss';
 
+export const PAGE_TITLE = 'Library';
 export const TEXT_H1 = 'Examples Library';
 export const TEXT_POPUP = "Couldn't load examples, please try again later";
 export interface LibraryProps {
@@ -58,6 +60,9 @@ const Library = ({ reviewer }: LibraryProps) => {
   } else {
     output = <div className={classes.Empty}>No examples found at the moment!</div>;
   }
+
+  useDocumentTitle(PAGE_TITLE);
+
   return (
     <div className={classes.index}>
       {error && <Popup text={TEXT_POPUP} onClick={() => history.push('/')} />}

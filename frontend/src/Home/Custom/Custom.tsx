@@ -6,6 +6,7 @@ import { Point2D, Point3D } from 'types/Data';
 import getColors from 'utils/getColors';
 import { Response } from 'utils/tryPromise';
 import useIsMounted from 'hooks/useIsMounted';
+import useDocumentTitle from 'hooks/useDocumentTitle';
 import Settings, {
   defaultSettingsCOVA,
   defaultSettingsANGEL,
@@ -22,6 +23,7 @@ import { getCovaDynamicInit, getCovaDynamic, getAngelDynamic, getAngelDynamicIni
 
 import classes from './Custom.module.scss';
 
+export const PAGE_TITLE = 'Custom Data';
 // .mat files accepted only for this page
 const ACCEPTED_TYPE = '.mat';
 export const TEXT_FILE_NULL = 'Please, provide a .mat file.';
@@ -114,6 +116,8 @@ const Custom = () => {
     }
     setIsLoading(false);
   };
+
+  useDocumentTitle(PAGE_TITLE);
 
   return (
     <div className={classes.index}>
