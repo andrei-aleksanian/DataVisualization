@@ -6,7 +6,7 @@ from concurrent.futures.process import ProcessPoolExecutor
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from common.static import createStaticDirectory, createTempDirectory, createGeneratedDataDirectory
+from common.static import createStaticDirectory, staticFolderPath, generatedDataFolderPath
 from common.environment import Env
 from common.config import getApp
 from .database.database import setUpDatabase
@@ -16,9 +16,9 @@ setUpDatabase()
 
 app = getApp()
 
-createStaticDirectory()
-createTempDirectory()
-createGeneratedDataDirectory()
+createStaticDirectory(staticFolderPath)
+createStaticDirectory(generatedDataFolderPath)
+
 app.mount("/api/images", StaticFiles(
     directory="images"), name="images")
 

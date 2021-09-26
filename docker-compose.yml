@@ -33,6 +33,7 @@ services:
     volumes:
       - ./backend/common:/app/common
       - ./backend/custom_data_api:/app/api
+      - ./backend/exampleMat:/app/exampleMat
     env_file:
       - backend.env
 

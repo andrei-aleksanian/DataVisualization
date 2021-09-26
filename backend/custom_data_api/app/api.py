@@ -4,7 +4,8 @@ My API file used for early development.
 from os import environ
 from concurrent.futures.process import ProcessPoolExecutor
 from fastapi.middleware.cors import CORSMiddleware
-from common.static import createTempDirectory
+from fastapi.staticfiles import StaticFiles
+from common.static import createStaticDirectory, tempFolderPath, exampleMatFolderPath
 from common.environment import Env
 from common.config import getApp
 from .routers import dynamic
@@ -12,7 +13,11 @@ from .routers import dynamic
 
 app = getApp()
 
-createTempDirectory()
+createStaticDirectory(tempFolderPath)
+createStaticDirectory(exampleMatFolderPath)
+
+app.mount("/api/dynamic/exampleMat", StaticFiles(
+    directory="exampleMat"), name="exampleMat")
 
 
 @app.on_event("startup")

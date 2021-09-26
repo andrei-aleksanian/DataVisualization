@@ -19,8 +19,10 @@ exports[`Test UI renders Settings matches snapshot 1`] = `
           src="info.svg"
         />
         <div
-          style="top: 20px; left: -120px;"
-        />
+          style="top: 19px; left: -115px;"
+        >
+           
+        </div>
       </div>
     </div>
     <div

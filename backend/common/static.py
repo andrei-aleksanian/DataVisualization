@@ -5,21 +5,10 @@ from os import getcwd, path, mkdir
 staticFolderPath = getcwd() + "/images/"
 tempFolderPath = getcwd() + "/temp/"
 generatedDataFolderPath = getcwd() + "/generatedData/"
+exampleMatFolderPath = getcwd() + "/exampleMat/"
 
 
-def createStaticDirectory():
+def createStaticDirectory(folderPath: str):
   """Create the static folder if not exists"""
-  if not path.exists(staticFolderPath):
-    mkdir(staticFolderPath)
-
-
-def createTempDirectory():
-  """Create the static folder if not exists"""
-  if not path.exists(tempFolderPath):
-    mkdir(tempFolderPath)
-
-
-def createGeneratedDataDirectory():
-  """Create the static folder if not exists"""
-  if not path.exists(generatedDataFolderPath):
-    mkdir(generatedDataFolderPath)
+  if not path.exists(folderPath):
+    mkdir(folderPath)

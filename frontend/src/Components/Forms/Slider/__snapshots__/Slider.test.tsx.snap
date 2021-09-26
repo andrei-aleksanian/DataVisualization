@@ -19,9 +19,9 @@ exports[`Test Slider Component with marks number inputs Matches snapshot 1`] = `
           src="info.svg"
         />
         <div
-          style="top: 20px; left: -120px;"
+          style="top: 19px; left: -115px;"
         >
-          Example
+          Example 
         </div>
       </div>
     </div>

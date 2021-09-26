@@ -10,9 +10,10 @@ export interface LabelProps {
   text: string;
   tooltipText: string;
   customCalss?: string;
+  link?: JSX.Element; // accepts an anchor tag, not sure how to type it
 }
 
-const Label = ({ text, customCalss, tooltipText }: LabelProps) => {
+const Label = ({ text, customCalss, tooltipText, link }: LabelProps) => {
   const Tooltip = () => {
     const [top, setTop] = useState(0);
     const [left, setLeft] = useState(0);
@@ -26,7 +27,9 @@ const Label = ({ text, customCalss, tooltipText }: LabelProps) => {
     return (
       <div className={classes.Tooltip}>
         <img src={info} alt={getId('info')} ref={ref} />
-        <div style={{ top: top + 20, left: left - 120 }}>{tooltipText}</div>
+        <div style={{ top: top + 19, left: left - 115 }}>
+          {tooltipText} {link}
+        </div>
       </div>
     );
   };

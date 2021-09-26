@@ -78,9 +78,9 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 20px; left: -120px;"
+                style="top: 19px; left: -115px;"
               >
-                Choose between different embedding algrotihms.
+                Choose between different embedding algrotihms. 
               </div>
             </div>
           </div>
@@ -146,9 +146,9 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 20px; left: -120px;"
+                style="top: 19px; left: -115px;"
               >
-                The k-nearest neighborhood selection, used to construct an adjacency matrix.
+                The k-nearest neighborhood selection, used to construct an adjacency matrix. 
               </div>
             </div>
           </div>
@@ -250,9 +250,9 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 20px; left: -120px;"
+                style="top: 19px; left: -115px;"
               >
-                Determines the number of anchor points. E.g. 0.1 = nearest integer of (0.1 * number of data points)
+                Determines the number of anchor points. E.g. 0.1 = nearest integer of (0.1 * number of data points) 
               </div>
             </div>
           </div>
@@ -334,9 +334,9 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 20px; left: -120px;"
+                style="top: 19px; left: -115px;"
               >
-                Controls the balance between local and global preservation performance.
+                Controls the balance between local and global preservation performance. 
               </div>
             </div>
           </div>
@@ -408,9 +408,9 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 20px; left: -120px;"
+                style="top: 19px; left: -115px;"
               >
-                Whether to relocate anchor points' position according to the cohort distance relations. If 0: keep the original anchor position.
+                Whether to relocate anchor points' position according to the cohort distance relations. If 0: keep the original anchor position. 
               </div>
             </div>
           </div>
@@ -463,9 +463,9 @@ exports[`Examples matches snapshot 1`] = `
                 src="info.svg"
               />
               <div
-                style="top: 20px; left: -120px;"
+                style="top: 19px; left: -115px;"
               >
-                The red lines link the wrongly preserved local neighbourhood errors.
+                The red lines link the wrongly preserved local neighbourhood errors. 
               </div>
             </div>
           </div>

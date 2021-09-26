@@ -30,6 +30,7 @@ services:
     volumes:
       - images:/app/images
       - generatedData:/app/generatedData
+      - exampleMat:/app/exampleMat
     env_file:
       - backend.prod.env
       - db.env
@@ -52,5 +53,6 @@ services:
 volumes:
   images:
   generatedData:
+  exampleMat:
   mysql:
   mysql_config:

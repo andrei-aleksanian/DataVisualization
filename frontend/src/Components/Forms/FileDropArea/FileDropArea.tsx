@@ -15,6 +15,7 @@ export interface FileDropAreaProps {
   acceptedType: string;
   labelText: string;
   tooltipText: string;
+  toolitipLink: JSX.Element;
 }
 
 export const TEXT_LABEL = 'Drag and Drop or Click HERE to choose file';
@@ -26,6 +27,7 @@ const FileDropArea = ({
   acceptedType,
   labelText,
   tooltipText,
+  toolitipLink,
 }: FileDropAreaProps): React.ReactElement => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
@@ -39,7 +41,7 @@ const FileDropArea = ({
 
   return (
     <>
-      <Label text={labelText} tooltipText={tooltipText} customCalss={classes.label} />
+      <Label text={labelText} tooltipText={tooltipText} customCalss={classes.label} link={toolitipLink} />
       <div className={classes.Wrapper}>
         <div
           style={{
