@@ -5,12 +5,12 @@ formatDataIn is ignored as typing makes it unnecessary to check type conversions
 """
 from typing import List
 import numpy as np
+from scipy.sparse.csr import csr_matrix
 from common.visualization.utils.dataDynamic import childrenToList, toList, formatDataOut
 from common.visualization.utils.dataGenerated import checkDimension, getNeighbourNumber, loadData
 from common.types.dataDynamic import DataNumpy
 from common.types.dataGenerated import DataGeneratedNumpy
 from common.types.exceptions import RuntimeAlgorithmError
-from scipy.sparse.csr import csr_matrix
 
 
 def getInputData(points):
