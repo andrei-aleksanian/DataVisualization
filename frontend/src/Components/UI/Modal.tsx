@@ -15,7 +15,10 @@ export const ModalWithFit = ({
 }) => {
   return (
     <>
-      <div className={cx(classes.Modal, classes.ModalWithFit, customClass)} style={{ height, marginTop: margin }} />
+      <div
+        className={cx(classes.Modal, classes.ModalFill, classes.ModalWithFit, customClass)}
+        style={{ height, marginTop: margin }}
+      />
       <div className={classes.ModalWithFit} style={{ height, marginTop: margin }}>
         {children}
       </div>

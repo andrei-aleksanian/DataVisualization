@@ -11,6 +11,7 @@ import classes from './Visualization2D.module.scss';
 export interface Visualization2DProps {
   data: DataPerseveranceColored;
   showPreservation: boolean;
+  isViewReset: boolean;
 }
 
 const Visualization2D = ({ data, ...props }: Visualization2DProps) => {

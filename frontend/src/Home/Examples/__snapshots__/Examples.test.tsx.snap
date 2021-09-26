@@ -42,7 +42,7 @@ exports[`Examples matches snapshot 1`] = `
               <div
                 style="top: 19px; left: -115px;"
               >
-                Choose between different embedding algrotihms. 
+                Choose between different embedding algrotihms. Or see the original dataset. 
               </div>
             </div>
           </div>
@@ -427,7 +427,7 @@ exports[`Examples matches snapshot 1`] = `
               <div
                 style="top: 19px; left: -115px;"
               >
-                The red lines link the wrongly preserved local neighbourhood errors. 
+                The red lines link the wrongly preserved local neighbourhood errors. If you click on a point, it will show you it's original label! 
               </div>
             </div>
           </div>

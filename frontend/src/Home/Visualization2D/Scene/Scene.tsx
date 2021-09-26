@@ -23,12 +23,14 @@ export interface SceneProps {
   data: DataPerseveranceColored;
   showPreservation: boolean;
   controlsRef: React.MutableRefObject<any>;
+  isViewReset: boolean;
 }
 
 export default function Scene({
   data: { colors, points, prevPartsave, prevWrongInLow, dimension2D },
   showPreservation,
   controlsRef,
+  isViewReset,
 }: SceneProps) {
   return (
     <>
@@ -45,7 +47,7 @@ export default function Scene({
           isPreservation={showPreservation}
         />
       ))}
-      <Reset key={getId(`reset-${points[0][0]}`)} reset={dimension2D} controlsRef={controlsRef} />
+      <Reset key={getId(`reset-${points[0][0]}`)} reset={dimension2D && isViewReset} controlsRef={controlsRef} />
       {showPreservation &&
         prevPartsave.map((i) => {
           const pointFrom = points[i];

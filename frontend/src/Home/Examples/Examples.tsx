@@ -38,6 +38,8 @@ const Examples = ({ reviewer, backLink }: ExampleProps) => {
   const [settingsCOVA, setSettingsCOVA] = useState(defaultSettingsCOVA);
   const [settingsANGEL, setSettingsANGEL] = useState(defaultSettingsANGEL);
 
+  const [isViewReset, setIsViewReset] = useState(false);
+
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
 
@@ -103,13 +105,18 @@ const Examples = ({ reviewer, backLink }: ExampleProps) => {
           setSettingsCOVA,
           settingsANGEL,
           setSettingsANGEL,
+          setIsViewReset,
           backLink,
           reviewer,
           name: `Example: ${name}`,
         }}
       />
       {data && (
-        <Visualization2D data={data} showPreservation={settingsCommon.dataPreservation === DataPreservation.ON} />
+        <Visualization2D
+          data={data}
+          showPreservation={settingsCommon.dataPreservation === DataPreservation.ON}
+          isViewReset={isViewReset}
+        />
       )}
       {error && (
         <Popup

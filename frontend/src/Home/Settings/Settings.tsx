@@ -36,9 +36,10 @@ export const defaultSettingsCommon: SettingsCommon = {
   neighbour: 0, // stands for index in NEIGHBOUR_MARKS_ARR, not value
 };
 export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%'];
-const TEXT_TOOLTIP_ALGORITHM = 'Choose between different embedding algrotihms.';
+const TEXT_TOOLTIP_ALGORITHM = 'Choose between different embedding algrotihms. Or see the original dataset.';
 const TEXT_TOOLTIP_NEIGHBOURS = 'The k-nearest neighborhood selection, used to construct an adjacency matrix.';
-const TEXT_TOOLTIP_DATA_PRESERVATION = 'The red lines link the wrongly preserved local neighbourhood errors.';
+const TEXT_TOOLTIP_DATA_PRESERVATION =
+  "The red lines link the wrongly preserved local neighbourhood errors. If you click on a point, it will show you it's original label!";
 
 export interface SettingsProps {
   settingsCommon: SettingsCommon;
@@ -47,6 +48,7 @@ export interface SettingsProps {
   setSettingsCOVA: React.Dispatch<React.SetStateAction<SettingsCOVA>>;
   settingsANGEL: SettingsANGEL;
   setSettingsANGEL: React.Dispatch<React.SetStateAction<SettingsANGEL>>;
+  setIsViewReset?: React.Dispatch<React.SetStateAction<boolean>>;
   backLink: string;
   customDataPage?: CustomProps | null;
   submitProps?: SubmitProps | null;
@@ -62,6 +64,7 @@ const Settings = ({
   setSettingsCOVA,
   settingsANGEL,
   setSettingsANGEL,
+  setIsViewReset,
   backLink,
   customDataPage,
   submitProps,
@@ -71,11 +74,20 @@ const Settings = ({
 }: SettingsProps) => {
   const onChangeAlgorithm = (event: React.ChangeEvent, newAlgorithm: Algorithm) => {
     event.preventDefault();
-    setSettingsCommon((prev) => ({ ...prev, algorithm: newAlgorithm }));
+    setSettingsCommon((prev) => {
+      if (setIsViewReset)
+        setIsViewReset(() => prev.algorithm === Algorithm.ORIGINAL && newAlgorithm !== Algorithm.ORIGINAL);
+      return {
+        ...prev,
+        algorithm: newAlgorithm,
+        dataPreservation: newAlgorithm === Algorithm.ORIGINAL ? DataPreservation.OFF : prev.dataPreservation,
+      };
+    });
   };
   const onChangeNeighbour = (value: number) => setSettingsCommon((prev) => ({ ...prev, neighbour: value }));
   const onChangeDataPreservation = (event: React.ChangeEvent, value: DataPreservation) => {
     event.preventDefault();
+    if (setIsViewReset) setIsViewReset(false);
     setSettingsCommon((prev) => ({ ...prev, dataPreservation: value }));
   };
 

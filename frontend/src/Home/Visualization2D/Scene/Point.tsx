@@ -20,7 +20,7 @@ const Point = ({ x, y, z, color, radius, dimension2D, isPreservation }: PointPro
   return (
     <mesh position={[x, y, z]} rotation={[Math.PI / 2, 0, 0]} onPointerDown={click}>
       {hovered && isPreservation && (
-        <Html>
+        <Html distanceFactor={100} position={[1, 1, 0]}>
           <div
             onClick={() => click()}
             style={{
@@ -29,7 +29,6 @@ const Point = ({ x, y, z, color, radius, dimension2D, isPreservation }: PointPro
               height: '20px',
               display: 'block',
               borderRadius: '5px',
-              marginTop: '10px',
             }}
           />
         </Html>

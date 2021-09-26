@@ -37,3 +37,4 @@ backend/generatedData
 *.sh
 dump*
 production/images
+production/exampleMat
