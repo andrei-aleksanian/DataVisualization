@@ -92,7 +92,7 @@ exports[`Examples matches snapshot 1`] = `
           </div>
         </div>
         <div
-          class="index"
+          class="index neighbour"
         >
           <div
             class="index"

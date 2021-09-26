@@ -10,7 +10,7 @@ import Loader from 'Components/UI/Loader';
 import { ModalWithFit } from 'Components/UI';
 import COVA, { SettingsCOVA } from './components/COVA';
 import ANGEL, { SettingsANGEL } from './components/ANGEL';
-import Custom, { CustomProps } from './components/Custom';
+import Custom, { CustomProps, Submit, SubmitProps } from './components/Custom';
 
 import classes from './Settings.module.scss';
 
@@ -49,6 +49,7 @@ export interface SettingsProps {
   setSettingsANGEL: React.Dispatch<React.SetStateAction<SettingsANGEL>>;
   backLink: string;
   customDataPage?: CustomProps | null;
+  submitProps?: SubmitProps | null;
   reviewer: boolean;
   name: string;
   isLoading?: boolean;
@@ -63,6 +64,7 @@ const Settings = ({
   setSettingsANGEL,
   backLink,
   customDataPage,
+  submitProps,
   reviewer,
   name,
   isLoading,
@@ -87,30 +89,36 @@ const Settings = ({
     setMargin(refNeighbours.current.offsetTop - 10);
   });
 
-  const entriesAlgorithm = customDataPage
-    ? [
-        { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
-        { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
-      ]
-    : [
-        { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
-        { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
-        { value: Algorithm.ORIGINAL, text: TEXT_CHECKBOX_ORIGINAL },
-      ];
+  let entriesAlgorithm = [
+    { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
+    { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
+    { value: Algorithm.ORIGINAL, text: TEXT_CHECKBOX_ORIGINAL },
+  ];
+  if (customDataPage) {
+    entriesAlgorithm = [
+      { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
+      { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
+    ];
+  } else if (reviewer) {
+    entriesAlgorithm = [
+      { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
+      { value: Algorithm.ORIGINAL, text: TEXT_CHECKBOX_ORIGINAL },
+    ];
+  }
+
   return (
     <div className={classes.index} ref={refIndex}>
       <LinkBack link={backLink} block />
       <div className={classes.Settings}>
         <h1>{name}</h1>
-        {!reviewer && (
-          <CheckBoxes
-            labelText={TEXT_CHECKBOX_ALGORITHM}
-            tooltipText={TEXT_TOOLTIP_ALGORITHM}
-            currentValue={settingsCommon.algorithm}
-            onChange={onChangeAlgorithm}
-            entries={entriesAlgorithm}
-          />
-        )}
+        <CheckBoxes
+          labelText={TEXT_CHECKBOX_ALGORITHM}
+          tooltipText={TEXT_TOOLTIP_ALGORITHM}
+          currentValue={settingsCommon.algorithm}
+          onChange={onChangeAlgorithm}
+          entries={entriesAlgorithm}
+        />
+        {customDataPage && <Custom {...customDataPage} />}
         <Slider
           min={0}
           max={NEIGHBOUR_MARKS_ARR.length - 1}
@@ -121,6 +129,7 @@ const Settings = ({
           tooltipText={TEXT_TOOLTIP_NEIGHBOURS}
           value={settingsCommon.neighbour}
           refCustom={refNeighbours}
+          customClass={classes.neighbour}
         />
         {settingsCommon.algorithm === Algorithm.COVA ? (
           <COVA {...{ settingsCOVA, setSettingsCOVA }} />
@@ -137,9 +146,9 @@ const Settings = ({
             { value: DataPreservation.OFF, text: 'No' },
           ]}
         />
-        {customDataPage && <Custom {...customDataPage} />}
         {isLoading && <Loader height={height} />}
         {settingsCommon.algorithm === Algorithm.ORIGINAL && <ModalWithFit height={height - margin} margin={margin} />}
+        {submitProps && <Submit {...submitProps} />}
       </div>
     </div>
   );

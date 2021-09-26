@@ -9,6 +9,7 @@ so all css is hardcoded inside style elements.
 */
 import { CSSProperties } from 'react';
 import SliderRC from 'rc-slider';
+import cx from 'classnames';
 
 import toMarks from './utils';
 import Label from '../Label';
@@ -24,9 +25,10 @@ export interface SliderProps {
   tooltipText: string;
   value: number;
   refCustom?: React.MutableRefObject<HTMLDivElement> | 0;
+  customClass?: string;
 }
 
-const Slider = ({ marksArr, labelText, tooltipText, refCustom, ...restProps }: SliderProps) => {
+const Slider = ({ marksArr, labelText, tooltipText, refCustom, customClass, ...restProps }: SliderProps) => {
   const marksStyle = {
     fontSize: '0.85rem',
     color: '#ccc',
@@ -46,7 +48,7 @@ const Slider = ({ marksArr, labelText, tooltipText, refCustom, ...restProps }: S
   const activeDotStyle = { border: '2px solid var(--color-action)', backgroundColor: 'var(--color-action)' };
 
   return (
-    <div className={classes.index} ref={refCustom !== 0 ? refCustom : null}>
+    <div className={cx(classes.index, customClass)} ref={refCustom !== 0 ? refCustom : null}>
       <Label text={labelText} tooltipText={tooltipText} />
       <SliderRC
         {...restProps}

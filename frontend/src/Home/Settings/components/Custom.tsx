@@ -20,13 +20,10 @@ export const defaultSettingsCustom: SettingsCustom = {
   dimension: Dimension.D2,
 };
 export interface CustomProps {
-  onSubmit: Function;
   setSettingsCustom: React.Dispatch<React.SetStateAction<SettingsCustom>>;
   settingsCustom: SettingsCustom;
-  error: string | null;
   acceptedType: string;
 }
-
 export const TEXT_CHECKBOX_DIMENSION = 'Dimension:';
 export const TEXT_TOOLTIP_CHECKBOX_DIMENSION = 'Choose the target dimension of your visualization.';
 export const TEXT_FILEDROP_AREA = 'Choose a File:';
@@ -42,15 +39,8 @@ export const HTML_LINK_FILEDROP_AREA = (
     See Example file here
   </a>
 );
-export const TEXT_BUTTON = 'Submit';
 
-const Custom = ({
-  onSubmit,
-  setSettingsCustom,
-  settingsCustom: { dimension, file },
-  error,
-  acceptedType,
-}: CustomProps) => {
+const Custom = ({ setSettingsCustom, settingsCustom: { dimension, file }, acceptedType }: CustomProps) => {
   const onChangeDimension = (event: React.ChangeEvent, value: Dimension) => {
     event.preventDefault();
     setSettingsCustom((prev) => ({ ...prev, dimension: value }));
@@ -79,10 +69,20 @@ const Custom = ({
         labelText={TEXT_FILEDROP_AREA}
         toolitipLink={HTML_LINK_FILEDROP_AREA}
       />
-      <Button text={TEXT_BUTTON} onClick={() => onSubmit()} active={false} customClass={classes.submit} />
-      {error && <Error text={error} />}
     </div>
   );
 };
 
 export default Custom;
+
+export const TEXT_BUTTON = 'Submit';
+export interface SubmitProps {
+  error: string | null;
+  onSubmit: Function;
+}
+export const Submit = ({ error, onSubmit }: SubmitProps) => (
+  <>
+    <Button text={TEXT_BUTTON} onClick={() => onSubmit()} active={false} />
+    {error && <Error text={error} />}
+  </>
+);

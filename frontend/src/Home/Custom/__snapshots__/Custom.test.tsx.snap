@@ -78,8 +78,115 @@ exports[`Examples matches snapshot 1`] = `
             </label>
           </div>
         </div>
+        <div>
+          <div
+            class="index"
+          >
+            <div
+              class="index"
+            >
+              <p>
+                Dimension:
+              </p>
+              <div
+                class="Tooltip"
+              >
+                <img
+                  alt="info-9"
+                  src="info.svg"
+                />
+                <div
+                  style="top: 19px; left: -115px;"
+                >
+                  Choose the target dimension of your visualization. 
+                </div>
+              </div>
+            </div>
+            <div
+              class="CheckBoxes"
+            >
+              <label>
+                <input
+                  checked=""
+                  type="radio"
+                />
+                <span
+                  class="text"
+                >
+                  2
+                </span>
+                <span
+                  class="checkmark"
+                />
+              </label>
+              <label>
+                <input
+                  type="radio"
+                />
+                <span
+                  class="text"
+                >
+                  3
+                </span>
+                <span
+                  class="checkmark"
+                />
+              </label>
+            </div>
+          </div>
+          <div
+            class="index label"
+          >
+            <p>
+              Choose a File:
+            </p>
+            <div
+              class="Tooltip"
+            >
+              <img
+                alt="info-10"
+                src="info.svg"
+              />
+              <div
+                style="top: 19px; left: -115px;"
+              >
+                Currently we only support .mat files. The format is: 'g': Data matrix, 'label': Cohort label column. 
+                <a
+                  class="link"
+                  href="http://localhost/api/dynamic/exampleMat/bicycle_sample.mat"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  See Example file here
+                </a>
+              </div>
+            </div>
+          </div>
+          <div
+            class="Wrapper"
+          >
+            <div
+              class="Container"
+              style="border-color: #bbb;"
+              tabindex="0"
+            >
+              <input
+                accept=".mat"
+                autocomplete="off"
+                data-testid="filearea"
+                multiple=""
+                style="display: none;"
+                tabindex="-1"
+                type="file"
+              />
+              <label>
+                Drag and Drop or Click HERE to choose file
+              </label>
+            </div>
+          </div>
+        </div>
         <div
-          class="index"
+          class="index neighbour"
         >
           <div
             class="index"
@@ -91,7 +198,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-9"
+                alt="info-11"
                 src="info.svg"
               />
               <div
@@ -195,7 +302,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-10"
+                alt="info-12"
                 src="info.svg"
               />
               <div
@@ -269,7 +376,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-11"
+                alt="info-13"
                 src="info.svg"
               />
               <div
@@ -343,7 +450,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-12"
+                alt="info-14"
                 src="info.svg"
               />
               <div
@@ -398,7 +505,7 @@ exports[`Examples matches snapshot 1`] = `
               class="Tooltip"
             >
               <img
-                alt="info-13"
+                alt="info-15"
                 src="info.svg"
               />
               <div
@@ -440,119 +547,12 @@ exports[`Examples matches snapshot 1`] = `
             </label>
           </div>
         </div>
-        <div>
-          <div
-            class="index"
-          >
-            <div
-              class="index"
-            >
-              <p>
-                Dimension:
-              </p>
-              <div
-                class="Tooltip"
-              >
-                <img
-                  alt="info-14"
-                  src="info.svg"
-                />
-                <div
-                  style="top: 19px; left: -115px;"
-                >
-                  Choose the target dimension of your visualization. 
-                </div>
-              </div>
-            </div>
-            <div
-              class="CheckBoxes"
-            >
-              <label>
-                <input
-                  checked=""
-                  type="radio"
-                />
-                <span
-                  class="text"
-                >
-                  2
-                </span>
-                <span
-                  class="checkmark"
-                />
-              </label>
-              <label>
-                <input
-                  type="radio"
-                />
-                <span
-                  class="text"
-                >
-                  3
-                </span>
-                <span
-                  class="checkmark"
-                />
-              </label>
-            </div>
-          </div>
-          <div
-            class="index label"
-          >
-            <p>
-              Choose a File:
-            </p>
-            <div
-              class="Tooltip"
-            >
-              <img
-                alt="info-15"
-                src="info.svg"
-              />
-              <div
-                style="top: 19px; left: -115px;"
-              >
-                Currently we only support .mat files. The format is: 'g': Data matrix, 'label': Cohort label column. 
-                <a
-                  class="link"
-                  href="http://localhost/api/dynamic/exampleMat/bicycle_sample.mat"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  See Example file here
-                </a>
-              </div>
-            </div>
-          </div>
-          <div
-            class="Wrapper"
-          >
-            <div
-              class="Container"
-              style="border-color: #bbb;"
-              tabindex="0"
-            >
-              <input
-                accept=".mat"
-                autocomplete="off"
-                data-testid="filearea"
-                multiple=""
-                style="display: none;"
-                tabindex="-1"
-                type="file"
-              />
-              <label>
-                Drag and Drop or Click HERE to choose file
-              </label>
-            </div>
-          </div>
-          <button
-            class="Button submit"
-            type="button"
-          >
-            Submit
-          </button>
-        </div>
+        <button
+          class="Button"
+          type="button"
+        >
+          Submit
+        </button>
       </div>
     </div>
   </div>

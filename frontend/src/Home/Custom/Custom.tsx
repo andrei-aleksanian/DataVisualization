@@ -131,11 +131,13 @@ const Custom = () => {
           setSettingsANGEL,
           backLink: '/',
           customDataPage: {
-            onSubmit,
             settingsCustom,
             setSettingsCustom,
-            error,
             acceptedType: ACCEPTED_TYPE,
+          },
+          submitProps: {
+            onSubmit,
+            error,
           },
           reviewer: false,
           name: 'Custom Data',
