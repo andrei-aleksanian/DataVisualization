@@ -58,6 +58,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "npm run test -- --coverage",
     "test:CI": "CI=true react-scripts test --passWithNoTests",
     "lint": "npx eslint '**/*.{ts,tsx}' --fix",
     "lint:style": "npx stylelint '**/*.scss' --fix",

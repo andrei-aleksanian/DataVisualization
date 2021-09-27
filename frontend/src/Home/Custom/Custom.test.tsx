@@ -18,7 +18,7 @@ test('Examples matches snapshot', async () => {
   expect(asFragment()).toMatchSnapshot();
 });
 
-describe('Examples fetches data correctly', () => {
+describe('Custom fetches data correctly', () => {
   test('Success fetch data on click', async () => {
     const mockedAxios = mockAxios();
     mockedAxios.mockResolvedValueOnce({ data: DATA_PERSEVERANCE });
