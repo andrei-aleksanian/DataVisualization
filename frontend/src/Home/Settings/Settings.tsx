@@ -37,6 +37,8 @@ export const defaultSettingsCommon: SettingsCommon = {
 };
 export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%'];
 const TEXT_TOOLTIP_ALGORITHM = 'Choose between different embedding algrotihms. Or see the original dataset.';
+const TEXT_TOOLTIP_ALGORITHM_CUSTOM = 'Choose between different embedding algrotihms.';
+const TEXT_TOOLTIP_ALGORITHM_REVIEWER = 'Choose between ANGEL output and original dataset.';
 const TEXT_TOOLTIP_NEIGHBOURS = 'The k-nearest neighborhood selection, used to construct an adjacency matrix.';
 const TEXT_TOOLTIP_DATA_PRESERVATION =
   "The red lines link the wrongly preserved local neighbourhood errors. If you click on a point, it will show you it's original label!";
@@ -101,17 +103,20 @@ const Settings = ({
     setMargin(refNeighbours.current.offsetTop - 10);
   });
 
+  let textTooltipAlgorithm = TEXT_TOOLTIP_ALGORITHM;
   let entriesAlgorithm = [
     { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
     { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
     { value: Algorithm.ORIGINAL, text: TEXT_CHECKBOX_ORIGINAL },
   ];
   if (customDataPage) {
+    textTooltipAlgorithm = TEXT_TOOLTIP_ALGORITHM_CUSTOM;
     entriesAlgorithm = [
       { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
       { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
     ];
   } else if (reviewer) {
+    textTooltipAlgorithm = TEXT_TOOLTIP_ALGORITHM_REVIEWER;
     entriesAlgorithm = [
       { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
       { value: Algorithm.ORIGINAL, text: TEXT_CHECKBOX_ORIGINAL },
@@ -125,7 +130,7 @@ const Settings = ({
         <h1>{name}</h1>
         <CheckBoxes
           labelText={TEXT_CHECKBOX_ALGORITHM}
-          tooltipText={TEXT_TOOLTIP_ALGORITHM}
+          tooltipText={textTooltipAlgorithm}
           currentValue={settingsCommon.algorithm}
           onChange={onChangeAlgorithm}
           entries={entriesAlgorithm}

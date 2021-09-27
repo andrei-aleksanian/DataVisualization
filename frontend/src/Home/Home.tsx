@@ -6,6 +6,7 @@ export const PAGE_TITLE = 'Home';
 
 export const TEXT_LINK_LIBRARY = 'See an Example';
 export const TEXT_LINK_CUSTOM_DATA = 'Visualize Your Data';
+export const TEXT_LINK_DOCS = 'See Docs';
 
 export const TEXT_H1 = 'COVA / ANGEL';
 export const TEXT_H2 = 'Cohort Data Visualization';
@@ -23,6 +24,7 @@ const Home = () => {
         <div className={classes.LinkWrapper}>
           <LinkHero text={TEXT_LINK_LIBRARY} link="/examples" />
           <LinkHero text={TEXT_LINK_CUSTOM_DATA} link="/your-data" />
+          <LinkHero text={TEXT_LINK_DOCS} external link="http://docs.see-your-embeddings.com/" />
         </div>
       </div>
     </div>

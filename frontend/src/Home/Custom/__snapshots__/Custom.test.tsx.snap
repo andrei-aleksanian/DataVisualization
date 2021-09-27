@@ -42,7 +42,7 @@ exports[`Examples matches snapshot 1`] = `
               <div
                 style="top: 19px; left: -115px;"
               >
-                Choose between different embedding algrotihms. Or see the original dataset. 
+                Choose between different embedding algrotihms. 
               </div>
             </div>
           </div>

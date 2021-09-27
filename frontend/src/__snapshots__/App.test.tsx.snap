@@ -32,6 +32,14 @@ exports[`App matches snapshot 1`] = `
         >
           Visualize Your Data
         </a>
+        <a
+          class="index Action external"
+          href="http://docs.see-your-embeddings.com/"
+          rel="noreferrer"
+          target="_blank"
+        >
+          See Docs
+        </a>
       </div>
     </div>
   </div>

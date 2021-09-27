@@ -11,7 +11,7 @@
 .Action {
   display: block;
   text-align: center;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   padding: 0.5em 1em;
 }
 
@@ -34,4 +34,8 @@
 
 .Block {
   position: relative;
+}
+
+.external {
+  text-decoration: none;
 }
