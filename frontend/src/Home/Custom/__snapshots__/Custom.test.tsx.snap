@@ -43,6 +43,14 @@ exports[`Examples matches snapshot 1`] = `
                 style="top: 19px; left: -115px;"
               >
                 Choose between different embedding algrotihms. 
+                <a
+                  class="link"
+                  href="http://docs.see-your-embeddings.com/"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  See Docs.
+                </a>
               </div>
             </div>
           </div>

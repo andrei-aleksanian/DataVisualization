@@ -10,7 +10,7 @@ export interface LabelProps {
   text: string;
   tooltipText: string;
   customCalss?: string;
-  link?: JSX.Element; // accepts an anchor tag, not sure how to type it
+  link?: JSX.Element | null; // accepts an anchor tag, not sure how to type it
 }
 
 const Label = ({ text, customCalss, tooltipText, link }: LabelProps) => {

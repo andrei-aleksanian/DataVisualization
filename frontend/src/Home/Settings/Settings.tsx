@@ -39,6 +39,11 @@ export const NEIGHBOUR_MARKS_ARR = ['10', '20', '30', '10%', '30%'];
 const TEXT_TOOLTIP_ALGORITHM = 'Choose between different embedding algrotihms. Or see the original dataset.';
 const TEXT_TOOLTIP_ALGORITHM_CUSTOM = 'Choose between different embedding algrotihms.';
 const TEXT_TOOLTIP_ALGORITHM_REVIEWER = 'Choose between ANGEL output and original dataset.';
+const HTML_LINK_TOOLTIP_ALGORITHM = (
+  <a href="http://docs.see-your-embeddings.com/" className={classes.link} target="_blank" rel="noreferrer">
+    See Docs.
+  </a>
+);
 const TEXT_TOOLTIP_NEIGHBOURS = 'The k-nearest neighborhood selection, used to construct an adjacency matrix.';
 const TEXT_TOOLTIP_DATA_PRESERVATION =
   "The red lines link the wrongly preserved local neighbourhood errors. If you click on a point, it will show you it's original label!";
@@ -104,6 +109,7 @@ const Settings = ({
   });
 
   let textTooltipAlgorithm = TEXT_TOOLTIP_ALGORITHM;
+  let linkTooltipAlgorithm: JSX.Element | null = HTML_LINK_TOOLTIP_ALGORITHM;
   let entriesAlgorithm = [
     { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
     { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
@@ -111,12 +117,14 @@ const Settings = ({
   ];
   if (customDataPage) {
     textTooltipAlgorithm = TEXT_TOOLTIP_ALGORITHM_CUSTOM;
+    linkTooltipAlgorithm = HTML_LINK_TOOLTIP_ALGORITHM;
     entriesAlgorithm = [
       { value: Algorithm.COVA, text: TEXT_CHECKBOX_COVA },
       { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
     ];
   } else if (reviewer) {
     textTooltipAlgorithm = TEXT_TOOLTIP_ALGORITHM_REVIEWER;
+    linkTooltipAlgorithm = null;
     entriesAlgorithm = [
       { value: Algorithm.ANGEL, text: TEXT_CHECKBOX_ANGEL },
       { value: Algorithm.ORIGINAL, text: TEXT_CHECKBOX_ORIGINAL },
@@ -131,6 +139,7 @@ const Settings = ({
         <CheckBoxes
           labelText={TEXT_CHECKBOX_ALGORITHM}
           tooltipText={textTooltipAlgorithm}
+          tooltipLink={linkTooltipAlgorithm}
           currentValue={settingsCommon.algorithm}
           onChange={onChangeAlgorithm}
           entries={entriesAlgorithm}

@@ -20,11 +20,12 @@ export interface CheckBoxesProps {
   onChange: (event: React.ChangeEvent, currentValue: number) => void;
   labelText: string;
   tooltipText: string;
+  tooltipLink?: JSX.Element | null;
 }
 
-const CheckBoxes = ({ currentValue, onChange, entries, labelText, tooltipText }: CheckBoxesProps) => (
+const CheckBoxes = ({ currentValue, onChange, entries, labelText, tooltipText, tooltipLink }: CheckBoxesProps) => (
   <div className={classes.index}>
-    <Label text={labelText} tooltipText={tooltipText} />
+    <Label text={labelText} tooltipText={tooltipText} link={tooltipLink} />
     <div className={classes.CheckBoxes}>
       {entries.map((e) => (
         <label key={getId('checkbox')}>
@@ -36,5 +37,9 @@ const CheckBoxes = ({ currentValue, onChange, entries, labelText, tooltipText }:
     </div>
   </div>
 );
+
+CheckBoxes.defaultProps = {
+  tooltipLink: null,
+};
 
 export default CheckBoxes;
