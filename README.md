@@ -41,8 +41,8 @@ You are done!
 
 Running the code in a production environment:
 
-1. SSH into your VM. Install docker and copy the `docker-compose.prod.yml`
-2. Run `docker-compose -f docker-compose.prod.yml up -d`
+1. SSH into your VM. Install docker and copy the `production/docker-compose.yml`
+2. Run `docker-compose -f app/docker-compose.yml up -d`
 3. You are done! That simple.
 
 The images get built in GitHub Actions and pushed to Docker Hub.
