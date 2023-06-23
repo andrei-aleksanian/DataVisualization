@@ -1,4 +1,4 @@
-# Data Visualisation Tool with COVA and ANGEl
+# Data Visualisation Tool with COVA and ANGEL
 
 A tool to visualise COVA and ANGEL algorithms on the web.
 
